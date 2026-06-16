@@ -6,6 +6,9 @@ slug: plsql-and-sql-naming-conventions
 categories:
   - "PLSQL"
   - "SQL"
+tags:
+  - "PL/SQL"
+  - "naming"
 ---
 
 Some time back I've read [Mike Smithers Blog on SQL and PL/SQL standards](https://mikesmithers.wordpress.com/2011/10/22/oracle-sql-and-plsql-coding-standards-%E2%80%93-cat-herding-for-dummies/). I really like reading his blog. He is a great story-teller.

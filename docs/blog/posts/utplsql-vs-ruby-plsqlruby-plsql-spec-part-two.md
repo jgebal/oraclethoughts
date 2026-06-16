@@ -8,11 +8,8 @@ categories:
   - "SQL"
   - "testing"
 tags:
-  - "Oracle"
-  - "PL/SQL"
-  - "Ruby"
   - "TDD"
-  - "UTPLSQL"
+  - "utPLSQL v2"
   - "ruby-plsql"
   - "unit testing"
 ---

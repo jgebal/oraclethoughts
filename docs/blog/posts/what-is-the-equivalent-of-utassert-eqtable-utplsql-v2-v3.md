@@ -5,10 +5,11 @@ date:
 slug: what-is-the-equivalent-of-utassert-eqtable-utplsql-v2-v3
 categories:
   - "utPLSQL"
+  - "testing"
 tags:
   - "Oracle"
   - "PL/SQL"
-  - "UTPLSQL"
+  - "utPLSQL"
   - "unit testing"
 ---
 

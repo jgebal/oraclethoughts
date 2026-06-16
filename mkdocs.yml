@@ -45,16 +45,20 @@ theme:
     repo: fontawesome/brands/github
 plugins:
   - search
-  - blog
+  - blog:
+      blog_toc: true
   - tags
 markdown_extensions:
   - attr_list
   - md_in_html
   - pymdownx.blocks.caption
-  - pymdownx.highlight
-  - pymdownx.superfences: {}
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
+  - pymdownx.superfences
   - admonition
   - pymdownx.details
   - tables

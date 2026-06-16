@@ -3,6 +3,11 @@ title: "BUG in INSERT ... SELECT with nested objects"
 date:
   created: 2020-04-05
 slug: bug-in-insert-select-with-nested-objects
+categories:
+  - "SQL"
+tags:
+  - "SQL"
+  - "exception handling"
 ---
 
 I came across a very nasty bug in Oracle SQL engine while working on some new code.

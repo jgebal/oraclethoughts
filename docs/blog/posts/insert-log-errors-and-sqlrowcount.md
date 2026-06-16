@@ -5,6 +5,9 @@ date:
 slug: insert-log-errors-and-sqlrowcount
 categories:
   - "SQL"
+tags:
+  - "SQL"
+  - "exception handling"
 ---
 
 Oracle SQL has a really neat feature to log the rows that failed to be processed during DML statement (INSERT / UPDATE / DELETE / MERGE ).

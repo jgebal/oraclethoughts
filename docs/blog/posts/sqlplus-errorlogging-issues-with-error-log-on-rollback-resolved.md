@@ -6,11 +6,11 @@ slug: sqlplus-errorlogging-issues-with-error-log-on-rollback-resolved
 categories:
   - "SQL*Plus"
 tags:
-  - "ERRORLOGGING"
-  - "Oracle"
   - "error logging"
   - "rollback"
   - "sqlplus"
+  - "SQL"
+  - "exception handling"
 ---
 
 Today I came up with idea to overcome the issue: [SQLPlus ERRORLOGGING does not keep error log on rollback](../posts/sqlplus-errorlogging-does-not-keep-error-log-on-rollback.md "SQLPlus ERRORLOGGING does not keep error log on rollback").

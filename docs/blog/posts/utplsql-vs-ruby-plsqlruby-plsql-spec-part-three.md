@@ -7,10 +7,8 @@ categories:
   - "PLSQL"
   - "testing"
 tags:
-  - "Oracle"
-  - "Ruby"
   - "TDD"
-  - "UTPLSQL"
+  - "utPLSQL v2"
   - "ruby-plsql"
   - "unit testing"
 ---

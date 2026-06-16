@@ -8,7 +8,7 @@ categories:
 tags:
   - "Merge"
   - "Oracle"
-  - "sql"
+  - "SQL"
 ---
 
 [![mergesign](../../images/mergesign-300x200.jpg)](../../images/mergesign.jpg)

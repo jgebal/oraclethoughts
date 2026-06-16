@@ -9,7 +9,7 @@ categories:
   - "testing"
 tags:
   - "Oracle"
-  - "UTPLSQL"
+  - "utPLSQL"
   - "unit testing"
 ---
 

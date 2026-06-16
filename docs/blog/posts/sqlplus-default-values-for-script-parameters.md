@@ -6,9 +6,9 @@ slug: sqlplus-default-values-for-script-parameters
 categories:
   - "SQL*Plus"
 tags:
-  - "Oracle"
   - "define default"
   - "sqlplus"
+  - "SQL"
 ---
 
 While working heavily on script automation I came across the issue of having an SQLPlus script with optional parameter. Oracle does not allow that by default, and one needs to use a dirty trick to make it work. Vladimir made a great article on how to achieve that. Thank you Vlad, this is really helpful.

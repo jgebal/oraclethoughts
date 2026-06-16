@@ -7,7 +7,6 @@ categories:
   - "PLSQL"
   - "performance"
 tags:
-  - "Oracle"
   - "PL/SQL"
   - "Performance"
 ---

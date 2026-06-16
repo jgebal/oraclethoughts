@@ -5,6 +5,9 @@ date:
 slug: insert-log-errors-and-sqlrowcount-continued
 categories:
   - "SQL"
+tags:
+  - "SQL"
+  - "exception handling"
 ---
 
 In my [previous post](../posts/insert-log-errors-and-sqlrowcount.md) I have described solution allowing you to obtain count of error rows that get inserted into error table when using Oracle SQL syntax of `INSERT INTO ... SELECT ... FROM ... LOG ERRORS`.

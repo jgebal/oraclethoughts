@@ -10,7 +10,7 @@ tags:
   - "PL/SQL"
   - "Ruby"
   - "TDD"
-  - "Test Automation"
+  - "unit testing"
 ---
 
 Before I started working at [Pragmatists](http://www.pragmatists.pl) I never actually took time or effort to research the web for automating the testing process in Oracle databases. My previous job was more about delivering solutions, advisory, analysis, design and implementation using the traditional cascade product delivery approach.

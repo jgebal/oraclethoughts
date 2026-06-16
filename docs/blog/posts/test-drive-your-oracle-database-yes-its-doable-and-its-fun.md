@@ -6,7 +6,6 @@ slug: test-drive-your-oracle-database-yes-its-doable-and-its-fun
 categories:
   - "testing"
 tags:
-  - "Oracle"
   - "PL/SQL"
   - "TDD"
   - "unit testing"

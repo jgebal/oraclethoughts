@@ -3,6 +3,13 @@ title: "Test Driven Development in PLSQL with utPLSQL v3 - intro"
 date:
   created: 2017-10-26
 slug: test-driven-development-in-oracle-database-with-utplsql-v3-intro
+categories:
+  - "testing"
+tags:
+  - "PL/SQL"
+  - "TDD"
+  - "utPLSQL"
+  - "unit testing"
 ---
 
 *The biggest challenge around unit testing is to make it work for you (as an engineer), not against you.*

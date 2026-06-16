@@ -9,8 +9,7 @@ categories:
   - "testing"
 tags:
   - "PL/SQL"
-  - "TDD"
-  - "UTPLSQL"
+  - "utPLSQL v2"
   - "ruby-plsql"
   - "unit testing"
 ---
