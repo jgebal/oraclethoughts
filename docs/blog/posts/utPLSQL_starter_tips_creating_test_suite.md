@@ -9,7 +9,7 @@ categories:
   - "testing"
 tags:
   - "utPLSQL"
-  - "unit testing"
+  - "testing"
 ---
 
 Testing PL/SQL code does not need to mean writing throwaway scripts or using a complicated UI. utPLSQL gives you a proper test framework — right inside database.
