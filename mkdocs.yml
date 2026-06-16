@@ -11,18 +11,25 @@ theme:
   logo: assets/logo-thinking-smile.png
   favicon: assets/logo-thinking-smile.png
   palette:
-  - scheme: default
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
     primary: deep orange
     accent: orange
     toggle:
       icon: material/brightness-7
       name: Switch to dark mode
-  - scheme: slate
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
     primary: deep orange
     accent: orange
     toggle:
       icon: material/brightness-4
       name: Switch to light mode
+  - media: "(prefers-color-scheme)"
+    accent: orange
+    toggle:
+      icon: material/brightness-auto
+      name: Switch to system preference
   features:
     - navigation.tabs
     - navigation.sections
