@@ -59,4 +59,3 @@ Install utPLSQL into a dedicated framework schema, create test package in the sc
 
 For more details check the [framework documentation](https://www.utplsql.org/utPLSQL/latest/).
 
-#utPLSQL #OracleDev #PLSQL #TDD #DatabaseTesting
