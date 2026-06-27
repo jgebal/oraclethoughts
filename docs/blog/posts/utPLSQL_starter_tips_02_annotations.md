@@ -47,5 +47,5 @@ end;
 /
 ```
 
-Read more about the annotations in the [docuemntation](https://www.utplsql.org/utPLSQL/latest/userguide/annotations.html).
+Read more about the annotations in the [documentation](https://www.utplsql.org/utPLSQL/latest/userguide/annotations.html).
 
