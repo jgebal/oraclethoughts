@@ -2,8 +2,8 @@ site_name: Oracle Thoughts
 site_url: https://jgebal.github.io/oraclethoughts
 site_author: Jacek Gebal
 site_description: Oracle database, PL/SQL development, unit testing and utPLSQL
-repo_url: https://github.com/jgebal/oraclethoughts
-repo_name: jgebal/oraclethoughts
+#repo_url: https://github.com/jgebal/oraclethoughts
+#repo_name: jgebal/oraclethoughts
 extra_css:
   - stylesheets/extra.css
 extra:
