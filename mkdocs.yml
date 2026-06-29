@@ -1,9 +1,8 @@
-site_name: Oracle Thoughts
-site_url: https://jgebal.github.io/oraclethoughts
+site_name: oraclethoughts
+site_url: https://oraclethoughts.com
 site_author: Jacek Gebal
-site_description: Oracle database, PL/SQL development, unit testing and utPLSQL
-#repo_url: https://github.com/jgebal/oraclethoughts
-#repo_name: jgebal/oraclethoughts
+site_description: Oracle database, PL/SQL development, utPLSQL, testing and contemplative notes
+
 extra_css:
   - stylesheets/extra.css
 extra:
@@ -33,28 +32,35 @@ extra:
       make our documentation better.
 theme:
   name: material
-  logo: assets/logo-thinking-smile.png
-  favicon: assets/logo-thinking-smile.png
+  logo: assets/images/wordmark-header.svg  # SVG with icon + text baked in
+  # site_name still needed for <title> tag and nav aria-label
+  # but the text won't render in the header bar when logo is set
+  favicon: assets/images/favicon.png
+
   palette:
-  - media: "(prefers-color-scheme: light)"
-    scheme: default
-    primary: deep orange
-    accent: orange
-    toggle:
-      icon: material/brightness-7
-      name: Switch to dark mode
-  - media: "(prefers-color-scheme: dark)"
-    scheme: slate
-    primary: deep orange
-    accent: orange
-    toggle:
-      icon: material/brightness-4
-      name: Switch to light mode
-  - media: "(prefers-color-scheme)"
-    accent: orange
-    toggle:
-      icon: material/brightness-auto
-      name: Switch to system preference
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: light-green
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode (default)
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: light-green
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - media: "(prefers-color-scheme)"
+      primary: teal
+      accent: light-green
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to system preference
+
   features:
     - navigation.tabs
     - navigation.sections
@@ -66,13 +72,17 @@ theme:
     - search.highlight
     - content.code.copy
     - content.code.annotate
-  icon:
-    repo: fontawesome/brands/github
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
 plugins:
   - search
   - blog:
       blog_toc: true
   - tags
+
 markdown_extensions:
   - attr_list
   - md_in_html
@@ -89,6 +99,7 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+
 nav:
   - Home: index.md
   - Blog:

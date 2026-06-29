@@ -1,3 +1,19 @@
+/* Make the wordmark SVG logo render larger in the header.
+   Material default is height:24px inside a 48px bar.
+   These values scale it to ~130% filling the bar comfortably. */
+.md-header__button.md-logo {
+    padding: 0;
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+    height: 2rem;    /* was ~1.2rem default; 2rem ≈ 32px in a 48px bar */
+    width: auto;
+}
+
+/* hide the header title to have only the wordmark-header.svg */
+.md-header__topic:first-child { display: none; }
+
 .md-typeset__table {
     line-height: 1;
 }
