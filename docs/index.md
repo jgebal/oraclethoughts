@@ -2,22 +2,13 @@
 title: Home
 ---
 
-# Oracle Thoughts
+My name is Jacek Gebal and oracle thoughts.com is my personal blog on Oracle database development, PL/SQL best practices, unit testing, and [utPLSQL](https://utplsql.org) framework.
 
-**Jacek Gębal**s blog on Oracle database development, PL/SQL best practices, unit testing, and [utPLSQL](https://utplsql.org) framework.
+It is a space where I share my personal experiences and opinions related to software development. 
 
-Contains my personal opinions and experiences.
 
----
+Browse the [**Blog**](blog/index.md) for all articles, or use the search above.
 
-## Topics covered
+You can also read a bit more [**about me**](about.md), if you wish.
 
-- **PL/SQL development** — performance, pitfalls, naming conventions, exception handling
-- **Unit testing** — focusing on utPLSQL v3, previously looking at utPLSQL v2 and ruby-plsql-spec comparisons
-- **SQL*Plus** — errorlogging feature, some nice scripting patterns
-- **CI/CD for Oracle** — running database tests on continuous integration platforms 
-- **Oracle SQL** — MERGE statement caveats, INSERT LOG ERRORS, implicit datatype conversions etc.
-
----
-
-Browse the [**Blog**](blog/index.md) tab for all articles, or use the search above.
+Enjoy! 😎
