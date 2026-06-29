@@ -3,9 +3,14 @@ title: "About"
 date: 2024-01-01
 ---
 
+![Jacek Gębal](assets/images/jacek_small.jpg){ .profile-photo }
+
+
 My name is Jacek Gębal. I was born in 1977 in Głogów, Poland.
 
-You are looking at my personal blog about Oracle PL/SQL and software development.
+You are reading my personal blog about Oracle PL/SQL and software development.
+
+On this page you can get to know a bit about my journey through technology and software development. 
 
 ## The Beginning
 
