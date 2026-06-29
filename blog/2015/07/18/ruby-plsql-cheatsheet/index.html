@@ -1,0 +1,1605 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Oracle database, PL/SQL development, utPLSQL, testing and contemplative notes">
+      
+      
+        <meta name="author" content="Jacek Gebal">
+      
+      
+        <link rel="canonical" href="https://oraclethoughts.com/blog/2015/07/18/ruby-plsql-cheatsheet/">
+      
+      
+        <link rel="prev" href="../../11/utplsql-v2-vs-ruby-plsql-running-oracle-unit-tests-on-jenkins-ci/">
+      
+      
+        <link rel="next" href="../../../08/11/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>ruby-plsql cheatsheet - oraclethoughts</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-1TEVWKPL97"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-1TEVWKPL97",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-1TEVWKPL97",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>if("undefined"!=typeof __md_analytics){var consent=__md_get("__consent");consent&&consent.analytics&&__md_analytics()}</script>
+  
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#session-connection-settings" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="oraclethoughts" class="md-header__button md-logo" aria-label="oraclethoughts" data-md-component="logo">
+      
+  <img src="../../../../../assets/images/wordmark-header.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            oraclethoughts
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ruby-plsql cheatsheet
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="oraclethoughts" class="md-nav__button md-logo" aria-label="oraclethoughts" data-md-component="logo">
+      
+  <img src="../../../../../assets/images/wordmark-header.svg" alt="logo">
+
+    </a>
+    oraclethoughts
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Blog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2020/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2020
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2017/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2017
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2016/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2016
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2015/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2015
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2014/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2014
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/plsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PLSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/sql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/sqlplus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL*Plus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    performance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/ruby-plsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ruby-plsql
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/utplsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    utPLSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2015-07-18 00:00:00+00:00" class="md-ellipsis">July 18, 2015</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/ruby-plsql/">ruby-plsql</a>, 
+                              <a href="../../../../category/testing/">testing</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              8 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:tdd" class="md-tag">TDD</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:ruby-plsql" class="md-tag">ruby-plsql</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:unit-testing" class="md-tag">unit testing</a>
+      
+    
+  </nav>
+
+
+
+<p>In my <a href="../../../06/14/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-one/">previous posts</a> I did some writngs on <a href="http://utplsql.sourceforge.net/">UTPLSQL</a> and <a href="https://github.com/rsim/ruby-plsql">ruby-plsql</a>.
+For long time, while developing Oracle code I was using ruby-plsql to do test driven development for SQL and PL/SQL.
+I used to frequently forget how to use some of the functionalities of ruby-plsql, specially after having a longer break and so each time I was referring the <a href="https://github.com/rsim/ruby-plsql/tree/master/spec/plsql">Unit Tests supplied for the ruby-plsql library</a> as a reference. They are really nicely documenting how things work and how can they be used. It usually took me few minutes to find the thing I needed.</p>
+<!-- more -->
+<p>While I was actively using ruby-plsql for testing Oracle SQL and PLSQL code, it never occurred to me, that it would be nice to have some kind of cheat sheet, and so I wasted the valuable seconds and minutes to figure out how to do things I needed to do.
+This week however, Turntablez posted a suggestion <a href="https://github.com/rsim/ruby-plsql-spec/issues/21">on ruby-plsql-spec github project page</a> that a cheat sheet would be something of a use.
+It was a really great idea, saves precious minutes when you need to use something you're not used to or just don't do every day.
+So here it is, fully downloadable, editable and hopefully usable Cheat Sheet for ruby-plsql.
+It's not a reference, it's not complete (or official), but hopefully it's a good overview and a fast help if you need to see how things work.
+<strong>Update</strong>
+If you prefer a more visual/printable form, you might want to check out the same Cheat Sheet on <a href="http://www.cheatography.com/jgebal/cheat-sheets/ruby-plsql-cheat-sheet/">http://www.cheatography.com/jgebal/cheat-sheets/ruby-plsql-cheat-sheet/</a>
+Or just download the PDF version.
+<a href="../../images/jgebal_ruby-plsql-cheat-sheet-1.pdf"><img alt="jgebal_ruby-plsql-cheat-sheet.pdf" src="../../../../../images/jgebal_ruby-plsql-cheat-sheet.6001.jpg" /></a>
+[ruby gutter="0" highlight="1,32,54,69,93,112,150"]</p>
+<h1 id="session-connection-settings">Session / connection settings<a class="headerlink" href="#session-connection-settings" title="Permanent link">&para;</a></h1>
+<p>plsql(:default).connect! {:username =&gt; 'hr', :password =&gt; 'hr', :database =&gt; 'xe'}
+plsql.connect! {:username =&gt; 'hr', :password =&gt; 'hr', :database =&gt; 'xe'}</p>
+<h1 id="opens-a-connection-to-database-referenced-by-symbol-default-or-no-symbol-at-all">opens a connection to database (referenced by Symbol :default, or no symbol at all)<a class="headerlink" href="#opens-a-connection-to-database-referenced-by-symbol-default-or-no-symbol-at-all" title="Permanent link">&para;</a></h1>
+<p>plsql(:another).connect! {:username =&gt; 'hr', :password =&gt; 'hr', :database =&gt; 'xe'}</p>
+<h1 id="opens-a-second-connection-referenced-by-symbol-another">opens a second connection (referenced by Symbol :another)<a class="headerlink" href="#opens-a-second-connection-referenced-by-symbol-another" title="Permanent link">&para;</a></h1>
+<p>plsql.connection.prefetch_rows = 100</p>
+<h1 id="sets-number-of-rows-to-be-fetched-at-once-from-the-database-for-default-connection">sets number of rows to be fetched at once from the database for default connection<a class="headerlink" href="#sets-number-of-rows-to-be-fetched-at-once-from-the-database-for-default-connection" title="Permanent link">&para;</a></h1>
+<p>plsql.connection.database_version</p>
+<h1 id="11-2-0-2">[11, 2, 0, 2]<a class="headerlink" href="#11-2-0-2" title="Permanent link">&para;</a></h1>
+<h1 id="returns-version-of-database-as-an-array-of-elements-major-minor-update-patch">returns version of database as an array of elements: major, minor, update, patch<a class="headerlink" href="#returns-version-of-database-as-an-array-of-elements-major-minor-update-patch" title="Permanent link">&para;</a></h1>
+<p>plsql.dbms_output_stream = STDOUT</p>
+<h1 id="sets-redirects-dbms_output-to-standard-output-console">sets redirects dbms_output to standard output (console)<a class="headerlink" href="#sets-redirects-dbms_output-to-standard-output-console" title="Permanent link">&para;</a></h1>
+<h1 id="works-even-if-exception-on-code-occurs">works even if exception on code occurs<a class="headerlink" href="#works-even-if-exception-on-code-occurs" title="Permanent link">&para;</a></h1>
+<p>plsql.dbms_output_buffer_size = 100_000</p>
+<h1 id="sets-dbms_output-buffer-size-to-100000">sets dbms_output buffer size to 100,000<a class="headerlink" href="#sets-dbms_output-buffer-size-to-100000" title="Permanent link">&para;</a></h1>
+<p>plsql(:another).logoff</p>
+<h1 id="disconnects-connection-referenced-by-symbol-another-from-the-database">disconnects connection (referenced by symbol :another) from the database<a class="headerlink" href="#disconnects-connection-referenced-by-symbol-another-from-the-database" title="Permanent link">&para;</a></h1>
+<p>plsql.hr.class</p>
+<h1 id="plsqlschema">PLSQL::Schema<a class="headerlink" href="#plsqlschema" title="Permanent link">&para;</a></h1>
+<h1 id="you-can-reference-objects-in-other-schemas-using-schema-name">You can reference objects in other schemas using schema name<a class="headerlink" href="#you-can-reference-objects-in-other-schemas-using-schema-name" title="Permanent link">&para;</a></h1>
+<h1 id="transaction">Transaction<a class="headerlink" href="#transaction" title="Permanent link">&para;</a></h1>
+<p>plsql(:another).connection.autocommit = false</p>
+<h1 id="disables-auto-commit-in-another-connection">disables auto commit in :another connection<a class="headerlink" href="#disables-auto-commit-in-another-connection" title="Permanent link">&para;</a></h1>
+<p>plsql.autocommit?</p>
+<h1 id="true">true<a class="headerlink" href="#true" title="Permanent link">&para;</a></h1>
+<h1 id="returns-the-current-status-of-autocommit-for-connection">returns the current status of autocommit for connection<a class="headerlink" href="#returns-the-current-status-of-autocommit-for-connection" title="Permanent link">&para;</a></h1>
+<p>plsql.commit</p>
+<h1 id="commits-a-transaction-in-default-connection">commits a transaction in :default connection<a class="headerlink" href="#commits-a-transaction-in-default-connection" title="Permanent link">&para;</a></h1>
+<p>plsql(:another).rollback</p>
+<h1 id="rollbacks-all-uncommited-changes-in-the-current-transaction-for-another-connection">rollbacks all uncommited changes in the current transaction for :another connection<a class="headerlink" href="#rollbacks-all-uncommited-changes-in-the-current-transaction-for-another-connection" title="Permanent link">&para;</a></h1>
+<p>plsql.savepoint "save_this_point"</p>
+<h1 id="sets-a-transaction-savepoint-in-default-connection">sets a transaction savepoint in :default connection<a class="headerlink" href="#sets-a-transaction-savepoint-in-default-connection" title="Permanent link">&para;</a></h1>
+<p>plsql.rollback_to "save_this_point"</p>
+<h1 id="performs-a-rollback-of-transaction-to-specified-savepoint-in-default-connection">performs a rollback of transaction to specified savepoint in :default connection<a class="headerlink" href="#performs-a-rollback-of-transaction-to-specified-savepoint-in-default-connection" title="Permanent link">&para;</a></h1>
+<h1 id="execute-sql-statement-or-plsql-block">Execute SQL statement or PLSQL block<a class="headerlink" href="#execute-sql-statement-or-plsql-block" title="Permanent link">&para;</a></h1>
+<p>plsql.execute "CREATE SYNONYM employees_synonym FOR employees"</p>
+<h1 id="executes-any-given-string-as-a-sql-or-plsql-statement">executes any given string as a SQL or PLSQL statement<a class="headerlink" href="#executes-any-given-string-as-a-sql-or-plsql-statement" title="Permanent link">&para;</a></h1>
+<p>plsql.execute &lt;&lt;-SQL
+CREATE TABLE test_employees (
+employee_id NUMBER(15),
+name VARCHAR2(50),
+hire_date DATE
+)
+SQL</p>
+<h1 id="executes-multi-line-string-statements-too">executes multi-line string statements too<a class="headerlink" href="#executes-multi-line-string-statements-too" title="Permanent link">&para;</a></h1>
+<h1 id="insert-into-table">Insert into table<a class="headerlink" href="#insert-into-table" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.insert {:employee_id =&gt; 1, :name =&gt; 'James bond', :hire_date =&gt; Time.local(0007,07,07)}</p>
+<h1 id="inserts-one-row-into-the-employees-table-using-key-value-pairs-ruby-hash-object">inserts one row into the employees table using key-value pairs (Ruby Hash object)<a class="headerlink" href="#inserts-one-row-into-the-employees-table-using-key-value-pairs-ruby-hash-object" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.insert {:employee_id =&gt; 2, :name =&gt; 'Tony Stark'}</p>
+<h1 id="inserts-one-row-into-the-employees-table-with-partial-column-list">inserts one row into the employees table, with partial column list<a class="headerlink" href="#inserts-one-row-into-the-employees-table-with-partial-column-list" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.insert [ {:employee_id =&gt; 3, :name =&gt; 'Darth Vader'}, {:employee_id =&gt; 4, :name =&gt; 'Luke Skywalker'}]</p>
+<h1 id="inserts-multiple-rows-into-the-employees-table-using-array-of-hashes">inserts multiple rows into the employees table using Array of Hashes<a class="headerlink" href="#inserts-multiple-rows-into-the-employees-table-using-array-of-hashes" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.insert_values *[ [ 5, 'Batman', Time.local(1990,01,01)], [6,'Spiderman',Time.local(1999,02,02)] ]</p>
+<h1 id="inserts-multiple-rows-specifying-array-of-array-of-values">inserts multiple rows, specifying Array of Array of values<a class="headerlink" href="#inserts-multiple-rows-specifying-array-of-array-of-values" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.insert_values [:employee_id, :name], *[ [ 7, 'Superman'], [8, 'Hulk'] ]</p>
+<h1 id="inserts-multiple-rows-specifying-columns-first-and-subset-of-values">inserts multiple rows, specifying columns first and subset of values<a class="headerlink" href="#inserts-multiple-rows-specifying-columns-first-and-subset-of-values" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.insert_values [ 9, 'Thor', Time.local(1990,09,09)]</p>
+<h1 id="inserts-one-row-specifying-only-array-of-values">inserts one row, specifying only Array of values<a class="headerlink" href="#inserts-one-row-specifying-only-array-of-values" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.insert_values [:employee_id, :name], [ 10, 'Sandman' ]</p>
+<h1 id="inserts-one-row-specifying-subset-of-columns-array-and-array-of-values">inserts one row, specifying subset of columns (Array) and Array of values<a class="headerlink" href="#inserts-one-row-specifying-subset-of-columns-array-and-array-of-values" title="Permanent link">&para;</a></h1>
+<h1 id="select-statements">Select statements<a class="headerlink" href="#select-statements" title="Permanent link">&para;</a></h1>
+<p>plsql.select(:first, "SELECT * FROM employees")</p>
+<h1 id="employee_id-1-name-james-bond-hire_date-0007-07-07">{:employee_id =&gt; 1, :name =&gt; 'James bond', :hire_date =&gt; '0007-07-07'}<a class="headerlink" href="#employee_id-1-name-james-bond-hire_date-0007-07-07" title="Permanent link">&para;</a></h1>
+<h1 id="returns-first-row-of-a-query-as-a-ruby-hash">returns first row of a query as a Ruby Hash<a class="headerlink" href="#returns-first-row-of-a-query-as-a-ruby-hash" title="Permanent link">&para;</a></h1>
+<p>plsql.select_one("SELECT count(*) FROM employees")</p>
+<h1 id="10">10<a class="headerlink" href="#10" title="Permanent link">&para;</a></h1>
+<h1 id="returns-a-scalar-value-from-a-first-row-from-single-column-query">returns a scalar value from a first row from single column query<a class="headerlink" href="#returns-a-scalar-value-from-a-first-row-from-single-column-query" title="Permanent link">&para;</a></h1>
+<p>plsql.select_one("SELECT employee_id FROM employees WHERE 1=2")</p>
+<h1 id="nil">nil<a class="headerlink" href="#nil" title="Permanent link">&para;</a></h1>
+<h1 id="returns-nil-object-null-when-no-data-found">returns nil Object (NULL) when no data found<a class="headerlink" href="#returns-nil-object-null-when-no-data-found" title="Permanent link">&para;</a></h1>
+<p>plsql.select(:all, "SELECT * FROM employees ORDER BY employee_id")</p>
+<h1 id="employee_id-1-name-james-bond-hire_date-0007-07-07_1">[ {:employee_id =&gt; 1, :name =&gt; 'James bond', :hire_date =&gt; '0007-07-07'}, {...}, ... ]<a class="headerlink" href="#employee_id-1-name-james-bond-hire_date-0007-07-07_1" title="Permanent link">&para;</a></h1>
+<h1 id="returns-all-rows-from-a-query-as-an-array-of-hashes">returns all rows from a query as an Array of Hashes<a class="headerlink" href="#returns-all-rows-from-a-query-as-an-array-of-hashes" title="Permanent link">&para;</a></h1>
+<h1 id="select-from-a-tableview">Select from a table/view<a class="headerlink" href="#select-from-a-tableview" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.select(:first, "ORDER BY employee_id")
+plsql.employees.first("ORDER BY employee_id")</p>
+<h1 id="employee_id-1-name-james-bond-hire_date-0007-07-07_2">{:employee_id =&gt; 1, :name =&gt; 'James bond', :hire_date =&gt; '0007-07-07'}<a class="headerlink" href="#employee_id-1-name-james-bond-hire_date-0007-07-07_2" title="Permanent link">&para;</a></h1>
+<h1 id="returns-first-row-from-a-table">returns first row from a table<a class="headerlink" href="#returns-first-row-from-a-table" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.select(:first, "WHERE employee_id = :a", 2)
+plsql.employees.first("WHERE employee_id = :a", 2)
+plsql.employees.first(:employee_id =&gt; 2)</p>
+<h1 id="employee_id-2-name-tony-stark-hire_date-nil">{:employee_id =&gt; 2, :name =&gt; 'Tony Stark', :hire_date =&gt; nil}<a class="headerlink" href="#employee_id-2-name-tony-stark-hire_date-nil" title="Permanent link">&para;</a></h1>
+<h1 id="returns-first-row-from-a-table-with-where-condition">returns first row from a table with WHERE condition<a class="headerlink" href="#returns-first-row-from-a-table-with-where-condition" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.select(:all, "ORDER BY employee_id")
+plsql.employees.all("ORDER BY employee_id")
+plsql.employees.all(:order_by =&gt; :employee_id)</p>
+<h1 id="employee_id-1-name-james-bond-hire_date-0007-07-07_3">[ {:employee_id =&gt; 1, :name =&gt; 'James bond', :hire_date =&gt; '0007-07-07'}, {...}, ... ]<a class="headerlink" href="#employee_id-1-name-james-bond-hire_date-0007-07-07_3" title="Permanent link">&para;</a></h1>
+<h1 id="returns-all-rows-from-a-table-sorted-using-order-by">returns all rows from a table sorted using ORDER BY<a class="headerlink" href="#returns-all-rows-from-a-table-sorted-using-order-by" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.all(:employee_id =&gt; 2, :order_by =&gt; :employee_id)</p>
+<h1 id="employee_id-2-name-tony-stark-hire_date-nil_1">[ {:employee_id =&gt; 2, :name =&gt; 'Tony Stark', :hire_date =&gt; nil} ]<a class="headerlink" href="#employee_id-2-name-tony-stark-hire_date-nil_1" title="Permanent link">&para;</a></h1>
+<h1 id="returns-all-rows-from-a-table-with-where-condition">returns all rows from a table with WHERE condition<a class="headerlink" href="#returns-all-rows-from-a-table-with-where-condition" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.all "WHERE employee_id = 2 AND hire_date IS NULL"
+plsql.employees.all( {:employee_id =&gt; 2, :hire_date =&gt; nil} )</p>
+<h1 id="employee_id-2-name-tony-stark-hire_date-nil_2">[ {:employee_id =&gt; 2, :name =&gt; 'Tony Stark', :hire_date =&gt; nil} ]<a class="headerlink" href="#employee_id-2-name-tony-stark-hire_date-nil_2" title="Permanent link">&para;</a></h1>
+<h1 id="returns-all-rows-from-a-table-with-where-condition-on-null-value">returns all rows from a table with WHERE condition on NULL value<a class="headerlink" href="#returns-all-rows-from-a-table-with-where-condition-on-null-value" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.all(:hire_date =&gt; :is_not_null)</p>
+<h1 id="employee_id-1-name-james-bond-hire_date-0007-07-07_4">[ {:employee_id =&gt; 1, :name =&gt; 'James bond', :hire_date =&gt; '0007-07-07'}, {...}, ... ]<a class="headerlink" href="#employee_id-1-name-james-bond-hire_date-0007-07-07_4" title="Permanent link">&para;</a></h1>
+<h1 id="returns-all-rows-from-a-table-with-where-condition-on-not-null-value">returns all rows from a table with WHERE condition on NOT NULL value<a class="headerlink" href="#returns-all-rows-from-a-table-with-where-condition-on-not-null-value" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.select(:count)
+plsql.employees.count</p>
+<h1 id="10_1">10<a class="headerlink" href="#10_1" title="Permanent link">&para;</a></h1>
+<h1 id="returns-count-of-rows-in-the-table">returns count of rows in the table<a class="headerlink" href="#returns-count-of-rows-in-the-table" title="Permanent link">&para;</a></h1>
+<h1 id="update-tableview">Update table/view<a class="headerlink" href="#update-tableview" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.update :name =&gt; 'Test'</p>
+<h1 id="updates-field-name-in-all-records">updates field name in all records<a class="headerlink" href="#updates-field-name-in-all-records" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.update :name =&gt; 'Superman II', :where =&gt; {:employee_id =&gt; 7}
+plsql.employees.update :name =&gt; 'Superman II', :where =&gt; "employee_id = 7"</p>
+<h1 id="updates-field-in-table-with-a-where-condition">updates field in table with a where condition<a class="headerlink" href="#updates-field-in-table-with-a-where-condition" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.update :name =&gt; 'Superman II', :hire_date =&gt; Time.local(2000,01,01), :where =&gt; "employee_id = 7"</p>
+<h1 id="updates-two-fields-in-table-with-a-where-condition">updates two fields in table with a where condition<a class="headerlink" href="#updates-two-fields-in-table-with-a-where-condition" title="Permanent link">&para;</a></h1>
+<p>[/ruby]
+[ruby gutter="0" highlight="1,8,39,53,67,94,107,119,131"]</p>
+<h1 id="delete-from-tableview">Delete from table/view<a class="headerlink" href="#delete-from-tableview" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.delete :employee_id =&gt; 10
+plsql.employees.delete "employee_id = 10"</p>
+<h1 id="delete-record-in-table-with-where-condition">delete record in table with WHERE condition<a class="headerlink" href="#delete-record-in-table-with-where-condition" title="Permanent link">&para;</a></h1>
+<h1 id="tableview-meta-data">Table/View meta-data<a class="headerlink" href="#tableview-meta-data" title="Permanent link">&para;</a></h1>
+<p>plsql.execute "CREATE OR REPLACE VIEW employees_v AS SELECT * FROM employees"</p>
+<h1 id="creates-a-view">creates a VIEW<a class="headerlink" href="#creates-a-view" title="Permanent link">&para;</a></h1>
+<p>plsql.employees_v.class</p>
+<h1 id="plsqlview">PLSQL::View<a class="headerlink" href="#plsqlview" title="Permanent link">&para;</a></h1>
+<h1 id="the-employees_v-object-is-of-plsqlview-class">The employees_v Object is of PLSQL::View class<a class="headerlink" href="#the-employees_v-object-is-of-plsqlview-class" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.class</p>
+<h1 id="plsqltable">PLSQL::Table<a class="headerlink" href="#plsqltable" title="Permanent link">&para;</a></h1>
+<h1 id="the-employees-object-is-of-plsqltable-class">The employees Object is of PLSQL::Table class<a class="headerlink" href="#the-employees-object-is-of-plsqltable-class" title="Permanent link">&para;</a></h1>
+<p>plsql.employees_synonym.class</p>
+<h1 id="plsqltable_1">PLSQL::Table<a class="headerlink" href="#plsqltable_1" title="Permanent link">&para;</a></h1>
+<h1 id="the-emplyees_synonym-object-is-also-of-plsqltable-class">The emplyees_synonym Object is also of PLSQL::Table class<a class="headerlink" href="#the-emplyees_synonym-object-is-also-of-plsqltable-class" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.column_names
+plsql.employees_v.column_names</p>
+<h1 id="employee_id-name-hire_date">[ employee_id, name, hire_date ]<a class="headerlink" href="#employee_id-name-hire_date" title="Permanent link">&para;</a></h1>
+<h1 id="returns-all-column-names-in-table">returns all column names in table<a class="headerlink" href="#returns-all-column-names-in-table" title="Permanent link">&para;</a></h1>
+<p>plsql.employees.columns
+plsql.employees_v.columns</p>
+<h1 id="employee_id">{ :employee_id =&gt; {<a class="headerlink" href="#employee_id" title="Permanent link">&para;</a></h1>
+<p>:position=&gt;1, :data_type=&gt;"NUMBER", :data_length=&gt;22, :data_precision=&gt;15, :data_scale=&gt;0, :char_used=&gt;nil,
+:type_owner=&gt;nil, :type_name=&gt;nil, :sql_type_name=&gt;nil, :nullable =&gt; false, :data_default =&gt; nil}
+, ...}</p>
+<h1 id="returns-column-meta-data">returns column meta-data<a class="headerlink" href="#returns-column-meta-data" title="Permanent link">&para;</a></h1>
+<h1 id="sequence">Sequence<a class="headerlink" href="#sequence" title="Permanent link">&para;</a></h1>
+<p>plsql.execute "CREATE SEQUENCE employees_seq"</p>
+<h1 id="executes-a-statement-to-create-a-sequence">executes a statement to create a sequence<a class="headerlink" href="#executes-a-statement-to-create-a-sequence" title="Permanent link">&para;</a></h1>
+<p>plsql.employees_seq.nextval</p>
+<h1 id="1">1<a class="headerlink" href="#1" title="Permanent link">&para;</a></h1>
+<h1 id="returns-nextval-for-sequence">returns NEXTVAL for sequence<a class="headerlink" href="#returns-nextval-for-sequence" title="Permanent link">&para;</a></h1>
+<p>plsql.employees_seq.currval</p>
+<h1 id="1_1">1<a class="headerlink" href="#1_1" title="Permanent link">&para;</a></h1>
+<h1 id="returns-currval-for-sequence">returns CURRVAL for sequence<a class="headerlink" href="#returns-currval-for-sequence" title="Permanent link">&para;</a></h1>
+<h1 id="package">Package<a class="headerlink" href="#package" title="Permanent link">&para;</a></h1>
+<p>plsql.test_package.class</p>
+<h1 id="plsqlpackage">PLSQL::Package<a class="headerlink" href="#plsqlpackage" title="Permanent link">&para;</a></h1>
+<h1 id="a-plsql-package-is-object-of-plsqlpackage-class">A plsql package is Object of PLSQL::Package class<a class="headerlink" href="#a-plsql-package-is-object-of-plsqlpackage-class" title="Permanent link">&para;</a></h1>
+<p>plsql.test_package.test_variable = 1</p>
+<h1 id="assigns-a-value-to-package-public-variable">Assigns a value to package public variable<a class="headerlink" href="#assigns-a-value-to-package-public-variable" title="Permanent link">&para;</a></h1>
+<p>plsql.test_package.test_variable</p>
+<h1 id="1_2">1<a class="headerlink" href="#1_2" title="Permanent link">&para;</a></h1>
+<h1 id="reads-a-value-to-package-public-variable">Reads a value to package public variable<a class="headerlink" href="#reads-a-value-to-package-public-variable" title="Permanent link">&para;</a></h1>
+<h1 id="procedure-function">Procedure / Function<a class="headerlink" href="#procedure-function" title="Permanent link">&para;</a></h1>
+<h1 id="given-a-function-uppercase-p_string-varchar2-return-varchar2">given a FUNCTION uppercase( p_string VARCHAR2 ) RETURN VARCHAR2<a class="headerlink" href="#given-a-function-uppercase-p_string-varchar2-return-varchar2" title="Permanent link">&para;</a></h1>
+<p>plsql.uppercase( 'xxx' )
+plsql.uppercase( :p_string =&gt; 'xxx' )</p>
+<h1 id="xxx">'XXX'<a class="headerlink" href="#xxx" title="Permanent link">&para;</a></h1>
+<h1 id="executes-the-function-binding-parameters-by-position-or-name-and-returns-scalar-object-as-a-value">executes the function binding parameters by position or name and returns scalar Object as a value<a class="headerlink" href="#executes-the-function-binding-parameters-by-position-or-name-and-returns-scalar-object-as-a-value" title="Permanent link">&para;</a></h1>
+<h1 id="given-a-function-copy_function-p_from-varchar2-p_to-out-varchar2-p_to_double-out-varchar2-return-number">given a FUNCTION copy_function( p_from VARCHAR2, p_to OUT VARCHAR2, p_to_double OUT VARCHAR2 ) RETURN NUMBER<a class="headerlink" href="#given-a-function-copy_function-p_from-varchar2-p_to-out-varchar2-p_to_double-out-varchar2-return-number" title="Permanent link">&para;</a></h1>
+<p>plsql.copy_function( 'abc', nil, nil)
+plsql.copy_function( :p_from =&gt; 'abc', :p_to =&gt; nil, :p_to_double =&gt; nil)
+plsql.copy_function( 'abc' )</p>
+<h1 id="3-p_to-abc-p_to_double-abcabc">[ 3, { :p_to =&gt; "abc", :p_to_double =&gt; "abcabc" } ]<a class="headerlink" href="#3-p_to-abc-p_to_double-abcabc" title="Permanent link">&para;</a></h1>
+<h1 id="executes-the-function-and-returns-2-element-array">executes the function and returns 2 element Array<a class="headerlink" href="#executes-the-function-and-returns-2-element-array" title="Permanent link">&para;</a></h1>
+<h1 id="with-first-element-being-function-result-and-second-element-being-a-hash-of-out-parameters">with first element being function result and second element being a Hash of OUT parameters<a class="headerlink" href="#with-first-element-being-function-result-and-second-element-being-a-hash-of-out-parameters" title="Permanent link">&para;</a></h1>
+<h1 id="given-a-procedure-copy_proc-p_from-varchar2-p_to-out-varchar2-p_to_double-out-varchar2">Given a PROCEDURE copy_proc( p_from VARCHAR2, p_to OUT VARCHAR2, p_to_double OUT VARCHAR2 )<a class="headerlink" href="#given-a-procedure-copy_proc-p_from-varchar2-p_to-out-varchar2-p_to_double-out-varchar2" title="Permanent link">&para;</a></h1>
+<p>plsql.copy_proc( 'abc', nil, nil)
+plsql.copy_proc( :p_from =&gt; 'abc', :p_to =&gt; nil, :p_to_double =&gt; nil)
+plsql.copy_proc( 'abc' )</p>
+<h1 id="p_to-abc-p_to_double-abcabc">{ :p_to =&gt; 'abc', :p_to_double =&gt; 'abcabc' }<a class="headerlink" href="#p_to-abc-p_to_double-abcabc" title="Permanent link">&para;</a></h1>
+<h1 id="executes-the-procedure-and-returns-a-hash-of-out-parameters-as-a-name-value-pairs">executes the procedure and returns a Hash of OUT parameters as a :name =&gt; 'value' pairs<a class="headerlink" href="#executes-the-procedure-and-returns-a-hash-of-out-parameters-as-a-name-value-pairs" title="Permanent link">&para;</a></h1>
+<h1 id="record-typesobject-types">Record types/Object Types<a class="headerlink" href="#record-typesobject-types" title="Permanent link">&para;</a></h1>
+<h1 id="given-a-function-get_full_name-p_employee-employeesrowtype-return-varchar2">Given a FUNCTION get_full_name( p_employee employees%ROWTYPE ) RETURN VARCHAR2<a class="headerlink" href="#given-a-function-get_full_name-p_employee-employeesrowtype-return-varchar2" title="Permanent link">&para;</a></h1>
+<p>plsql.get_full_name( {:p_employee =&gt; {:employee_id =&gt; 2, :first_name =&gt; 'Tony', :last_name =&gt; 'Stark', :hire_date =&gt; nil} } )
+plsql.get_full_name( {:employee_id =&gt; 2, :first_name =&gt; 'Tony', :last_name =&gt; 'Stark', :hire_date =&gt; nil} )
+plsql.get_full_name( {'EMPLOYEE_ID' =&gt; 2, 'first_name' =&gt; 'Tony', 'last_NaMe' =&gt; 'Stark', 'hire_date' =&gt; nil} )</p>
+<h1 id="tony-stark">'Tony Stark'<a class="headerlink" href="#tony-stark" title="Permanent link">&para;</a></h1>
+<h1 id="accepts-a-record-as-a-parameter-by-name-or-by-position-and-executes-the-function-returning-string-varchar2">Accepts a record as a parameter (by name or by position) and executes the function returning String (VARCHAR2)<a class="headerlink" href="#accepts-a-record-as-a-parameter-by-name-or-by-position-and-executes-the-function-returning-string-varchar2" title="Permanent link">&para;</a></h1>
+<h1 id="record-fields-can-be-defined-as-a-symbol-employee_id-or-as-a-string-employee_id">Record fields can be defined as a Symbol (:employee_id) or as a String ('employee_id')<a class="headerlink" href="#record-fields-can-be-defined-as-a-symbol-employee_id-or-as-a-string-employee_id" title="Permanent link">&para;</a></h1>
+<h1 id="works-the-same-way-with-package-level-record-types-and-oracle-object-types">Works the same way with package level record types and Oracle object types<a class="headerlink" href="#works-the-same-way-with-package-level-record-types-and-oracle-object-types" title="Permanent link">&para;</a></h1>
+<h1 id="varrays-and-nested-tables">Varrays and Nested Tables<a class="headerlink" href="#varrays-and-nested-tables" title="Permanent link">&para;</a></h1>
+<h1 id="given-a-type-table_of_int-is-table-of-integer">Given a TYPE table_of_int IS TABLE OF INTEGER;<a class="headerlink" href="#given-a-type-table_of_int-is-table-of-integer" title="Permanent link">&para;</a></h1>
+<h1 id="given-function-sum_itemsp_items-table_of_int-return-integer">Given FUNCTION sum_items(p_items TABLE_OF_INT) RETURN INTEGER<a class="headerlink" href="#given-function-sum_itemsp_items-table_of_int-return-integer" title="Permanent link">&para;</a></h1>
+<p>plsql.sum_items( [1,2,3,4,5] )
+plsql.sum_items( :p_items =&gt; [1,2,3,4,5] )</p>
+<h1 id="15">15<a class="headerlink" href="#15" title="Permanent link">&para;</a></h1>
+<h1 id="nested-tables-are-passed-in-and-returned-as-ruby-array-object-type">Nested tables are passed in and returned as Ruby Array Object type<a class="headerlink" href="#nested-tables-are-passed-in-and-returned-as-ruby-array-object-type" title="Permanent link">&para;</a></h1>
+<h1 id="works-the-same-way-for-varrays">Works the same way for VARRAYS<a class="headerlink" href="#works-the-same-way-for-varrays" title="Permanent link">&para;</a></h1>
+<h1 id="associative-arrays-aka-plsql-tables-index-by-tables">Associative arrays (aka plsql tables, index-by tables)<a class="headerlink" href="#associative-arrays-aka-plsql-tables-index-by-tables" title="Permanent link">&para;</a></h1>
+<h1 id="given-a-package-my_package">Given a package MY_PACKAGE<a class="headerlink" href="#given-a-package-my_package" title="Permanent link">&para;</a></h1>
+<h1 id="contains-type-index_table_of_int-is-table-of-integer-index-by-binary_integer">contains TYPE index_table_of_int IS TABLE OF INTEGER INDEX BY BINARY_INTEGER;<a class="headerlink" href="#contains-type-index_table_of_int-is-table-of-integer-index-by-binary_integer" title="Permanent link">&para;</a></h1>
+<h1 id="contains-function-sum_itemsp_items-index_table_of_int-return-integer">contains FUNCTION sum_items(p_items INDEX_TABLE_OF_INT) RETURN INTEGER;<a class="headerlink" href="#contains-function-sum_itemsp_items-index_table_of_int-return-integer" title="Permanent link">&para;</a></h1>
+<p>plsql.my_package.sum_items( { -1 =&gt; 1, 5 =&gt; 2, 3 =&gt; 3, 4 =&gt; 4} )</p>
+<h1 id="10_2">10<a class="headerlink" href="#10_2" title="Permanent link">&para;</a></h1>
+<h1 id="associative-arrays-are-passed-in-and-returned-as-a-ruby-hash-containing-list-of-key-value-pairs">Associative arrays are passed in and returned as a Ruby Hash containing list of key value pairs<a class="headerlink" href="#associative-arrays-are-passed-in-and-returned-as-a-ruby-hash-containing-list-of-key-value-pairs" title="Permanent link">&para;</a></h1>
+<h1 id="where-key-is-the-element-position-in-array-and-value-is-the-value-at-the-position">Where key is the element position in Array and value is the value at the position<a class="headerlink" href="#where-key-is-the-element-position-in-array-and-value-is-the-value-at-the-position" title="Permanent link">&para;</a></h1>
+<h1 id="cursors">Cursors<a class="headerlink" href="#cursors" title="Permanent link">&para;</a></h1>
+<h1 id="given-a-function-get_empolyees-return-sys_refcursor">Given a FUNCTION get_empolyees RETURN SYS_REFCURSOR<a class="headerlink" href="#given-a-function-get_empolyees-return-sys_refcursor" title="Permanent link">&para;</a></h1>
+<p>plsql.get_employees do |result|
+result.columns
+end</p>
+<h1 id="employee_id-name-hire_date_1">[ :employee_id, :name, :hire_date ]<a class="headerlink" href="#employee_id-name-hire_date_1" title="Permanent link">&para;</a></h1>
+<h1 id="returns-the-list-of-columns-of-a-cursor-as-an-array">returns the list of columns of a cursor as an Array<a class="headerlink" href="#returns-the-list-of-columns-of-a-cursor-as-an-array" title="Permanent link">&para;</a></h1>
+<p>plsql.get_employees do |result|
+result.fetch_hash_all
+end
+plsql.get_employees{ |cursor| cursor.fetch_hash_all }
+plsql.get_employees{ |any_name| any_name.fetch_hash_all }</p>
+<h1 id="employee_id-1-name-james-bond-hire_date-0007-07-07_5">[ {:employee_id =&gt; 1, :name =&gt; 'James bond', :hire_date =&gt; '0007-07-07'}, {...}, ... ]<a class="headerlink" href="#employee_id-1-name-james-bond-hire_date-0007-07-07_5" title="Permanent link">&para;</a></h1>
+<h1 id="fetches-all-rows-from-a-cursor-and-returns-them-as-an-array-of-hashes">fetches all rows from a cursor and returns them as an Array of Hashes<a class="headerlink" href="#fetches-all-rows-from-a-cursor-and-returns-them-as-an-array-of-hashes" title="Permanent link">&para;</a></h1>
+<h1 id="cursor-needs-to-be-accessed-inside-a-block-do-end">cursor needs to be accessed inside a block ( do .. end / { .. } )<a class="headerlink" href="#cursor-needs-to-be-accessed-inside-a-block-do-end" title="Permanent link">&para;</a></h1>
+<h1 id="as-cursors-are-automatically-closed-after-the-function-call-ends">as cursors are automatically closed after the function call ends<a class="headerlink" href="#as-cursors-are-automatically-closed-after-the-function-call-ends" title="Permanent link">&para;</a></h1>
+<p>plsql.get_employees{ |result| result.fetch_hash }</p>
+<h1 id="employee_id-1-name-james-bond-hire_date-0007-07-07_6">{:employee_id =&gt; 1, :name =&gt; 'James bond', :hire_date =&gt; '0007-07-07'}<a class="headerlink" href="#employee_id-1-name-james-bond-hire_date-0007-07-07_6" title="Permanent link">&para;</a></h1>
+<h1 id="fetches-one-row-from-a-cursor-and-returns-it-as-a-hash">fetches one row from a cursor and returns it as a Hash<a class="headerlink" href="#fetches-one-row-from-a-cursor-and-returns-it-as-a-hash" title="Permanent link">&para;</a></h1>
+<p>plsql.get_employees{ |result| result.fetch }</p>
+<h1 id="1-james-bond-0007-07-07">[1, 'James bond', '0007-07-07']<a class="headerlink" href="#1-james-bond-0007-07-07" title="Permanent link">&para;</a></h1>
+<h1 id="fetches-one-row-from-a-cursor-and-returns-it-as-a-array-of-values">fetches one row from a cursor and returns it as a Array of values<a class="headerlink" href="#fetches-one-row-from-a-cursor-and-returns-it-as-a-array-of-values" title="Permanent link">&para;</a></h1>
+<p>plsql.get_employees{ |result| result.fetch_all }</p>
+<h1 id="1-james-bond-0007-07-07_1">[[1, 'James bond', '0007-07-07'], [...], ... ]<a class="headerlink" href="#1-james-bond-0007-07-07_1" title="Permanent link">&para;</a></h1>
+<h1 id="fetches-all-rows-from-a-cursor-and-returns-them-as-an-array-of-arrays-of-values">fetches all rows from a cursor and returns them as an Array of Arrays of values<a class="headerlink" href="#fetches-all-rows-from-a-cursor-and-returns-them-as-an-array-of-arrays-of-values" title="Permanent link">&para;</a></h1>
+<p>[/ruby]
+If you like it, share it, rate it, comment it.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+
+
+  
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 10.3 14 9.5 14.7 8 15.5 8s1.5.7 1.5 1.5m-5 7.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10m-6.5-4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m2 4.5c1.75 0 3.29.72 4.19 1.81l-1.42 1.42C14.32 16.5 13.25 16 12 16s-2.32.5-2.77 1.23l-1.42-1.42C8.71 14.72 10.25 14 12 14"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1" hidden>
+              
+              
+                
+              
+              
+              
+                
+                
+              
+              Thanks for your feedback!
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              
+              
+                
+                
+              
+              Thanks for your feedback! Help us improve this page by using our <a href="https://github.com/utPLSQL/utPLSQL/discussions/new?category=documentation-feedback" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>.
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+        
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../11/utplsql-v2-vs-ruby-plsql-running-oracle-unit-tests-on-jenkins-ci/" class="md-footer__link md-footer__link--prev" aria-label="Previous: utPLSQL v2 vs. ruby-plsql - Running Oracle unit tests on Jenkins CI">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                utPLSQL v2 vs. ruby-plsql - Running Oracle unit tests on Jenkins CI
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../../08/11/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps/" class="md-footer__link md-footer__link--next" aria-label="Next: utPLSQL v2 vs. ruby-plsql/ruby-plsql-spec – implicit datatype conversion traps">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                utPLSQL v2 vs. ruby-plsql/ruby-plsql-spec – implicit datatype conversion traps
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+  
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+    
+      
+        
+  
+  
+    
+    
+  
+  <li class="task-list-item">
+    <label class="task-list-control">
+      <input type="checkbox" name="analytics" checked>
+      <span class="task-list-indicator"></span>
+      Google Analytics
+    </label>
+  </li>
+
+      
+    
+    
+      
+    
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "navigation.footer", "navigation.tracking", "navigation.instant", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

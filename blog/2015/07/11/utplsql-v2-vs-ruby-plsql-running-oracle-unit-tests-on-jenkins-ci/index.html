@@ -1,0 +1,1784 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Oracle database, PL/SQL development, utPLSQL, testing and contemplative notes">
+      
+      
+        <meta name="author" content="Jacek Gebal">
+      
+      
+        <link rel="canonical" href="https://oraclethoughts.com/blog/2015/07/11/utplsql-v2-vs-ruby-plsql-running-oracle-unit-tests-on-jenkins-ci/">
+      
+      
+        <link rel="prev" href="../../../06/28/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-three/">
+      
+      
+        <link rel="next" href="../../18/ruby-plsql-cheatsheet/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>utPLSQL v2 vs. ruby-plsql - Running Oracle unit tests on Jenkins CI - oraclethoughts</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-1TEVWKPL97"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-1TEVWKPL97",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-1TEVWKPL97",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>if("undefined"!=typeof __md_analytics){var consent=__md_get("__consent");consent&&consent.analytics&&__md_analytics()}</script>
+  
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#the-reasons-for-continuous-testing" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="oraclethoughts" class="md-header__button md-logo" aria-label="oraclethoughts" data-md-component="logo">
+      
+  <img src="../../../../../assets/images/wordmark-header.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            oraclethoughts
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              utPLSQL v2 vs. ruby-plsql - Running Oracle unit tests on Jenkins CI
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="oraclethoughts" class="md-nav__button md-logo" aria-label="oraclethoughts" data-md-component="logo">
+      
+  <img src="../../../../../assets/images/wordmark-header.svg" alt="logo">
+
+    </a>
+    oraclethoughts
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Blog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2020/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2020
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2017/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2017
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2016/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2016
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2015/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2015
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2014/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2014
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/plsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PLSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/sql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/sqlplus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL*Plus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    performance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/ruby-plsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ruby-plsql
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/utplsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    utPLSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2015-07-11 00:00:00+00:00" class="md-ellipsis">July 11, 2015</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/testing/">testing</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              12 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:cicd" class="md-tag">CI/CD</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:oracle" class="md-tag">Oracle</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:plsql" class="md-tag">PL/SQL</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:tdd" class="md-tag">TDD</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:ruby-plsql" class="md-tag">ruby-plsql</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:unit-testing" class="md-tag">unit testing</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:utplsql-v2" class="md-tag">utPLSQL v2</a>
+      
+    
+  </nav>
+
+
+
+<p><img alt="utPLSQL_vs_RSpec" src="../../../../../images/UTPLSQL_vs_RSpec-300x56.png" /></p>
+<p>In my <a href="../../../06/14/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-one/">previous posts</a> I have described some differences between utPLSQL and ruby-plsql. This time I want to focus on automating the test execution with each of those frameworks using <a href="https://jenkins-ci.org/">Jenkins Continuous Integration</a>.</p>
+<!-- more -->
+
+<h1 id="the-reasons-for-continuous-testing">The reasons for continuous testing<a class="headerlink" href="#the-reasons-for-continuous-testing" title="Permanent link">&para;</a></h1>
+<p>Some of the problems that I often see in projects is that developers don't fully acknowledge the power of unit testing and the benefits for them coming out of having those in place.
+If your code is ~100% tested, and by tested I mean automated tests (unit tests, integration tests, whatever the flavour) then you will no longer need to practice "techniques" like:</p>
+<ul>
+<li>Fear Driven Development - <em>"Don't touch it, you don't know what will break if you change it"</em> or <em>"I don't know what will happen if I change it, so I'd better copy the code into separate procedure and change the one line I need to be different"</em></li>
+<li>Developer Centric Code - <em>"That's not my code, I will not touch it as I have no clue what it does"</em></li>
+</ul>
+<p>Instead you will start to practice the kind of development that will:</p>
+<ul>
+<li>Make you return home being proud of your achievements and being certain, that what you did was done right and that everything is still working.</li>
+<li>Allow you to know almost instantly how the change affected the entire system, as the tests will give you feedback, so you know that the system is still stable after your change.</li>
+</ul>
+<p>You will also become confident enough to think, say and do things like:
+<em>"Oh, now that I need to add new functionality to the existing code, I might actually restructure and refactor it to benefit from new features of Oracle 12 and all the new the things I've learned. Since I have all my tests in place to keep the change safe, I can do whatever changes needed, without being scared of the mess that the changes might bring."</em>
+Of course, there is the fearless-developer kind. Those would do all the above with full confidence without having a single test in place. The problem is that this kind of fearlessness is of the ignorance kind. Those developers are either unaware of potential consequences or simply ignore them. One way or the other, this is not the kind of courage we want. I would not dare calling people with this kind of attitude professional developers.
+But back to the subject.
+<strong>What is the point of having unit tests, if they are not executed?</strong>
+When you change a procedure/function you might think that it's good-enough to execute the tests related to the changed code. This will only be true, if there is no other code that is using the function/procedure. In most of the systems however, there are many dependencies between functions/procedures/tables/views. One reads/writes/calls another.
+When a change is done to a piece of system, there is no better way to make sure that the whole system still works than to test entire system.
+This leads to one sole conclusion. To make sure that everything is till working as expected and nothing is broken, it would be advisable to run all the tests there are for entire system each time you make a change to the system (add a column, change a view, modify procedure). And the sooner you execute the tests, the better, as you will get to know if your change does not break the system faster.
+As the number of tests grow, the time needed for having them completed grows.
+According to a talk I've heard on one of Warsaw Java conferences there is a high dependency between time taken for tests to execute and the frequency the developers execute those tests.</p>
+<ul>
+<li>If tests run in several seconds, developers will execute them as often as their code is compilable (really short cycles).</li>
+<li><strong>If tests run over 20 minutes, developers will not execute test more than once a day</strong>. Developers actually do not know throughout the day how the change is affecting entire system</li>
+</ul>
+<p>This leads to one conclusion. Tests, to be useful, must be really fast. As a developer, you should not only think of how to make your production code run fast, you should make sure that your tests are lightweight and extremely fast, while still being highly valuable.
+That would be a perfect world and that is much easier to apply on non database related testing. With databases, we test operations done on data in database, that involves reading and writing database segments and there is almost no chance that having a large system with thousands of unit tests, you will be able to go down to seconds to execute them all.
+What can be done however, is that you can execute all the tests that you know are related to the change being done.
+Once you're done, and you commit your code to version control system (I believe you have one), a dedicated server can pick up the changes and run the entire set of tests for you. This is one of great things about CI servers. They just make your life easier by running the hard jobs on separate machine/process somewhere in background and keeping track of the overall health status of your system.
+Let's proceed and see how utPLSQL and ruby-plsql can make our life easier with <a href="https://jenkins-ci.org/">Jenkins CI</a>
+I will not cover steps needed to download, install and configure Jenkins on your machine. I believe there are plenty of tutorials on the web that will help you with this. I will focus on configuring and running Oracle unit tests on that platform.</p>
+<h1 id="ruby-plsql-on-jenkins">ruby-plsql on Jenkins<a class="headerlink" href="#ruby-plsql-on-jenkins" title="Permanent link">&para;</a></h1>
+<p>I've already mentioned in my <a href="../../../06/28/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-three/">previous post</a> that we can have JUnit reports generated from RSpec with two simple lines:
+A onetime installation of the reported library (gem)</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gem install rspec_junit_formatter
+</span></code></pre></div>
+<p>And test execution command that will cause test outputs to be formatted into JUnit XML format.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>rspec -f RspecJunitFormatter -o rspec_test_results.xml
+</span></code></pre></div>
+<p>The machine that will be running Jenkins with ruby-plsql unit tests needs to have Ruby+Oracle client or Java+JRuby+JDBC driver installed and configured.
+If you have already went through the installation of Ruby locally, that should not cause you trouble. I've described basic steps needed in <a href="../../../06/24/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-two/">one of my previous posts</a>
+Jenkins configuration steps:</p>
+<ul>
+<li>
+<p>Install GIT plugin for Jenkins - to allow Jenkins pulling your tests from version control
+<a href="../../../../../images/1.InstallJenkinsGITplugin.png"><img alt="Jenkins - GIT plugin install" src="../../../../../images/1.InstallJenkinsGITplugin.png" /></a>- Install HTML Publisher plugin for Jenkins - so that Jenkins is able to display HTML Code Coverage reportd from your tests
+<a href="../../../../../images/2.InstallJenkinsHTMLPublishPlugin.png"><img alt="2.InstallJenkinsHTMLPublishPlugin" src="../../../../../images/2.InstallJenkinsHTMLPublishPlugin.png" /></a>- Create a new job of type Freestyle and give it a meaningful name
+<a href="../../../../../images/CreateFreestyleJenkinsJob.png"><img alt="CreateFreestyleJenkinsJob" src="../../../../../images/CreateFreestyleJenkinsJob-1024x741.png" /></a>- Configure the job to do the following</p>
+</li>
+<li>
+<p>Check version control system every 15 minutes, if any changes were commited, run tests</p>
+</li>
+<li>Once a day around 10 PM run tests regardless of changed in version control system</li>
+<li>Set up environment variables for unit testing before tests are executed - you may not need this, you you have system-wide config for Oracle</li>
+<li>Run all the unit tests found with code coverage, junit reporting and do not mark job as failed (red) when one of tests fail - this is to allow Jenkins jobs to become "yellow" when some tests are failing. Job will become red only when a job was unable to run the tests</li>
+<li>Publish unit test results</li>
+<li>Publish three sets of code coverage results if they were generated</li>
+</ul>
+<p><a href="../../../../../images/Jenkins-job-config.png"><img alt="Jenkins-job-config" src="../../../../../images/Jenkins-job-config-395x1024.png" /></a>
+Here is the config.xml file created for the demo job by Jenkins.
+[xml collapse="1"]</p>
+<?xml version='1.0' encoding='UTF-8'?>
+<p><project>
+<actions/>
+<description></description>
+<logRotator class="hudson.tasks.LogRotator">
+<daysToKeep>-1</daysToKeep>
+<numToKeep>3</numToKeep>
+<artifactDaysToKeep>-1</artifactDaysToKeep>
+<artifactNumToKeep>-1</artifactNumToKeep>
+</logRotator>
+<keepDependencies>false</keepDependencies>
+<properties/>
+<scm class="hudson.plugins.git.GitSCM" plugin="git@2.3.5">
+<configVersion>2</configVersion>
+<userRemoteConfigs>
+<hudson.plugins.git.UserRemoteConfig>
+<url>https://github.com/jgebal/utplsql_vs_plsql_spec</url>
+</hudson.plugins.git.UserRemoteConfig>
+</userRemoteConfigs>
+<branches>
+<hudson.plugins.git.BranchSpec>
+<name>*/master</name>
+</hudson.plugins.git.BranchSpec>
+</branches>
+<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+<submoduleCfg class="list"/>
+<extensions/>
+</scm>
+<canRoam>true</canRoam>
+<disabled>false</disabled>
+<blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+<triggers>
+<hudson.triggers.TimerTrigger>
+<spec>#every day on ~22
+H 22 * * *</spec>
+</hudson.triggers.TimerTrigger>
+<hudson.triggers.SCMTrigger>
+<spec># every fifteen minutes (perhaps at :07, :22, :37, :52)
+H/15 * * * *</spec>
+<ignorePostCommitHooks>false</ignorePostCommitHooks>
+</hudson.triggers.SCMTrigger>
+</triggers>
+<concurrentBuild>false</concurrentBuild>
+<builders>
+<hudson.tasks.Shell>
+<command>export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
+export ORACLE_SID=XE
+export NLS_LANG=<code>$ORACLE\_HOME/bin/nls\_lang.sh</code>
+export ORACLE_BASE=/u01/app/oracle
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH
+export PATH=$ORACLE_HOME/bin:$PATH
+export PLSQL_COVERAGE=coverage_report
+rspec -f RspecJunitFormatter -o rspec_test_results.xml --failure-exit-code 0
+</command>
+</hudson.tasks.Shell>
+</builders>
+<publishers>
+<htmlpublisher.HtmlPublisher plugin="htmlpublisher@1.4">
+<reportTargets>
+<htmlpublisher.HtmlPublisherTarget>
+<reportName>Code Coverage default session Report</reportName>
+<reportDir>coverage_report</reportDir>
+<reportFiles>index.html</reportFiles>
+<alwaysLinkToLastBuild>false</alwaysLinkToLastBuild>
+<keepAll>true</keepAll>
+<allowMissing>true</allowMissing>
+<wrapperName>htmlpublisher-wrapper.html</wrapperName>
+</htmlpublisher.HtmlPublisherTarget>
+<htmlpublisher.HtmlPublisherTarget>
+<reportName>Code Coverage secondary session Report</reportName>
+<reportDir>coverage_report/secondary</reportDir>
+<reportFiles>index.html</reportFiles>
+<alwaysLinkToLastBuild>false</alwaysLinkToLastBuild>
+<keepAll>true</keepAll>
+<allowMissing>true</allowMissing>
+<wrapperName>htmlpublisher-wrapper.html</wrapperName>
+</htmlpublisher.HtmlPublisherTarget>
+<htmlpublisher.HtmlPublisherTarget>
+<reportName>Code Coverage different user Report</reportName>
+<reportDir>coverage_report/different_user</reportDir>
+<reportFiles>index.html</reportFiles>
+<alwaysLinkToLastBuild>false</alwaysLinkToLastBuild>
+<keepAll>true</keepAll>
+<allowMissing>true</allowMissing>
+<wrapperName>htmlpublisher-wrapper.html</wrapperName>
+</htmlpublisher.HtmlPublisherTarget>
+</reportTargets>
+</htmlpublisher.HtmlPublisher>
+<hudson.tasks.junit.JUnitResultArchiver plugin="junit@1.2-beta-4">
+<testResults>rspec_test_results.xml</testResults>
+<keepLongStdio>false</keepLongStdio>
+<testDataPublishers/>
+<healthScaleFactor>1.0</healthScaleFactor>
+</hudson.tasks.junit.JUnitResultArchiver>
+</publishers>
+<buildWrappers/>
+</project>
+[/xml]
+Once the Jenkins setup is in place we can benefit from all the goodies we have in our configuration. Jenkins will publish for us.</p>
+<ul>
+<li>history of builds (job executions), test results trend graph
+<a href="../../../../../images/Jenkins-job-main-page.png"><img alt="Jenkins-job-main-page" src="../../../../../images/Jenkins-job-main-page-1024x727.png" /></a></li>
+<li>timeline of builds with job durations
+<a href="../../../../../images/Jenkins-job-timeline.png"><img alt="Jenkins-job-timeline" src="../../../../../images/Jenkins-job-timeline-1024x905.png" /></a></li>
+<li>test results reports for every build
+<a href="../../../../../images/Jenkins-test-results.png"><img alt="Jenkins-test-results" src="../../../../../images/Jenkins-test-results-1024x685.png" /></a></li>
+<li>ability to navigate to detailed test results
+<a href="../../../../../images/Jenkins-test-results-detailed.png"><img alt="Jenkins-test-results-detailed" src="../../../../../images/Jenkins-test-results-detailed-416x1024.png" /></a></li>
+<li>details of failed tests
+<a href="../../../../../images/Jenkins-failed-tests.png"><img alt="Jenkins-failed-tests" src="../../../../../images/Jenkins-failed-tests-1024x685.png" /></a></li>
+<li>
+<p>code coverage reports for every build
+<a href="../../../../../images/Jenkins-code-coverage.png"><img alt="Jenkins-code-coverage" src="../../../../../images/Jenkins-code-coverage-1024x685.png" /></a>
+<a href="../../../../../images/Jenkins-code-coverage-detail.png"><img alt="Jenkins-code-coverage-detail" src="../../../../../images/Jenkins-code-coverage-detail-1024x685.png" /></a></p>
+</li>
+<li>
+<p>and more</p>
+</li>
+</ul>
+<h1 id="utplsql-v2-on-jenkins">utPLSQL v2 on Jenkins<a class="headerlink" href="#utplsql-v2-on-jenkins" title="Permanent link">&para;</a></h1>
+<p>I've found a blog <a href="http://www.theserverlabs.com/blog/2009/05/18/continuous-integration-with-oracle-plsql-utplsql-and-hudson/">post by Kevin McCormack</a> describing a sample configuration of utPLSQL with Jenkins. In order to use utPLSQL utility with Jenkins, you need to get familiar with Maven build tool for Java and learn how to install and configure it. I'd rather have a Jenkins job that calls <code>sqlplus</code> and somehow parses utPLSQL results so they can be interpreted by Jenkins to provide all the information on tests execution that you can get.
+Anyway I gave it a try, following instructions from the mentioned blog post and adjusting the configuration to fit into my project.
+Here are the steps I have taken to have Jenkins integration for my utPLSQL tests.
+Install the required tools for running the utPLSQL tests on Jenkins</p>
+<ul>
+<li>Maven tool</li>
+<li>The Maven utPLSQL plugin</li>
+<li>Oracle JDBC driver</li>
+</ul>
+<p>Modify the pom.xml configuration file for Maven build job to:</p>
+<ul>
+<li>use jdbc driver for Oracle 11.2.0.2</li>
+<li>use correct database user/password</li>
+<li>execute only the tests and do not install any database changes</li>
+</ul>
+<p>My pom.xml file after modifications</p>
+<div class="language-xml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nt">&lt;project</span><span class="w"> </span><span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span><span class="w"> </span><span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span><span class="w"> </span><span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;</span><span class="nt">&gt;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">&lt;groupId&gt;</span>com.tsl.plsqltest<span class="nt">&lt;/groupId&gt;</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="nt">&lt;artifactId&gt;</span>plsqltest<span class="nt">&lt;/artifactId&gt;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="nt">&lt;packaging&gt;</span>jar<span class="nt">&lt;/packaging&gt;</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="nt">&lt;name&gt;</span>PL<span class="w"> </span>SQL<span class="w"> </span>test<span class="w"> </span>project<span class="nt">&lt;/name&gt;</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="nt">&lt;dependencies&gt;</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="nt">&lt;dependency&gt;</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">      </span><span class="nt">&lt;groupId&gt;</span>junit<span class="nt">&lt;/groupId&gt;</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">      </span><span class="nt">&lt;artifactId&gt;</span>junit<span class="nt">&lt;/artifactId&gt;</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">      </span><span class="nt">&lt;version&gt;</span>3.8.2<span class="nt">&lt;/version&gt;</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">      </span><span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">    </span><span class="nt">&lt;/dependency&gt;</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">  </span><span class="nt">&lt;/dependencies&gt;</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">  </span><span class="nt">&lt;build&gt;</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">    </span><span class="nt">&lt;plugins&gt;</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">      </span><span class="nt">&lt;plugin&gt;</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">        </span><span class="nt">&lt;groupId&gt;</span>com.theserverlabs.maven.utplsql<span class="nt">&lt;/groupId&gt;</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">        </span><span class="nt">&lt;artifactId&gt;</span>maven-utplsql-plugin<span class="nt">&lt;/artifactId&gt;</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">        </span><span class="nt">&lt;version&gt;</span>1.0-SNAPSHOT<span class="nt">&lt;/version&gt;</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">        </span><span class="nt">&lt;dependencies&gt;</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">          </span><span class="nt">&lt;dependency&gt;</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">            </span><span class="nt">&lt;groupId&gt;</span>com.oracle<span class="nt">&lt;/groupId&gt;</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">            </span><span class="nt">&lt;artifactId&gt;</span>ojdbc6<span class="nt">&lt;/artifactId&gt;</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">            </span><span class="nt">&lt;version&gt;</span>11.0.2.0.0<span class="nt">&lt;/version&gt;</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">          </span><span class="nt">&lt;/dependency&gt;</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">        </span><span class="nt">&lt;/dependencies&gt;</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">        </span><span class="nt">&lt;configuration&gt;</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">          </span><span class="nt">&lt;driver&gt;</span>oracle.jdbc.driver.OracleDriver<span class="nt">&lt;/driver&gt;</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">          </span><span class="nt">&lt;url&gt;</span>jdbc:oracle:thin:@localhost:1521:xe<span class="nt">&lt;/url&gt;</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">          </span><span class="nt">&lt;username&gt;</span>tdd_test1<span class="nt">&lt;/username&gt;</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">          </span><span class="nt">&lt;password&gt;</span>tdd_test1<span class="nt">&lt;/password&gt;</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">          </span><span class="cm">&lt;!--&lt;packageName&gt;betwnstr&lt;/packageName&gt;--&gt;</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">          </span><span class="nt">&lt;testSuiteName&gt;</span>ALL<span class="nt">&lt;/testSuiteName&gt;</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="w">        </span><span class="nt">&lt;/configuration&gt;</span>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">        </span><span class="nt">&lt;executions&gt;</span>
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="w">          </span><span class="nt">&lt;execution&gt;</span>
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">            </span><span class="nt">&lt;id&gt;</span>run-plsql-test-packages<span class="nt">&lt;/id&gt;</span>
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="w">            </span><span class="nt">&lt;phase&gt;</span>process-test-resources<span class="nt">&lt;/phase&gt;</span>
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">            </span><span class="nt">&lt;goals&gt;</span>
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="w">              </span><span class="nt">&lt;goal&gt;</span>execute<span class="nt">&lt;/goal&gt;</span>
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="w">            </span><span class="nt">&lt;/goals&gt;</span>
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">          </span><span class="nt">&lt;/execution&gt;</span>
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="w">        </span><span class="nt">&lt;/executions&gt;</span>
+</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="w">      </span><span class="nt">&lt;/plugin&gt;</span>
+</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a>
+</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="w">    </span><span class="nt">&lt;/plugins&gt;</span>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a>
+</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="w">  </span><span class="nt">&lt;/build&gt;</span>
+</span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="nt">&lt;/project&gt;</span>
+</span></code></pre></div>
+<p>Create and configure a new Jenkins job of type Maven, to do similar things as the job for ruby-plsql unit tests.</p>
+<ul>
+<li>Check version control system every 15 minutes, if any changes were commited, run tests</li>
+<li>Once a day around 10 PM run tests regardless of changed in version control system</li>
+<li>Set up environment variables for unit testing before tests are executed - you may not need this, you you have system-wide config for Oracle</li>
+<li>Run all the unit tests found with code coverage, junit reporting and do not mark job as failed (red) when one of tests fail - this is to allow Jenkins jobs to become "yellow" when some tests are failing. Job will become red only when a job was unable to run the tests</li>
+<li>Publish unit test results</li>
+<li>Publish three sets of code coverage results if they were generated</li>
+</ul>
+<p><a href="../../../../../images/Jenkins-job-config-utplsql.png"><img alt="Jenkins-job-config-utplsql" src="../../../../../images/Jenkins-job-config-utplsql-488x1024.png" /></a>
+Here is the Jenkins job config.xml for the above job.
+[xml collapse="1"]</p>
+<?xml version='1.0' encoding='UTF-8'?>
+<p><maven2-moduleset plugin="maven-plugin@2.7.1">
+<actions/>
+<description></description>
+<logRotator class="hudson.tasks.LogRotator">
+<daysToKeep>-1</daysToKeep>
+<numToKeep>3</numToKeep>
+<artifactDaysToKeep>-1</artifactDaysToKeep>
+<artifactNumToKeep>-1</artifactNumToKeep>
+</logRotator>
+<keepDependencies>false</keepDependencies>
+<properties/>
+<scm class="hudson.plugins.git.GitSCM" plugin="git@2.3.5">
+<configVersion>2</configVersion>
+<userRemoteConfigs>
+<hudson.plugins.git.UserRemoteConfig>
+<url>https://github.com/jgebal/utplsql_vs_plsql_spec</url>
+</hudson.plugins.git.UserRemoteConfig>
+</userRemoteConfigs>
+<branches>
+<hudson.plugins.git.BranchSpec>
+<name>*/master</name>
+</hudson.plugins.git.BranchSpec>
+</branches>
+<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+<submoduleCfg class="list"/>
+<extensions/>
+</scm>
+<canRoam>true</canRoam>
+<disabled>false</disabled>
+<blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+<triggers>
+<hudson.triggers.TimerTrigger>
+<spec>#every day on ~22
+H 22 * * *</spec>
+</hudson.triggers.TimerTrigger>
+<hudson.triggers.SCMTrigger>
+<spec># every fifteen minutes (perhaps at :07, :22, :37, :52)
+H/15 * * * *</spec>
+<ignorePostCommitHooks>false</ignorePostCommitHooks>
+</hudson.triggers.SCMTrigger>
+</triggers>
+<concurrentBuild>false</concurrentBuild>
+<rootModule>
+<groupId>com.tsl.plsqltest</groupId>
+<artifactId>plsqltest</artifactId>
+</rootModule>
+<goals>test</goals>
+<aggregatorStyleBuild>true</aggregatorStyleBuild>
+<incrementalBuild>false</incrementalBuild>
+<ignoreUpstremChanges>true</ignoreUpstremChanges>
+<archivingDisabled>false</archivingDisabled>
+<siteArchivingDisabled>false</siteArchivingDisabled>
+<fingerprintingDisabled>false</fingerprintingDisabled>
+<resolveDependencies>false</resolveDependencies>
+<processPlugins>false</processPlugins>
+<mavenValidationLevel>-1</mavenValidationLevel>
+<runHeadless>false</runHeadless>
+<disableTriggerDownstreamProjects>false</disableTriggerDownstreamProjects>
+<blockTriggerWhenBuilding>true</blockTriggerWhenBuilding>
+<settings class="jenkins.mvn.DefaultSettingsProvider"/>
+<globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
+<reporters/>
+<publishers/>
+<buildWrappers/>
+<prebuilders/>
+<postbuilders/>
+<runPostStepsIfResult>
+<name>FAILURE</name>
+<ordinal>2</ordinal>
+<color>RED</color>
+<completeBuild>true</completeBuild>
+</runPostStepsIfResult>
+</maven2-moduleset>
+[/xml]
+Add all the utPLSQL tests to a test suite, so they can all be executed in one job.
+The following code on was used on my database for user <code>tdd_test1</code>.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">BEGIN</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="n">utsuite</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">);</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="n">utpackage</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span><span class="s1">&#39;sum_two_numbers&#39;</span><span class="p">);</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="n">utpackage</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span><span class="s1">&#39;sum_two_numbers_fail&#39;</span><span class="p">);</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="n">utpackage</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span><span class="s1">&#39;current_date&#39;</span><span class="p">);</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="n">utpackage</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span><span class="s1">&#39;current_date_fail&#39;</span><span class="p">);</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="n">utpackage</span><span class="p">.</span><span class="k">add</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span><span class="s1">&#39;message_api&#39;</span><span class="p">);</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="o">/</span>
+</span></code></pre></div>
+<p>After having all of the above steps executed, the job can be executed, and we can see the test results.</p>
+<ul>
+<li>history of builds (job executions), test results trend graph
+<a href="../../../../../images/Jenkins-job-main-pageutplsql.png"><img alt="Jenkins-job-main-page(utplsql)" src="../../../../../images/Jenkins-job-main-pageutplsql-1024x727.png" /></a></li>
+<li>timeline of builds with job durations
+<a href="../../../../../images/Jenkins-job-timelineutplsql.png"><img alt="Jenkins-job-timeline(utplsql)" src="../../../../../images/Jenkins-job-timelineutplsql-1024x905.png" /></a></li>
+<li>test results reports for every build
+<a href="../../../../../images/Jenkins-test-resultsutplsql.png"><img alt="Jenkins-test-results(utplsql)" src="../../../../../images/Jenkins-test-resultsutplsql-1024x727.png" /></a></li>
+<li>ability to navigate to detailed test results
+<a href="../../../../../images/Jenkins-test-results-detailedutplsql.png"><img alt="Jenkins-test-results-detailed(utplsql)" src="../../../../../images/Jenkins-test-results-detailedutplsql-416x1024.png" /></a></li>
+<li>
+<p>details of failed tests
+<a href="../../../../../images/Jenkins-failed-testsutplsql.png"><img alt="Jenkins-failed-tests(utplsql)" src="../../../../../images/Jenkins-failed-testsutplsql-1024x685.png" /></a></p>
+</li>
+<li>
+<p>and more</p>
+</li>
+</ul>
+<h1 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h1>
+<p>I've initially was very sceptic about running utPLSQL on Jenkins. that was mainly because of the need to use Maven with Java as a bridge between Jenkins and Oracle. Eventually I've decided to give it a try and it took about two hours to read through all the requirements, install the required software and configure it properly. It was not as bad as I initially thought.
+Even though, both ruby-plsql and utPLSQL can be executed on Jenkins there are quite few differences to be pointed out:</p>
+<ul>
+<li>ruby-plsql comes with code coverage reporting out of the box</li>
+<li>utPLSQL does not support code coverage</li>
+<li>ruby-plsql (RSpec) unit tests have timing on each test execution and entire test run</li>
+<li>utPLSQL does not indicate time taken to execute test</li>
+<li>amazingly, ruby-plsql unit tests are executing much faster(4-6 seconds) than utPLSQL with Maven (15 seconds) - probably necause of time needed for Maven to start</li>
+<li>ruby-plsql test reports include full name and description of the test - in a human readable documentation form</li>
+<li>utPLSQL test reports include names of Unit Test packages and Unit Test procedures called - non descriptive, not suitable for documentation purposes</li>
+<li>with utPLSQL each assertion is shown as a separate test result, while the name of the test is the name of test procedure, not the assertion description, so you don't really know what was tested</li>
+<li>ruby-plsql indicates test file name, type of assertion, results and line of code the test failed</li>
+<li>utPLSQL does not include line number, which makes it harder to trace the error when tests are getting big</li>
+<li>ruby-plsql does not require any extra setup for Jenkins except the reporting library installation and making sure that the environment variables are setup properly for the job</li>
+<li>utPLSQL cannot be integrated on it own with Jenkins, requires basic knowledge of Maven, installation of Maven (and Java), additional Maven library for utPLSQL, installing JDBC dependencies for Maven, configuring Maven XML file</li>
+<li>utPLSQL unit tests need to be added to a test suite by executing a PLSQL configuration code. Whenever new tests are added, they need to be added to test suite too, that is an additional maintenance work to be done</li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+
+
+  
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 10.3 14 9.5 14.7 8 15.5 8s1.5.7 1.5 1.5m-5 7.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10m-6.5-4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m2 4.5c1.75 0 3.29.72 4.19 1.81l-1.42 1.42C14.32 16.5 13.25 16 12 16s-2.32.5-2.77 1.23l-1.42-1.42C8.71 14.72 10.25 14 12 14"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1" hidden>
+              
+              
+                
+              
+              
+              
+                
+                
+              
+              Thanks for your feedback!
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              
+              
+                
+                
+              
+              Thanks for your feedback! Help us improve this page by using our <a href="https://github.com/utPLSQL/utPLSQL/discussions/new?category=documentation-feedback" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>.
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+        
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../../06/28/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-three/" class="md-footer__link md-footer__link--prev" aria-label="Previous: utPLSQL v2 vs. ruby-plsql/ruby-plsql-spec - part three - (not) reporting failures">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                utPLSQL v2 vs. ruby-plsql/ruby-plsql-spec - part three - (not) reporting failures
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../18/ruby-plsql-cheatsheet/" class="md-footer__link md-footer__link--next" aria-label="Next: ruby-plsql cheatsheet">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                ruby-plsql cheatsheet
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+  
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+    
+      
+        
+  
+  
+    
+    
+  
+  <li class="task-list-item">
+    <label class="task-list-control">
+      <input type="checkbox" name="analytics" checked>
+      <span class="task-list-indicator"></span>
+      Google Analytics
+    </label>
+  </li>
+
+      
+    
+    
+      
+    
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "navigation.footer", "navigation.tracking", "navigation.instant", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

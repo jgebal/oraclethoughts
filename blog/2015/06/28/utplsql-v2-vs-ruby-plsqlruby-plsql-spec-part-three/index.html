@@ -1,0 +1,2063 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Oracle database, PL/SQL development, utPLSQL, testing and contemplative notes">
+      
+      
+        <meta name="author" content="Jacek Gebal">
+      
+      
+        <link rel="canonical" href="https://oraclethoughts.com/blog/2015/06/28/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-three/">
+      
+      
+        <link rel="prev" href="../../24/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-two/">
+      
+      
+        <link rel="next" href="../../../07/11/utplsql-v2-vs-ruby-plsql-running-oracle-unit-tests-on-jenkins-ci/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>utPLSQL v2 vs. ruby-plsql/ruby-plsql-spec - part three - (not) reporting failures - oraclethoughts</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-1TEVWKPL97"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-1TEVWKPL97",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-1TEVWKPL97",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>if("undefined"!=typeof __md_analytics){var consent=__md_get("__consent");consent&&consent.analytics&&__md_analytics()}</script>
+  
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#additional-reporting-options-for-ruby-plsql" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="oraclethoughts" class="md-header__button md-logo" aria-label="oraclethoughts" data-md-component="logo">
+      
+  <img src="../../../../../assets/images/wordmark-header.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            oraclethoughts
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              utPLSQL v2 vs. ruby-plsql/ruby-plsql-spec - part three - (not) reporting failures
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="oraclethoughts" class="md-nav__button md-logo" aria-label="oraclethoughts" data-md-component="logo">
+      
+  <img src="../../../../../assets/images/wordmark-header.svg" alt="logo">
+
+    </a>
+    oraclethoughts
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Blog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2020/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2020
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2017/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2017
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2016/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2016
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2015/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2015
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2014/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2014
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/plsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PLSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/sql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/sqlplus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL*Plus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    performance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/ruby-plsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ruby-plsql
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/utplsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    utPLSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2015-06-28 00:00:00+00:00" class="md-ellipsis">June 28, 2015</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/plsql/">PLSQL</a>, 
+                              <a href="../../../../category/testing/">testing</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              17 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:tdd" class="md-tag">TDD</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:ruby-plsql" class="md-tag">ruby-plsql</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:unit-testing" class="md-tag">unit testing</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:utplsql-v2" class="md-tag">utPLSQL v2</a>
+      
+    
+  </nav>
+
+
+
+<p><img alt="UTPLSQL_vs_RSpec" src="../../../../../images/UTPLSQL_vs_RSpec-300x56.png" /></p>
+<p>I have finished my <a href="../../24/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-two/">previous post</a> with comparison of basic reporting capabilities build into UTPLSQL and ruby-plsql frameworks for Oracle unit testing.</p>
+<!-- more -->
+
+<h1 id="additional-reporting-options-for-ruby-plsql">Additional reporting options for ruby-plsql<a class="headerlink" href="#additional-reporting-options-for-ruby-plsql" title="Permanent link">&para;</a></h1>
+<p>So far I have been using the ruby-plsql-spec wrapper around RSpec to run unit tests, however ruby-plsql was created in a way, that developer is not limited to use the functionalities of ruby-plsql-spec only.
+To run ruby-plsql unit tests we can use command <code>plsql-spec run</code>  that is provided with ruby-plsql-spec library or use the <code>rspec</code> command that comes with RSpec library.
+Using RSpec allows richer build-in reporting capabilities.
+A short look at <code>rspec --help</code> shows:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>  **** Output ****
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    -f, --format FORMATTER           Choose a formatter.
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                       [p]rogress (default - dots)
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>                                       [d]ocumentation (group and example names)
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>                                       [h]tml
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>                                       [j]son
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>                                       custom formatter class name
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    -o, --out FILE                   Write output to a file instead of $stdout. This option applies
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>                                       to the previously specified --format, or the default format
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                                       if no format is specified.
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        --deprecation-out FILE       Write deprecation warnings to a file instead of $stderr.
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    -b, --backtrace                  Enable full backtrace.
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    -c, --[no-]color, --[no-]colour  Enable color in the output.
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    -p, --[no-]profile [COUNT]       Enable profiling of examples and list the slowest examples (default: 10).
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    -w, --warnings                   Enable ruby warnings
+</span></code></pre></div>
+<p>Just to remind, those are the outcomes of UTPLSQL reporter for execution <strong>of a single test</strong>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>SQL&gt; SET SERVEROUTPUT ON 
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>SQL&gt; BEGIN
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  2    utplsql.test(&#39;message_api&#39;);
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  3  END;
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  4  /
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>&gt;    SSSS   U     U   CCC     CCC   EEEEEEE   SSSS     SSSS
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>&gt;   S    S  U     U  C   C   C   C  E        S    S   S    S
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>&gt;  S        U     U C     C C     C E       S        S
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>&gt;   S       U     U C       C       E        S        S
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>&gt;    SSSS   U     U C       C       EEEE      SSSS     SSSS
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>&gt;        S  U     U C       C       E             S        S
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>&gt;         S U     U C     C C     C E              S        S
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>&gt;   S    S   U   U   C   C   C   C  E        S    S   S    S
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>&gt;    SSSS     UUU     CCC     CCC   EEEEEEE   SSSS     SSSS
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>.
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>SUCCESS: &quot;.message_api&quot;
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>.
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>&gt; Individual Test Case Results:
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>&gt;
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>SUCCESS - message_api.UT_SEND_RECEIVE_MSG: EQ &quot;when I send a message and receive
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>it then I get a valid message number&quot; Expected &quot;1&quot; and got &quot;1&quot;
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>&gt;
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>SUCCESS - message_api.UT_SEND_RECEIVE_MSG: EQ &quot;and I get a valid message date&quot;
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>Expected &quot;JUN-23-2015 12:00:00&quot; and got &quot;JUN-23-2015 12:00:00&quot;
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>&gt;
+</span></code></pre></div>
+<p>When we run <code>rpsec -fd</code>, we get a documentation format for <strong>three unit tests</strong> in a very human readable form as below.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cross session communication package
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  allows receiving message sent in one session
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  allows sending and receiving message across different sessions
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>  allows sending and receiving message across sessions of different users
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>Finished in 0.07851 seconds (files took 2.03 seconds to load)
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>3 examples, 0 failures
+</span></code></pre></div>
+<p>Using <code>rspec -fj -o rspec_test_results.json</code> we can generate output of tests into <a href="../../images/rspec_test_results.json">rspec_test_results.json</a> file.
+Using <code>rspec -fh -o rspec_test_results.html</code> we can generate output of tests into <a href="../../images/rspec_test_results.html">rspec_test_results.html</a> file.
+By installing library RspecJunitFormatter <code>gem install rspec_junit_formatter</code> we can have output generated into <a href="../../images/rspec_test_results.xml">rspec_test_results.xml</a> XML format that is accepted by many Continuous Integration platforms like Jenkins.
+All that needs to be done to have the XML JUnit-like output is to issue <code>rspec -f RspecJunitFormatter -o rspec_test_results.xml</code>.
+I have described only the basic options of the formatting, there are many more formatters out there to be used, there are many different options of controlling how RSpec is executing tests like ordering, filtering, stop on first failure, dry-run and more.</p>
+<h1 id="handling-test-failures">Handling test failures<a class="headerlink" href="#handling-test-failures" title="Permanent link">&para;</a></h1>
+<p>Unit tests are being created to give a fast and clear feedback, when something goes wrong and a requirement for code is no longer met.
+Let's have a look, how UTPLSQL and ruby-plsql (with RSpec) are reporting test failures and errors.
+There are quite significant differences on how each of them is reporting errors and also <strong>when and how they fail</strong>.</p>
+<h1 id="graceful-failure">Graceful failure<a class="headerlink" href="#graceful-failure" title="Permanent link">&para;</a></h1>
+<p>This is the scenario, where a unit test is actually doing it's job by failing. The test fails to indicate that a requirement that is being verified, is not met.
+For this scenario I will use a very simple code and similarly simple tests.
+The tested code is:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">sum_two_numbers</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="nb">NUMBER</span><span class="w"> </span><span class="k">IS</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="k">BEGIN</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span><span class="k">RETURN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="o">/</span>
+</span></code></pre></div>
+<p>The UTPLSQL unit test for this code is:</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="n">PACKAGE</span><span class="w"> </span><span class="n">ut_sum_two_numbers</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">IS</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_setup</span><span class="p">;</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_teardown</span><span class="p">;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_sum_two_numbers</span><span class="p">;</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">END</span><span class="w"> </span><span class="n">ut_sum_two_numbers</span><span class="p">;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="o">/</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="n">PACKAGE</span><span class="w"> </span><span class="n">BODY</span><span class="w"> </span><span class="n">ut_sum_two_numbers</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="k">IS</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_setup</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">  </span><span class="k">IS</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="w">    </span><span class="k">BEGIN</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">      </span><span class="k">NULL</span><span class="p">;</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_teardown</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="k">IS</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">    </span><span class="k">BEGIN</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="w">      </span><span class="k">NULL</span><span class="p">;</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a><span class="w">    </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_sum_two_numbers</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">  </span><span class="k">IS</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="w">    </span><span class="k">BEGIN</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">      </span><span class="n">utAssert</span><span class="p">.</span><span class="n">eq</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;sum_two_numbers returns 10 for arguments 5 and 5&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">sum_two_numbers</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="w">    </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="k">END</span><span class="w"> </span><span class="n">ut_sum_two_numbers</span><span class="p">;</span>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="o">/</span>
+</span></code></pre></div>
+<p>And the ruby-plsql unit test for this code, doing exactly the same check is:</p>
+<div class="language-ruby highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">require_relative</span><span class="w"> </span><span class="s1">&#39;spec_helper&#39;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">describe</span><span class="w"> </span><span class="s1">&#39;sum_two_numbers&#39;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="n">it</span><span class="w"> </span><span class="s1">&#39;returns 10 for arguments 5 and 5&#39;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">    </span><span class="n">expect</span><span class="p">(</span><span class="w"> </span><span class="n">plsql</span><span class="o">.</span><span class="n">sum_two_numbers</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="w"> </span><span class="n">eq</span><span class="w"> </span><span class="mi">10</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="k">end</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="k">end</span>
+</span></code></pre></div>
+<p>The over-sizing of UPLSQL is clearly visible when handling small test-case.
+Output from UTPLSQL test run.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">SET</span><span class="w"> </span><span class="n">SERVEROUPTUT</span><span class="w"> </span><span class="k">ON</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">BEGIN</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="n">utConfig</span><span class="p">.</span><span class="n">autocompile</span><span class="p">(</span><span class="k">false</span><span class="p">);</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="n">utConfig</span><span class="p">.</span><span class="n">setreporter</span><span class="p">(</span><span class="k">NULL</span><span class="p">);</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="n">utplsql</span><span class="p">.</span><span class="n">test</span><span class="p">(</span><span class="s1">&#39;sum_two_numbers&#39;</span><span class="p">);</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="o">/</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>.
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>&gt;  FFFFFFF   AA     III  L      U     U RRRRR   EEEEEEE
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>&gt;  F        A  A     I   L      U     U R    R  E
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>&gt;  F       A    A    I   L      U     U R     R E
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>&gt;  F      A      A   I   L      U     U R     R E
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>&gt;  FFFF   A      A   I   L      U     U RRRRRR  EEEE
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>&gt;  F      AAAAAAAA   I   L      U     U R   R   E
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>&gt;  F      A      A   I   L      U     U R    R  E
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>&gt;  F      A      A   I   L       U   U  R     R E
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>&gt;  F      A      A  III  LLLLLLL  UUU   R     R EEEEEEE
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>.
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>FAILURE: &quot;.sum_two_numbers&quot;
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>.
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>&gt; Individual Test Case Results:
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>&gt;
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>FAILURE - sum_two_numbers.UT_SUM_TWO_NUMBERS: EQ &quot;sum_two_numbers returns 10 for
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>arguments 5 and 5&quot; Expected &quot;10&quot; and got &quot;11&quot;
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>&gt;
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>&gt;
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>&gt; Errors recorded in utPLSQL Error Log:
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a>&gt;
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>&gt; NONE FOUND
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a>
+</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a>PL/SQL procedure successfully completed.
+</span></code></pre></div>
+<p>Output from ruby-plsql-spec test run.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>rspec -fd spec/sum_two_numbers_spec.rb
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>sum_two_numbers
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>  returns 10 for arguments 5 and 5 (FAILED - 1)
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>Failures:
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>  1) sum_two_numbers returns 10 for arguments 5 and 5
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>     Failure/Error: expect( plsql.sum_two_numbers(5,5) ).to eq 10
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>       expected: 10
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>            got: 11
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>       (compared using ==)
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>     # ./spec/sum_two_numbers_spec.rb:6:in `block (2 levels) in &lt;top (required)&gt;&#39;
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>Finished in 0.0335 seconds (files took 2.41 seconds to load)
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>1 example, 1 failure
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>Failed examples:
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>rspec ./spec/sum_two_numbers_spec.rb:5 # sum_two_numbers returns 10 for arguments 5 and 5
+</span></code></pre></div>
+<p>At first glance both reports seem to be similar. There are significant differences though.</p>
+<ul>
+<li>UTPLSQL is showing the package and procedure name, assertion name and type and the values compared</li>
+<li>RSpec is showing the spec file location and name, name of the test, assertion type, values compared and the line number for failure</li>
+<li>UTPLSQL <strong>has no summary of tests</strong>, we don't know how many tests were executed, how many succeeded an how many failed</li>
+<li>RSpec provides a summary report showing all that is needed to investigate the failures</li>
+<li>UTPLSQL announces big status at the <strong>beginning</strong> of textual report</li>
+<li>RSpec displays summary report at the <strong>end</strong> of textual report</li>
+</ul>
+<h1 id="reporting-on-large-number-of-tests">Reporting on large number of tests<a class="headerlink" href="#reporting-on-large-number-of-tests" title="Permanent link">&para;</a></h1>
+<p>The differences might seem slight and of a low value until you run a large set of tests.
+I will simulate 100 tests by simply calling the function 100 times with different set of parameters.
+I've created a separate function that causes wrong result for one value of parameter 'a'.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">sum_two_numbers_100_times</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="nb">NUMBER</span><span class="w"> </span><span class="k">IS</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="k">BEGIN</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">    </span><span class="k">RETURN</span><span class="w"> </span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">41</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="k">END</span><span class="p">;</span>
+</span></code></pre></div>
+<p>I've added new test procedure to UTPLSQL tests package</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_sum_two_numbers_100_times</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span><span class="k">IS</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">    </span><span class="k">BEGIN</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">      </span><span class="k">FOR</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">..</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="n">LOOP</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">        </span><span class="n">utAssert</span><span class="p">.</span><span class="n">eq</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;sum_two_numbers returns &#39;</span><span class="o">||</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="p">)</span><span class="o">||</span><span class="s1">&#39; for arguments &#39;</span><span class="o">||</span><span class="n">i</span><span class="o">||</span><span class="s1">&#39; and 10&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">sum_two_numbers_100_times</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">      </span><span class="k">END</span><span class="w"> </span><span class="n">LOOP</span><span class="p">;</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">    </span><span class="k">END</span><span class="p">;</span>
+</span></code></pre></div>
+<p>and a new test in a loop to my spec file.</p>
+<div class="language-ruby highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="w">  </span><span class="mi">100</span><span class="o">.</span><span class="n">times</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="o">|</span><span class="n">i</span><span class="o">|</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">    </span><span class="n">it</span><span class="w"> </span><span class="s2">&quot;returns </span><span class="si">#{</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="si">}</span><span class="s2"> for arguments </span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2"> and 10&quot;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">      </span><span class="n">expect</span><span class="p">(</span><span class="w"> </span><span class="n">plsql</span><span class="o">.</span><span class="n">sum_two_numbers_100_times</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="w"> </span><span class="n">eq</span><span class="w"> </span><span class="n">i</span><span class="o">+</span><span class="mi">10</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="k">end</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="k">end</span>
+</span></code></pre></div>
+<p>When looking at the test outputs, keep in mind that using a text output to console makes the console scroll, and that you can see once the tests finish, are the very last lines of the output.
+To mimic, what you will see, it's best to scroll to the end of the report output block.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>.
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>&gt;  FFFFFFF   AA     III  L      U     U RRRRR   EEEEEEE
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>&gt;  F        A  A     I   L      U     U R    R  E
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>&gt;  F       A    A    I   L      U     U R     R E
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>&gt;  F      A      A   I   L      U     U R     R E
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>&gt;  FFFF   A      A   I   L      U     U RRRRRR  EEEE
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>&gt;  F      AAAAAAAA   I   L      U     U R   R   E
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>&gt;  F      A      A   I   L      U     U R    R  E
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>&gt;  F      A      A   I   L       U   U  R     R E
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>&gt;  F      A      A  III  LLLLLLL  UUU   R     R EEEEEEE
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>.
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>FAILURE: &quot;.sum_two_numbers&quot;
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>.
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>&gt; Individual Test Case Results:
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a>&gt;
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS: EQ &quot;sum_two_numbers returns 10 for
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a>arguments 5 and 5&quot; Expected &quot;10&quot; and got &quot;10&quot;
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a>&gt;
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>returns 11 for arguments 1 and 10&quot; Expected &quot;11&quot; and got &quot;11&quot;
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a>&gt;
+</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-23"><a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a>returns 12 for arguments 2 and 10&quot; Expected &quot;12&quot; and got &quot;12&quot;
+</span><span id="__span-13-24"><a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a>&gt;
+</span><span id="__span-13-25"><a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-26"><a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a>returns 13 for arguments 3 and 10&quot; Expected &quot;13&quot; and got &quot;13&quot;
+</span><span id="__span-13-27"><a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a>&gt;
+</span><span id="__span-13-28"><a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-29"><a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a>returns 14 for arguments 4 and 10&quot; Expected &quot;14&quot; and got &quot;14&quot;
+</span><span id="__span-13-30"><a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a>&gt;
+</span><span id="__span-13-31"><a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-32"><a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a>returns 15 for arguments 5 and 10&quot; Expected &quot;15&quot; and got &quot;15&quot;
+</span><span id="__span-13-33"><a id="__codelineno-13-33" name="__codelineno-13-33" href="#__codelineno-13-33"></a>&gt;
+</span><span id="__span-13-34"><a id="__codelineno-13-34" name="__codelineno-13-34" href="#__codelineno-13-34"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-35"><a id="__codelineno-13-35" name="__codelineno-13-35" href="#__codelineno-13-35"></a>returns 16 for arguments 6 and 10&quot; Expected &quot;16&quot; and got &quot;16&quot;
+</span><span id="__span-13-36"><a id="__codelineno-13-36" name="__codelineno-13-36" href="#__codelineno-13-36"></a>&gt;
+</span><span id="__span-13-37"><a id="__codelineno-13-37" name="__codelineno-13-37" href="#__codelineno-13-37"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-38"><a id="__codelineno-13-38" name="__codelineno-13-38" href="#__codelineno-13-38"></a>returns 17 for arguments 7 and 10&quot; Expected &quot;17&quot; and got &quot;17&quot;
+</span><span id="__span-13-39"><a id="__codelineno-13-39" name="__codelineno-13-39" href="#__codelineno-13-39"></a>&gt;
+</span><span id="__span-13-40"><a id="__codelineno-13-40" name="__codelineno-13-40" href="#__codelineno-13-40"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-41"><a id="__codelineno-13-41" name="__codelineno-13-41" href="#__codelineno-13-41"></a>returns 18 for arguments 8 and 10&quot; Expected &quot;18&quot; and got &quot;18&quot;
+</span><span id="__span-13-42"><a id="__codelineno-13-42" name="__codelineno-13-42" href="#__codelineno-13-42"></a>&gt;
+</span><span id="__span-13-43"><a id="__codelineno-13-43" name="__codelineno-13-43" href="#__codelineno-13-43"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-44"><a id="__codelineno-13-44" name="__codelineno-13-44" href="#__codelineno-13-44"></a>returns 19 for arguments 9 and 10&quot; Expected &quot;19&quot; and got &quot;19&quot;
+</span><span id="__span-13-45"><a id="__codelineno-13-45" name="__codelineno-13-45" href="#__codelineno-13-45"></a>&gt;
+</span><span id="__span-13-46"><a id="__codelineno-13-46" name="__codelineno-13-46" href="#__codelineno-13-46"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-47"><a id="__codelineno-13-47" name="__codelineno-13-47" href="#__codelineno-13-47"></a>returns 20 for arguments 10 and 10&quot; Expected &quot;20&quot; and got &quot;20&quot;
+</span><span id="__span-13-48"><a id="__codelineno-13-48" name="__codelineno-13-48" href="#__codelineno-13-48"></a>&gt;
+</span><span id="__span-13-49"><a id="__codelineno-13-49" name="__codelineno-13-49" href="#__codelineno-13-49"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-50"><a id="__codelineno-13-50" name="__codelineno-13-50" href="#__codelineno-13-50"></a>returns 21 for arguments 11 and 10&quot; Expected &quot;21&quot; and got &quot;21&quot;
+</span><span id="__span-13-51"><a id="__codelineno-13-51" name="__codelineno-13-51" href="#__codelineno-13-51"></a>&gt;
+</span><span id="__span-13-52"><a id="__codelineno-13-52" name="__codelineno-13-52" href="#__codelineno-13-52"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-53"><a id="__codelineno-13-53" name="__codelineno-13-53" href="#__codelineno-13-53"></a>returns 22 for arguments 12 and 10&quot; Expected &quot;22&quot; and got &quot;22&quot;
+</span><span id="__span-13-54"><a id="__codelineno-13-54" name="__codelineno-13-54" href="#__codelineno-13-54"></a>&gt;
+</span><span id="__span-13-55"><a id="__codelineno-13-55" name="__codelineno-13-55" href="#__codelineno-13-55"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-56"><a id="__codelineno-13-56" name="__codelineno-13-56" href="#__codelineno-13-56"></a>returns 23 for arguments 13 and 10&quot; Expected &quot;23&quot; and got &quot;23&quot;
+</span><span id="__span-13-57"><a id="__codelineno-13-57" name="__codelineno-13-57" href="#__codelineno-13-57"></a>&gt;
+</span><span id="__span-13-58"><a id="__codelineno-13-58" name="__codelineno-13-58" href="#__codelineno-13-58"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-59"><a id="__codelineno-13-59" name="__codelineno-13-59" href="#__codelineno-13-59"></a>returns 24 for arguments 14 and 10&quot; Expected &quot;24&quot; and got &quot;24&quot;
+</span><span id="__span-13-60"><a id="__codelineno-13-60" name="__codelineno-13-60" href="#__codelineno-13-60"></a>&gt;
+</span><span id="__span-13-61"><a id="__codelineno-13-61" name="__codelineno-13-61" href="#__codelineno-13-61"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-62"><a id="__codelineno-13-62" name="__codelineno-13-62" href="#__codelineno-13-62"></a>returns 25 for arguments 15 and 10&quot; Expected &quot;25&quot; and got &quot;25&quot;
+</span><span id="__span-13-63"><a id="__codelineno-13-63" name="__codelineno-13-63" href="#__codelineno-13-63"></a>&gt;
+</span><span id="__span-13-64"><a id="__codelineno-13-64" name="__codelineno-13-64" href="#__codelineno-13-64"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-65"><a id="__codelineno-13-65" name="__codelineno-13-65" href="#__codelineno-13-65"></a>returns 26 for arguments 16 and 10&quot; Expected &quot;26&quot; and got &quot;26&quot;
+</span><span id="__span-13-66"><a id="__codelineno-13-66" name="__codelineno-13-66" href="#__codelineno-13-66"></a>&gt;
+</span><span id="__span-13-67"><a id="__codelineno-13-67" name="__codelineno-13-67" href="#__codelineno-13-67"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-68"><a id="__codelineno-13-68" name="__codelineno-13-68" href="#__codelineno-13-68"></a>returns 27 for arguments 17 and 10&quot; Expected &quot;27&quot; and got &quot;27&quot;
+</span><span id="__span-13-69"><a id="__codelineno-13-69" name="__codelineno-13-69" href="#__codelineno-13-69"></a>&gt;
+</span><span id="__span-13-70"><a id="__codelineno-13-70" name="__codelineno-13-70" href="#__codelineno-13-70"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-71"><a id="__codelineno-13-71" name="__codelineno-13-71" href="#__codelineno-13-71"></a>returns 28 for arguments 18 and 10&quot; Expected &quot;28&quot; and got &quot;28&quot;
+</span><span id="__span-13-72"><a id="__codelineno-13-72" name="__codelineno-13-72" href="#__codelineno-13-72"></a>&gt;
+</span><span id="__span-13-73"><a id="__codelineno-13-73" name="__codelineno-13-73" href="#__codelineno-13-73"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-74"><a id="__codelineno-13-74" name="__codelineno-13-74" href="#__codelineno-13-74"></a>returns 29 for arguments 19 and 10&quot; Expected &quot;29&quot; and got &quot;29&quot;
+</span><span id="__span-13-75"><a id="__codelineno-13-75" name="__codelineno-13-75" href="#__codelineno-13-75"></a>&gt;
+</span><span id="__span-13-76"><a id="__codelineno-13-76" name="__codelineno-13-76" href="#__codelineno-13-76"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-77"><a id="__codelineno-13-77" name="__codelineno-13-77" href="#__codelineno-13-77"></a>returns 30 for arguments 20 and 10&quot; Expected &quot;30&quot; and got &quot;30&quot;
+</span><span id="__span-13-78"><a id="__codelineno-13-78" name="__codelineno-13-78" href="#__codelineno-13-78"></a>&gt;
+</span><span id="__span-13-79"><a id="__codelineno-13-79" name="__codelineno-13-79" href="#__codelineno-13-79"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-80"><a id="__codelineno-13-80" name="__codelineno-13-80" href="#__codelineno-13-80"></a>returns 31 for arguments 21 and 10&quot; Expected &quot;31&quot; and got &quot;31&quot;
+</span><span id="__span-13-81"><a id="__codelineno-13-81" name="__codelineno-13-81" href="#__codelineno-13-81"></a>&gt;
+</span><span id="__span-13-82"><a id="__codelineno-13-82" name="__codelineno-13-82" href="#__codelineno-13-82"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-83"><a id="__codelineno-13-83" name="__codelineno-13-83" href="#__codelineno-13-83"></a>returns 32 for arguments 22 and 10&quot; Expected &quot;32&quot; and got &quot;32&quot;
+</span><span id="__span-13-84"><a id="__codelineno-13-84" name="__codelineno-13-84" href="#__codelineno-13-84"></a>&gt;
+</span><span id="__span-13-85"><a id="__codelineno-13-85" name="__codelineno-13-85" href="#__codelineno-13-85"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-86"><a id="__codelineno-13-86" name="__codelineno-13-86" href="#__codelineno-13-86"></a>returns 33 for arguments 23 and 10&quot; Expected &quot;33&quot; and got &quot;33&quot;
+</span><span id="__span-13-87"><a id="__codelineno-13-87" name="__codelineno-13-87" href="#__codelineno-13-87"></a>&gt;
+</span><span id="__span-13-88"><a id="__codelineno-13-88" name="__codelineno-13-88" href="#__codelineno-13-88"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-89"><a id="__codelineno-13-89" name="__codelineno-13-89" href="#__codelineno-13-89"></a>returns 34 for arguments 24 and 10&quot; Expected &quot;34&quot; and got &quot;34&quot;
+</span><span id="__span-13-90"><a id="__codelineno-13-90" name="__codelineno-13-90" href="#__codelineno-13-90"></a>&gt;
+</span><span id="__span-13-91"><a id="__codelineno-13-91" name="__codelineno-13-91" href="#__codelineno-13-91"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-92"><a id="__codelineno-13-92" name="__codelineno-13-92" href="#__codelineno-13-92"></a>returns 35 for arguments 25 and 10&quot; Expected &quot;35&quot; and got &quot;35&quot;
+</span><span id="__span-13-93"><a id="__codelineno-13-93" name="__codelineno-13-93" href="#__codelineno-13-93"></a>&gt;
+</span><span id="__span-13-94"><a id="__codelineno-13-94" name="__codelineno-13-94" href="#__codelineno-13-94"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-95"><a id="__codelineno-13-95" name="__codelineno-13-95" href="#__codelineno-13-95"></a>returns 36 for arguments 26 and 10&quot; Expected &quot;36&quot; and got &quot;36&quot;
+</span><span id="__span-13-96"><a id="__codelineno-13-96" name="__codelineno-13-96" href="#__codelineno-13-96"></a>&gt;
+</span><span id="__span-13-97"><a id="__codelineno-13-97" name="__codelineno-13-97" href="#__codelineno-13-97"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-98"><a id="__codelineno-13-98" name="__codelineno-13-98" href="#__codelineno-13-98"></a>returns 37 for arguments 27 and 10&quot; Expected &quot;37&quot; and got &quot;37&quot;
+</span><span id="__span-13-99"><a id="__codelineno-13-99" name="__codelineno-13-99" href="#__codelineno-13-99"></a>&gt;
+</span><span id="__span-13-100"><a id="__codelineno-13-100" name="__codelineno-13-100" href="#__codelineno-13-100"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-101"><a id="__codelineno-13-101" name="__codelineno-13-101" href="#__codelineno-13-101"></a>returns 38 for arguments 28 and 10&quot; Expected &quot;38&quot; and got &quot;38&quot;
+</span><span id="__span-13-102"><a id="__codelineno-13-102" name="__codelineno-13-102" href="#__codelineno-13-102"></a>&gt;
+</span><span id="__span-13-103"><a id="__codelineno-13-103" name="__codelineno-13-103" href="#__codelineno-13-103"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-104"><a id="__codelineno-13-104" name="__codelineno-13-104" href="#__codelineno-13-104"></a>returns 39 for arguments 29 and 10&quot; Expected &quot;39&quot; and got &quot;39&quot;
+</span><span id="__span-13-105"><a id="__codelineno-13-105" name="__codelineno-13-105" href="#__codelineno-13-105"></a>&gt;
+</span><span id="__span-13-106"><a id="__codelineno-13-106" name="__codelineno-13-106" href="#__codelineno-13-106"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-107"><a id="__codelineno-13-107" name="__codelineno-13-107" href="#__codelineno-13-107"></a>returns 40 for arguments 30 and 10&quot; Expected &quot;40&quot; and got &quot;40&quot;
+</span><span id="__span-13-108"><a id="__codelineno-13-108" name="__codelineno-13-108" href="#__codelineno-13-108"></a>&gt;
+</span><span id="__span-13-109"><a id="__codelineno-13-109" name="__codelineno-13-109" href="#__codelineno-13-109"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-110"><a id="__codelineno-13-110" name="__codelineno-13-110" href="#__codelineno-13-110"></a>returns 41 for arguments 31 and 10&quot; Expected &quot;41&quot; and got &quot;41&quot;
+</span><span id="__span-13-111"><a id="__codelineno-13-111" name="__codelineno-13-111" href="#__codelineno-13-111"></a>&gt;
+</span><span id="__span-13-112"><a id="__codelineno-13-112" name="__codelineno-13-112" href="#__codelineno-13-112"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-113"><a id="__codelineno-13-113" name="__codelineno-13-113" href="#__codelineno-13-113"></a>returns 42 for arguments 32 and 10&quot; Expected &quot;42&quot; and got &quot;42&quot;
+</span><span id="__span-13-114"><a id="__codelineno-13-114" name="__codelineno-13-114" href="#__codelineno-13-114"></a>&gt;
+</span><span id="__span-13-115"><a id="__codelineno-13-115" name="__codelineno-13-115" href="#__codelineno-13-115"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-116"><a id="__codelineno-13-116" name="__codelineno-13-116" href="#__codelineno-13-116"></a>returns 43 for arguments 33 and 10&quot; Expected &quot;43&quot; and got &quot;43&quot;
+</span><span id="__span-13-117"><a id="__codelineno-13-117" name="__codelineno-13-117" href="#__codelineno-13-117"></a>&gt;
+</span><span id="__span-13-118"><a id="__codelineno-13-118" name="__codelineno-13-118" href="#__codelineno-13-118"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-119"><a id="__codelineno-13-119" name="__codelineno-13-119" href="#__codelineno-13-119"></a>returns 44 for arguments 34 and 10&quot; Expected &quot;44&quot; and got &quot;44&quot;
+</span><span id="__span-13-120"><a id="__codelineno-13-120" name="__codelineno-13-120" href="#__codelineno-13-120"></a>&gt;
+</span><span id="__span-13-121"><a id="__codelineno-13-121" name="__codelineno-13-121" href="#__codelineno-13-121"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-122"><a id="__codelineno-13-122" name="__codelineno-13-122" href="#__codelineno-13-122"></a>returns 45 for arguments 35 and 10&quot; Expected &quot;45&quot; and got &quot;45&quot;
+</span><span id="__span-13-123"><a id="__codelineno-13-123" name="__codelineno-13-123" href="#__codelineno-13-123"></a>&gt;
+</span><span id="__span-13-124"><a id="__codelineno-13-124" name="__codelineno-13-124" href="#__codelineno-13-124"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-125"><a id="__codelineno-13-125" name="__codelineno-13-125" href="#__codelineno-13-125"></a>returns 46 for arguments 36 and 10&quot; Expected &quot;46&quot; and got &quot;46&quot;
+</span><span id="__span-13-126"><a id="__codelineno-13-126" name="__codelineno-13-126" href="#__codelineno-13-126"></a>&gt;
+</span><span id="__span-13-127"><a id="__codelineno-13-127" name="__codelineno-13-127" href="#__codelineno-13-127"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-128"><a id="__codelineno-13-128" name="__codelineno-13-128" href="#__codelineno-13-128"></a>returns 47 for arguments 37 and 10&quot; Expected &quot;47&quot; and got &quot;47&quot;
+</span><span id="__span-13-129"><a id="__codelineno-13-129" name="__codelineno-13-129" href="#__codelineno-13-129"></a>&gt;
+</span><span id="__span-13-130"><a id="__codelineno-13-130" name="__codelineno-13-130" href="#__codelineno-13-130"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-131"><a id="__codelineno-13-131" name="__codelineno-13-131" href="#__codelineno-13-131"></a>returns 48 for arguments 38 and 10&quot; Expected &quot;48&quot; and got &quot;48&quot;
+</span><span id="__span-13-132"><a id="__codelineno-13-132" name="__codelineno-13-132" href="#__codelineno-13-132"></a>&gt;
+</span><span id="__span-13-133"><a id="__codelineno-13-133" name="__codelineno-13-133" href="#__codelineno-13-133"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-134"><a id="__codelineno-13-134" name="__codelineno-13-134" href="#__codelineno-13-134"></a>returns 49 for arguments 39 and 10&quot; Expected &quot;49&quot; and got &quot;49&quot;
+</span><span id="__span-13-135"><a id="__codelineno-13-135" name="__codelineno-13-135" href="#__codelineno-13-135"></a>&gt;
+</span><span id="__span-13-136"><a id="__codelineno-13-136" name="__codelineno-13-136" href="#__codelineno-13-136"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-137"><a id="__codelineno-13-137" name="__codelineno-13-137" href="#__codelineno-13-137"></a>returns 50 for arguments 40 and 10&quot; Expected &quot;50&quot; and got &quot;50&quot;
+</span><span id="__span-13-138"><a id="__codelineno-13-138" name="__codelineno-13-138" href="#__codelineno-13-138"></a>&gt;
+</span><span id="__span-13-139"><a id="__codelineno-13-139" name="__codelineno-13-139" href="#__codelineno-13-139"></a>FAILURE - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-140"><a id="__codelineno-13-140" name="__codelineno-13-140" href="#__codelineno-13-140"></a>returns 51 for arguments 41 and 10&quot; Expected &quot;51&quot; and got &quot;52&quot;
+</span><span id="__span-13-141"><a id="__codelineno-13-141" name="__codelineno-13-141" href="#__codelineno-13-141"></a>&gt;
+</span><span id="__span-13-142"><a id="__codelineno-13-142" name="__codelineno-13-142" href="#__codelineno-13-142"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-143"><a id="__codelineno-13-143" name="__codelineno-13-143" href="#__codelineno-13-143"></a>returns 52 for arguments 42 and 10&quot; Expected &quot;52&quot; and got &quot;52&quot;
+</span><span id="__span-13-144"><a id="__codelineno-13-144" name="__codelineno-13-144" href="#__codelineno-13-144"></a>&gt;
+</span><span id="__span-13-145"><a id="__codelineno-13-145" name="__codelineno-13-145" href="#__codelineno-13-145"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-146"><a id="__codelineno-13-146" name="__codelineno-13-146" href="#__codelineno-13-146"></a>returns 53 for arguments 43 and 10&quot; Expected &quot;53&quot; and got &quot;53&quot;
+</span><span id="__span-13-147"><a id="__codelineno-13-147" name="__codelineno-13-147" href="#__codelineno-13-147"></a>&gt;
+</span><span id="__span-13-148"><a id="__codelineno-13-148" name="__codelineno-13-148" href="#__codelineno-13-148"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-149"><a id="__codelineno-13-149" name="__codelineno-13-149" href="#__codelineno-13-149"></a>returns 54 for arguments 44 and 10&quot; Expected &quot;54&quot; and got &quot;54&quot;
+</span><span id="__span-13-150"><a id="__codelineno-13-150" name="__codelineno-13-150" href="#__codelineno-13-150"></a>&gt;
+</span><span id="__span-13-151"><a id="__codelineno-13-151" name="__codelineno-13-151" href="#__codelineno-13-151"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-152"><a id="__codelineno-13-152" name="__codelineno-13-152" href="#__codelineno-13-152"></a>returns 55 for arguments 45 and 10&quot; Expected &quot;55&quot; and got &quot;55&quot;
+</span><span id="__span-13-153"><a id="__codelineno-13-153" name="__codelineno-13-153" href="#__codelineno-13-153"></a>&gt;
+</span><span id="__span-13-154"><a id="__codelineno-13-154" name="__codelineno-13-154" href="#__codelineno-13-154"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-155"><a id="__codelineno-13-155" name="__codelineno-13-155" href="#__codelineno-13-155"></a>returns 56 for arguments 46 and 10&quot; Expected &quot;56&quot; and got &quot;56&quot;
+</span><span id="__span-13-156"><a id="__codelineno-13-156" name="__codelineno-13-156" href="#__codelineno-13-156"></a>&gt;
+</span><span id="__span-13-157"><a id="__codelineno-13-157" name="__codelineno-13-157" href="#__codelineno-13-157"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-158"><a id="__codelineno-13-158" name="__codelineno-13-158" href="#__codelineno-13-158"></a>returns 57 for arguments 47 and 10&quot; Expected &quot;57&quot; and got &quot;57&quot;
+</span><span id="__span-13-159"><a id="__codelineno-13-159" name="__codelineno-13-159" href="#__codelineno-13-159"></a>&gt;
+</span><span id="__span-13-160"><a id="__codelineno-13-160" name="__codelineno-13-160" href="#__codelineno-13-160"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-161"><a id="__codelineno-13-161" name="__codelineno-13-161" href="#__codelineno-13-161"></a>returns 58 for arguments 48 and 10&quot; Expected &quot;58&quot; and got &quot;58&quot;
+</span><span id="__span-13-162"><a id="__codelineno-13-162" name="__codelineno-13-162" href="#__codelineno-13-162"></a>&gt;
+</span><span id="__span-13-163"><a id="__codelineno-13-163" name="__codelineno-13-163" href="#__codelineno-13-163"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-164"><a id="__codelineno-13-164" name="__codelineno-13-164" href="#__codelineno-13-164"></a>returns 59 for arguments 49 and 10&quot; Expected &quot;59&quot; and got &quot;59&quot;
+</span><span id="__span-13-165"><a id="__codelineno-13-165" name="__codelineno-13-165" href="#__codelineno-13-165"></a>&gt;
+</span><span id="__span-13-166"><a id="__codelineno-13-166" name="__codelineno-13-166" href="#__codelineno-13-166"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-167"><a id="__codelineno-13-167" name="__codelineno-13-167" href="#__codelineno-13-167"></a>returns 60 for arguments 50 and 10&quot; Expected &quot;60&quot; and got &quot;60&quot;
+</span><span id="__span-13-168"><a id="__codelineno-13-168" name="__codelineno-13-168" href="#__codelineno-13-168"></a>&gt;
+</span><span id="__span-13-169"><a id="__codelineno-13-169" name="__codelineno-13-169" href="#__codelineno-13-169"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-170"><a id="__codelineno-13-170" name="__codelineno-13-170" href="#__codelineno-13-170"></a>returns 61 for arguments 51 and 10&quot; Expected &quot;61&quot; and got &quot;61&quot;
+</span><span id="__span-13-171"><a id="__codelineno-13-171" name="__codelineno-13-171" href="#__codelineno-13-171"></a>&gt;
+</span><span id="__span-13-172"><a id="__codelineno-13-172" name="__codelineno-13-172" href="#__codelineno-13-172"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-173"><a id="__codelineno-13-173" name="__codelineno-13-173" href="#__codelineno-13-173"></a>returns 62 for arguments 52 and 10&quot; Expected &quot;62&quot; and got &quot;62&quot;
+</span><span id="__span-13-174"><a id="__codelineno-13-174" name="__codelineno-13-174" href="#__codelineno-13-174"></a>&gt;
+</span><span id="__span-13-175"><a id="__codelineno-13-175" name="__codelineno-13-175" href="#__codelineno-13-175"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-176"><a id="__codelineno-13-176" name="__codelineno-13-176" href="#__codelineno-13-176"></a>returns 63 for arguments 53 and 10&quot; Expected &quot;63&quot; and got &quot;63&quot;
+</span><span id="__span-13-177"><a id="__codelineno-13-177" name="__codelineno-13-177" href="#__codelineno-13-177"></a>&gt;
+</span><span id="__span-13-178"><a id="__codelineno-13-178" name="__codelineno-13-178" href="#__codelineno-13-178"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-179"><a id="__codelineno-13-179" name="__codelineno-13-179" href="#__codelineno-13-179"></a>returns 64 for arguments 54 and 10&quot; Expected &quot;64&quot; and got &quot;64&quot;
+</span><span id="__span-13-180"><a id="__codelineno-13-180" name="__codelineno-13-180" href="#__codelineno-13-180"></a>&gt;
+</span><span id="__span-13-181"><a id="__codelineno-13-181" name="__codelineno-13-181" href="#__codelineno-13-181"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-182"><a id="__codelineno-13-182" name="__codelineno-13-182" href="#__codelineno-13-182"></a>returns 65 for arguments 55 and 10&quot; Expected &quot;65&quot; and got &quot;65&quot;
+</span><span id="__span-13-183"><a id="__codelineno-13-183" name="__codelineno-13-183" href="#__codelineno-13-183"></a>&gt;
+</span><span id="__span-13-184"><a id="__codelineno-13-184" name="__codelineno-13-184" href="#__codelineno-13-184"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-185"><a id="__codelineno-13-185" name="__codelineno-13-185" href="#__codelineno-13-185"></a>returns 66 for arguments 56 and 10&quot; Expected &quot;66&quot; and got &quot;66&quot;
+</span><span id="__span-13-186"><a id="__codelineno-13-186" name="__codelineno-13-186" href="#__codelineno-13-186"></a>&gt;
+</span><span id="__span-13-187"><a id="__codelineno-13-187" name="__codelineno-13-187" href="#__codelineno-13-187"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-188"><a id="__codelineno-13-188" name="__codelineno-13-188" href="#__codelineno-13-188"></a>returns 67 for arguments 57 and 10&quot; Expected &quot;67&quot; and got &quot;67&quot;
+</span><span id="__span-13-189"><a id="__codelineno-13-189" name="__codelineno-13-189" href="#__codelineno-13-189"></a>&gt;
+</span><span id="__span-13-190"><a id="__codelineno-13-190" name="__codelineno-13-190" href="#__codelineno-13-190"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-191"><a id="__codelineno-13-191" name="__codelineno-13-191" href="#__codelineno-13-191"></a>returns 68 for arguments 58 and 10&quot; Expected &quot;68&quot; and got &quot;68&quot;
+</span><span id="__span-13-192"><a id="__codelineno-13-192" name="__codelineno-13-192" href="#__codelineno-13-192"></a>&gt;
+</span><span id="__span-13-193"><a id="__codelineno-13-193" name="__codelineno-13-193" href="#__codelineno-13-193"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-194"><a id="__codelineno-13-194" name="__codelineno-13-194" href="#__codelineno-13-194"></a>returns 69 for arguments 59 and 10&quot; Expected &quot;69&quot; and got &quot;69&quot;
+</span><span id="__span-13-195"><a id="__codelineno-13-195" name="__codelineno-13-195" href="#__codelineno-13-195"></a>&gt;
+</span><span id="__span-13-196"><a id="__codelineno-13-196" name="__codelineno-13-196" href="#__codelineno-13-196"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-197"><a id="__codelineno-13-197" name="__codelineno-13-197" href="#__codelineno-13-197"></a>returns 70 for arguments 60 and 10&quot; Expected &quot;70&quot; and got &quot;70&quot;
+</span><span id="__span-13-198"><a id="__codelineno-13-198" name="__codelineno-13-198" href="#__codelineno-13-198"></a>&gt;
+</span><span id="__span-13-199"><a id="__codelineno-13-199" name="__codelineno-13-199" href="#__codelineno-13-199"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-200"><a id="__codelineno-13-200" name="__codelineno-13-200" href="#__codelineno-13-200"></a>returns 71 for arguments 61 and 10&quot; Expected &quot;71&quot; and got &quot;71&quot;
+</span><span id="__span-13-201"><a id="__codelineno-13-201" name="__codelineno-13-201" href="#__codelineno-13-201"></a>&gt;
+</span><span id="__span-13-202"><a id="__codelineno-13-202" name="__codelineno-13-202" href="#__codelineno-13-202"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-203"><a id="__codelineno-13-203" name="__codelineno-13-203" href="#__codelineno-13-203"></a>returns 72 for arguments 62 and 10&quot; Expected &quot;72&quot; and got &quot;72&quot;
+</span><span id="__span-13-204"><a id="__codelineno-13-204" name="__codelineno-13-204" href="#__codelineno-13-204"></a>&gt;
+</span><span id="__span-13-205"><a id="__codelineno-13-205" name="__codelineno-13-205" href="#__codelineno-13-205"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-206"><a id="__codelineno-13-206" name="__codelineno-13-206" href="#__codelineno-13-206"></a>returns 73 for arguments 63 and 10&quot; Expected &quot;73&quot; and got &quot;73&quot;
+</span><span id="__span-13-207"><a id="__codelineno-13-207" name="__codelineno-13-207" href="#__codelineno-13-207"></a>&gt;
+</span><span id="__span-13-208"><a id="__codelineno-13-208" name="__codelineno-13-208" href="#__codelineno-13-208"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-209"><a id="__codelineno-13-209" name="__codelineno-13-209" href="#__codelineno-13-209"></a>returns 74 for arguments 64 and 10&quot; Expected &quot;74&quot; and got &quot;74&quot;
+</span><span id="__span-13-210"><a id="__codelineno-13-210" name="__codelineno-13-210" href="#__codelineno-13-210"></a>&gt;
+</span><span id="__span-13-211"><a id="__codelineno-13-211" name="__codelineno-13-211" href="#__codelineno-13-211"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-212"><a id="__codelineno-13-212" name="__codelineno-13-212" href="#__codelineno-13-212"></a>returns 75 for arguments 65 and 10&quot; Expected &quot;75&quot; and got &quot;75&quot;
+</span><span id="__span-13-213"><a id="__codelineno-13-213" name="__codelineno-13-213" href="#__codelineno-13-213"></a>&gt;
+</span><span id="__span-13-214"><a id="__codelineno-13-214" name="__codelineno-13-214" href="#__codelineno-13-214"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-215"><a id="__codelineno-13-215" name="__codelineno-13-215" href="#__codelineno-13-215"></a>returns 76 for arguments 66 and 10&quot; Expected &quot;76&quot; and got &quot;76&quot;
+</span><span id="__span-13-216"><a id="__codelineno-13-216" name="__codelineno-13-216" href="#__codelineno-13-216"></a>&gt;
+</span><span id="__span-13-217"><a id="__codelineno-13-217" name="__codelineno-13-217" href="#__codelineno-13-217"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-218"><a id="__codelineno-13-218" name="__codelineno-13-218" href="#__codelineno-13-218"></a>returns 77 for arguments 67 and 10&quot; Expected &quot;77&quot; and got &quot;77&quot;
+</span><span id="__span-13-219"><a id="__codelineno-13-219" name="__codelineno-13-219" href="#__codelineno-13-219"></a>&gt;
+</span><span id="__span-13-220"><a id="__codelineno-13-220" name="__codelineno-13-220" href="#__codelineno-13-220"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-221"><a id="__codelineno-13-221" name="__codelineno-13-221" href="#__codelineno-13-221"></a>returns 78 for arguments 68 and 10&quot; Expected &quot;78&quot; and got &quot;78&quot;
+</span><span id="__span-13-222"><a id="__codelineno-13-222" name="__codelineno-13-222" href="#__codelineno-13-222"></a>&gt;
+</span><span id="__span-13-223"><a id="__codelineno-13-223" name="__codelineno-13-223" href="#__codelineno-13-223"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-224"><a id="__codelineno-13-224" name="__codelineno-13-224" href="#__codelineno-13-224"></a>returns 79 for arguments 69 and 10&quot; Expected &quot;79&quot; and got &quot;79&quot;
+</span><span id="__span-13-225"><a id="__codelineno-13-225" name="__codelineno-13-225" href="#__codelineno-13-225"></a>&gt;
+</span><span id="__span-13-226"><a id="__codelineno-13-226" name="__codelineno-13-226" href="#__codelineno-13-226"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-227"><a id="__codelineno-13-227" name="__codelineno-13-227" href="#__codelineno-13-227"></a>returns 80 for arguments 70 and 10&quot; Expected &quot;80&quot; and got &quot;80&quot;
+</span><span id="__span-13-228"><a id="__codelineno-13-228" name="__codelineno-13-228" href="#__codelineno-13-228"></a>&gt;
+</span><span id="__span-13-229"><a id="__codelineno-13-229" name="__codelineno-13-229" href="#__codelineno-13-229"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-230"><a id="__codelineno-13-230" name="__codelineno-13-230" href="#__codelineno-13-230"></a>returns 81 for arguments 71 and 10&quot; Expected &quot;81&quot; and got &quot;81&quot;
+</span><span id="__span-13-231"><a id="__codelineno-13-231" name="__codelineno-13-231" href="#__codelineno-13-231"></a>&gt;
+</span><span id="__span-13-232"><a id="__codelineno-13-232" name="__codelineno-13-232" href="#__codelineno-13-232"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-233"><a id="__codelineno-13-233" name="__codelineno-13-233" href="#__codelineno-13-233"></a>returns 82 for arguments 72 and 10&quot; Expected &quot;82&quot; and got &quot;82&quot;
+</span><span id="__span-13-234"><a id="__codelineno-13-234" name="__codelineno-13-234" href="#__codelineno-13-234"></a>&gt;
+</span><span id="__span-13-235"><a id="__codelineno-13-235" name="__codelineno-13-235" href="#__codelineno-13-235"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-236"><a id="__codelineno-13-236" name="__codelineno-13-236" href="#__codelineno-13-236"></a>returns 83 for arguments 73 and 10&quot; Expected &quot;83&quot; and got &quot;83&quot;
+</span><span id="__span-13-237"><a id="__codelineno-13-237" name="__codelineno-13-237" href="#__codelineno-13-237"></a>&gt;
+</span><span id="__span-13-238"><a id="__codelineno-13-238" name="__codelineno-13-238" href="#__codelineno-13-238"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-239"><a id="__codelineno-13-239" name="__codelineno-13-239" href="#__codelineno-13-239"></a>returns 84 for arguments 74 and 10&quot; Expected &quot;84&quot; and got &quot;84&quot;
+</span><span id="__span-13-240"><a id="__codelineno-13-240" name="__codelineno-13-240" href="#__codelineno-13-240"></a>&gt;
+</span><span id="__span-13-241"><a id="__codelineno-13-241" name="__codelineno-13-241" href="#__codelineno-13-241"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-242"><a id="__codelineno-13-242" name="__codelineno-13-242" href="#__codelineno-13-242"></a>returns 85 for arguments 75 and 10&quot; Expected &quot;85&quot; and got &quot;85&quot;
+</span><span id="__span-13-243"><a id="__codelineno-13-243" name="__codelineno-13-243" href="#__codelineno-13-243"></a>&gt;
+</span><span id="__span-13-244"><a id="__codelineno-13-244" name="__codelineno-13-244" href="#__codelineno-13-244"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-245"><a id="__codelineno-13-245" name="__codelineno-13-245" href="#__codelineno-13-245"></a>returns 86 for arguments 76 and 10&quot; Expected &quot;86&quot; and got &quot;86&quot;
+</span><span id="__span-13-246"><a id="__codelineno-13-246" name="__codelineno-13-246" href="#__codelineno-13-246"></a>&gt;
+</span><span id="__span-13-247"><a id="__codelineno-13-247" name="__codelineno-13-247" href="#__codelineno-13-247"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-248"><a id="__codelineno-13-248" name="__codelineno-13-248" href="#__codelineno-13-248"></a>returns 87 for arguments 77 and 10&quot; Expected &quot;87&quot; and got &quot;87&quot;
+</span><span id="__span-13-249"><a id="__codelineno-13-249" name="__codelineno-13-249" href="#__codelineno-13-249"></a>&gt;
+</span><span id="__span-13-250"><a id="__codelineno-13-250" name="__codelineno-13-250" href="#__codelineno-13-250"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-251"><a id="__codelineno-13-251" name="__codelineno-13-251" href="#__codelineno-13-251"></a>returns 88 for arguments 78 and 10&quot; Expected &quot;88&quot; and got &quot;88&quot;
+</span><span id="__span-13-252"><a id="__codelineno-13-252" name="__codelineno-13-252" href="#__codelineno-13-252"></a>&gt;
+</span><span id="__span-13-253"><a id="__codelineno-13-253" name="__codelineno-13-253" href="#__codelineno-13-253"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-254"><a id="__codelineno-13-254" name="__codelineno-13-254" href="#__codelineno-13-254"></a>returns 89 for arguments 79 and 10&quot; Expected &quot;89&quot; and got &quot;89&quot;
+</span><span id="__span-13-255"><a id="__codelineno-13-255" name="__codelineno-13-255" href="#__codelineno-13-255"></a>&gt;
+</span><span id="__span-13-256"><a id="__codelineno-13-256" name="__codelineno-13-256" href="#__codelineno-13-256"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-257"><a id="__codelineno-13-257" name="__codelineno-13-257" href="#__codelineno-13-257"></a>returns 90 for arguments 80 and 10&quot; Expected &quot;90&quot; and got &quot;90&quot;
+</span><span id="__span-13-258"><a id="__codelineno-13-258" name="__codelineno-13-258" href="#__codelineno-13-258"></a>&gt;
+</span><span id="__span-13-259"><a id="__codelineno-13-259" name="__codelineno-13-259" href="#__codelineno-13-259"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-260"><a id="__codelineno-13-260" name="__codelineno-13-260" href="#__codelineno-13-260"></a>returns 91 for arguments 81 and 10&quot; Expected &quot;91&quot; and got &quot;91&quot;
+</span><span id="__span-13-261"><a id="__codelineno-13-261" name="__codelineno-13-261" href="#__codelineno-13-261"></a>&gt;
+</span><span id="__span-13-262"><a id="__codelineno-13-262" name="__codelineno-13-262" href="#__codelineno-13-262"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-263"><a id="__codelineno-13-263" name="__codelineno-13-263" href="#__codelineno-13-263"></a>returns 92 for arguments 82 and 10&quot; Expected &quot;92&quot; and got &quot;92&quot;
+</span><span id="__span-13-264"><a id="__codelineno-13-264" name="__codelineno-13-264" href="#__codelineno-13-264"></a>&gt;
+</span><span id="__span-13-265"><a id="__codelineno-13-265" name="__codelineno-13-265" href="#__codelineno-13-265"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-266"><a id="__codelineno-13-266" name="__codelineno-13-266" href="#__codelineno-13-266"></a>returns 93 for arguments 83 and 10&quot; Expected &quot;93&quot; and got &quot;93&quot;
+</span><span id="__span-13-267"><a id="__codelineno-13-267" name="__codelineno-13-267" href="#__codelineno-13-267"></a>&gt;
+</span><span id="__span-13-268"><a id="__codelineno-13-268" name="__codelineno-13-268" href="#__codelineno-13-268"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-269"><a id="__codelineno-13-269" name="__codelineno-13-269" href="#__codelineno-13-269"></a>returns 94 for arguments 84 and 10&quot; Expected &quot;94&quot; and got &quot;94&quot;
+</span><span id="__span-13-270"><a id="__codelineno-13-270" name="__codelineno-13-270" href="#__codelineno-13-270"></a>&gt;
+</span><span id="__span-13-271"><a id="__codelineno-13-271" name="__codelineno-13-271" href="#__codelineno-13-271"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-272"><a id="__codelineno-13-272" name="__codelineno-13-272" href="#__codelineno-13-272"></a>returns 95 for arguments 85 and 10&quot; Expected &quot;95&quot; and got &quot;95&quot;
+</span><span id="__span-13-273"><a id="__codelineno-13-273" name="__codelineno-13-273" href="#__codelineno-13-273"></a>&gt;
+</span><span id="__span-13-274"><a id="__codelineno-13-274" name="__codelineno-13-274" href="#__codelineno-13-274"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-275"><a id="__codelineno-13-275" name="__codelineno-13-275" href="#__codelineno-13-275"></a>returns 96 for arguments 86 and 10&quot; Expected &quot;96&quot; and got &quot;96&quot;
+</span><span id="__span-13-276"><a id="__codelineno-13-276" name="__codelineno-13-276" href="#__codelineno-13-276"></a>&gt;
+</span><span id="__span-13-277"><a id="__codelineno-13-277" name="__codelineno-13-277" href="#__codelineno-13-277"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-278"><a id="__codelineno-13-278" name="__codelineno-13-278" href="#__codelineno-13-278"></a>returns 97 for arguments 87 and 10&quot; Expected &quot;97&quot; and got &quot;97&quot;
+</span><span id="__span-13-279"><a id="__codelineno-13-279" name="__codelineno-13-279" href="#__codelineno-13-279"></a>&gt;
+</span><span id="__span-13-280"><a id="__codelineno-13-280" name="__codelineno-13-280" href="#__codelineno-13-280"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-281"><a id="__codelineno-13-281" name="__codelineno-13-281" href="#__codelineno-13-281"></a>returns 98 for arguments 88 and 10&quot; Expected &quot;98&quot; and got &quot;98&quot;
+</span><span id="__span-13-282"><a id="__codelineno-13-282" name="__codelineno-13-282" href="#__codelineno-13-282"></a>&gt;
+</span><span id="__span-13-283"><a id="__codelineno-13-283" name="__codelineno-13-283" href="#__codelineno-13-283"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-284"><a id="__codelineno-13-284" name="__codelineno-13-284" href="#__codelineno-13-284"></a>returns 99 for arguments 89 and 10&quot; Expected &quot;99&quot; and got &quot;99&quot;
+</span><span id="__span-13-285"><a id="__codelineno-13-285" name="__codelineno-13-285" href="#__codelineno-13-285"></a>&gt;
+</span><span id="__span-13-286"><a id="__codelineno-13-286" name="__codelineno-13-286" href="#__codelineno-13-286"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-287"><a id="__codelineno-13-287" name="__codelineno-13-287" href="#__codelineno-13-287"></a>returns 100 for arguments 90 and 10&quot; Expected &quot;100&quot; and got &quot;100&quot;
+</span><span id="__span-13-288"><a id="__codelineno-13-288" name="__codelineno-13-288" href="#__codelineno-13-288"></a>&gt;
+</span><span id="__span-13-289"><a id="__codelineno-13-289" name="__codelineno-13-289" href="#__codelineno-13-289"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-290"><a id="__codelineno-13-290" name="__codelineno-13-290" href="#__codelineno-13-290"></a>returns 101 for arguments 91 and 10&quot; Expected &quot;101&quot; and got &quot;101&quot;
+</span><span id="__span-13-291"><a id="__codelineno-13-291" name="__codelineno-13-291" href="#__codelineno-13-291"></a>&gt;
+</span><span id="__span-13-292"><a id="__codelineno-13-292" name="__codelineno-13-292" href="#__codelineno-13-292"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-293"><a id="__codelineno-13-293" name="__codelineno-13-293" href="#__codelineno-13-293"></a>returns 102 for arguments 92 and 10&quot; Expected &quot;102&quot; and got &quot;102&quot;
+</span><span id="__span-13-294"><a id="__codelineno-13-294" name="__codelineno-13-294" href="#__codelineno-13-294"></a>&gt;
+</span><span id="__span-13-295"><a id="__codelineno-13-295" name="__codelineno-13-295" href="#__codelineno-13-295"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-296"><a id="__codelineno-13-296" name="__codelineno-13-296" href="#__codelineno-13-296"></a>returns 103 for arguments 93 and 10&quot; Expected &quot;103&quot; and got &quot;103&quot;
+</span><span id="__span-13-297"><a id="__codelineno-13-297" name="__codelineno-13-297" href="#__codelineno-13-297"></a>&gt;
+</span><span id="__span-13-298"><a id="__codelineno-13-298" name="__codelineno-13-298" href="#__codelineno-13-298"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-299"><a id="__codelineno-13-299" name="__codelineno-13-299" href="#__codelineno-13-299"></a>returns 104 for arguments 94 and 10&quot; Expected &quot;104&quot; and got &quot;104&quot;
+</span><span id="__span-13-300"><a id="__codelineno-13-300" name="__codelineno-13-300" href="#__codelineno-13-300"></a>&gt;
+</span><span id="__span-13-301"><a id="__codelineno-13-301" name="__codelineno-13-301" href="#__codelineno-13-301"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-302"><a id="__codelineno-13-302" name="__codelineno-13-302" href="#__codelineno-13-302"></a>returns 105 for arguments 95 and 10&quot; Expected &quot;105&quot; and got &quot;105&quot;
+</span><span id="__span-13-303"><a id="__codelineno-13-303" name="__codelineno-13-303" href="#__codelineno-13-303"></a>&gt;
+</span><span id="__span-13-304"><a id="__codelineno-13-304" name="__codelineno-13-304" href="#__codelineno-13-304"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-305"><a id="__codelineno-13-305" name="__codelineno-13-305" href="#__codelineno-13-305"></a>returns 106 for arguments 96 and 10&quot; Expected &quot;106&quot; and got &quot;106&quot;
+</span><span id="__span-13-306"><a id="__codelineno-13-306" name="__codelineno-13-306" href="#__codelineno-13-306"></a>&gt;
+</span><span id="__span-13-307"><a id="__codelineno-13-307" name="__codelineno-13-307" href="#__codelineno-13-307"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-308"><a id="__codelineno-13-308" name="__codelineno-13-308" href="#__codelineno-13-308"></a>returns 107 for arguments 97 and 10&quot; Expected &quot;107&quot; and got &quot;107&quot;
+</span><span id="__span-13-309"><a id="__codelineno-13-309" name="__codelineno-13-309" href="#__codelineno-13-309"></a>&gt;
+</span><span id="__span-13-310"><a id="__codelineno-13-310" name="__codelineno-13-310" href="#__codelineno-13-310"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-311"><a id="__codelineno-13-311" name="__codelineno-13-311" href="#__codelineno-13-311"></a>returns 108 for arguments 98 and 10&quot; Expected &quot;108&quot; and got &quot;108&quot;
+</span><span id="__span-13-312"><a id="__codelineno-13-312" name="__codelineno-13-312" href="#__codelineno-13-312"></a>&gt;
+</span><span id="__span-13-313"><a id="__codelineno-13-313" name="__codelineno-13-313" href="#__codelineno-13-313"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-314"><a id="__codelineno-13-314" name="__codelineno-13-314" href="#__codelineno-13-314"></a>returns 109 for arguments 99 and 10&quot; Expected &quot;109&quot; and got &quot;109&quot;
+</span><span id="__span-13-315"><a id="__codelineno-13-315" name="__codelineno-13-315" href="#__codelineno-13-315"></a>&gt;
+</span><span id="__span-13-316"><a id="__codelineno-13-316" name="__codelineno-13-316" href="#__codelineno-13-316"></a>SUCCESS - sum_two_numbers.UT_SUM_TWO_NUMBERS_100_TIMES: EQ &quot;sum_two_numbers
+</span><span id="__span-13-317"><a id="__codelineno-13-317" name="__codelineno-13-317" href="#__codelineno-13-317"></a>returns 110 for arguments 100 and 10&quot; Expected &quot;110&quot; and got &quot;110&quot;
+</span><span id="__span-13-318"><a id="__codelineno-13-318" name="__codelineno-13-318" href="#__codelineno-13-318"></a>&gt;
+</span><span id="__span-13-319"><a id="__codelineno-13-319" name="__codelineno-13-319" href="#__codelineno-13-319"></a>&gt;
+</span><span id="__span-13-320"><a id="__codelineno-13-320" name="__codelineno-13-320" href="#__codelineno-13-320"></a>&gt; Errors recorded in utPLSQL Error Log:
+</span><span id="__span-13-321"><a id="__codelineno-13-321" name="__codelineno-13-321" href="#__codelineno-13-321"></a>&gt;
+</span><span id="__span-13-322"><a id="__codelineno-13-322" name="__codelineno-13-322" href="#__codelineno-13-322"></a>&gt; NONE FOUND
+</span><span id="__span-13-323"><a id="__codelineno-13-323" name="__codelineno-13-323" href="#__codelineno-13-323"></a>
+</span><span id="__span-13-324"><a id="__codelineno-13-324" name="__codelineno-13-324" href="#__codelineno-13-324"></a>PL/SQL procedure successfully completed.
+</span></code></pre></div>
+<p>The ruby-plsql-spec resutls are very dense, when using the default, progress reporting format.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>rspec spec/sum_two_numbers_spec.rb
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>Running specs from spec\sum_two_numbers_spec.rb
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>..........................................F..........................................................
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>Failures:
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>  1) sum_two_numbers returns 51 for arguments 41 and 10
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>     Failure/Error: expect( plsql.sum_two_numbers_100_times(i,10) ).to eq i+10
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>       expected: 51
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>            got: 52
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>       (compared using ==)
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>     # ./spec/sum_two_numbers_spec.rb:11:in `block (3 levels) in &lt;top (required)&gt;&#39;
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>Finished in 0.70409 seconds (files took 1.46 seconds to load)
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>101 examples, 1 failure
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a>Failed examples:
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a>
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a>rspec &#39;./spec/sum_two_numbers_spec.rb[1:43]&#39; # sum_two_numbers returns 51 for arguments 41 and 10
+</span><span id="__span-15-21"><a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>
+</span><span id="__span-15-22"><a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a>Failing tests!
+</span></code></pre></div>
+<p>If you compare the two reports, you'll clearly notice the huge difference in readability of those two. The RSpec clearly shows what failed and where it failed. In UTPLSQL the information is lost in the amount of SUCCESS noise.</p>
+<h1 id="utplsql-failing-to-run-tests">UTPLSQL failing to run tests<a class="headerlink" href="#utplsql-failing-to-run-tests" title="Permanent link">&para;</a></h1>
+<p><strong>One of the biggest problems with UTPLSQL is the fact that it can't run when dependencies are broken.</strong>
+This makes developers move away from using this tool. As the number of tests grow and database packages grow, one small change to package signature (change of specification) will invalidate all tests against this package and the tests will simply not execute.
+When a change is done to PLSQL package, tests would first need to be fixed before they can be executed. This simple fact makes the existence of the tests a headache for a developer and decreases their value down to almost zero. The tests are unable to give a fast feedback.
+Consider the package <code>message_api</code> code I've used in the <a href="../../14/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-one/">first article</a> of this series.
+The package consists of two methods</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">send_msg</span><span class="w"> </span><span class="p">(</span><span class="n">p_number</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">,</span><span class="w"> </span><span class="n">p_text</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="n">VARCHAR2</span><span class="p">,</span><span class="w"> </span><span class="n">p_date</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="nb">DATE</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">SYSDATE</span><span class="p">);</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">receive_msg</span><span class="w"> </span><span class="p">(</span><span class="n">p_number</span><span class="w"> </span><span class="k">OUT</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">,</span><span class="w"> </span><span class="n">p_text</span><span class="w"> </span><span class="k">OUT</span><span class="w"> </span><span class="n">VARCHAR2</span><span class="p">,</span><span class="w"> </span><span class="n">p_date</span><span class="w"> </span><span class="k">OUT</span><span class="w"> </span><span class="nb">DATE</span><span class="p">);</span>
+</span></code></pre></div>
+<p>What will happen, when I will add or remove or change the ordering of parameters?
+Lets give it a try with adding a parameter to the <code>receive_msg</code> procedure.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">receive_msg</span><span class="w"> </span><span class="p">(</span><span class="n">p_number</span><span class="w"> </span><span class="k">OUT</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">,</span><span class="w"> </span><span class="n">p_text</span><span class="w"> </span><span class="k">OUT</span><span class="w"> </span><span class="n">VARCHAR2</span><span class="p">,</span><span class="w"> </span><span class="n">p_date</span><span class="w"> </span><span class="k">OUT</span><span class="w"> </span><span class="nb">DATE</span><span class="p">,</span><span class="w"> </span><span class="n">p_received_on</span><span class="w"> </span><span class="k">OUT</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="p">);</span>
+</span></code></pre></div>
+<p>When I execute my ruby-plsql-spec tests I get the following results</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>Running specs from spec\message_api\send_and_receive_spec.rb
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>FF.
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>Failures:
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>  1) cross session communication package allows receiving message sent in one session
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>     Failure/Error: expect( plsql.message_api.receive_msg ).to eq( a_message )
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>       expected: {:p_number=&gt;1, :p_text=&gt;&quot;a message&quot;, :p_date=&gt;2015-06-27 00:00:00.000000000 +0100}
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>            got: {:p_number=&gt;1, :p_text=&gt;&quot;a message&quot;, :p_date=&gt;2015-06-27 00:00:00.000000000 +0100, :p_received_on=&gt;NULL}
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>       (compared using ==)
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>       Diff:
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>       @@ -1,4 +1,5 @@
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a>        :p_date =&gt; 2015-06-27 00:00:00.000000000 +0100,
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a>        :p_number =&gt; 1,
+</span><span id="__span-18-18"><a id="__codelineno-18-18" name="__codelineno-18-18" href="#__codelineno-18-18"></a>       +:p_received_on =&gt; NULL,
+</span><span id="__span-18-19"><a id="__codelineno-18-19" name="__codelineno-18-19" href="#__codelineno-18-19"></a>        :p_text =&gt; &quot;a message&quot;,
+</span><span id="__span-18-20"><a id="__codelineno-18-20" name="__codelineno-18-20" href="#__codelineno-18-20"></a>     # ./spec/message_api/send_and_receive_spec.rb:8:in `block (2 levels) in &lt;top (required)&gt;&#39;
+</span><span id="__span-18-21"><a id="__codelineno-18-21" name="__codelineno-18-21" href="#__codelineno-18-21"></a>
+</span><span id="__span-18-22"><a id="__codelineno-18-22" name="__codelineno-18-22" href="#__codelineno-18-22"></a>  2) cross session communication package allows sending and receiving message across different sessions
+</span><span id="__span-18-23"><a id="__codelineno-18-23" name="__codelineno-18-23" href="#__codelineno-18-23"></a>     Failure/Error: expect( received_values ).to eq( message_values )
+</span><span id="__span-18-24"><a id="__codelineno-18-24" name="__codelineno-18-24" href="#__codelineno-18-24"></a>
+</span><span id="__span-18-25"><a id="__codelineno-18-25" name="__codelineno-18-25" href="#__codelineno-18-25"></a>       expected: [1, &quot;a message&quot;, 2015-06-27 00:00:00.000000000 +0100]
+</span><span id="__span-18-26"><a id="__codelineno-18-26" name="__codelineno-18-26" href="#__codelineno-18-26"></a>            got: [1, &quot;a message&quot;, 2015-06-27 00:00:00.000000000 +0100, NULL]
+</span><span id="__span-18-27"><a id="__codelineno-18-27" name="__codelineno-18-27" href="#__codelineno-18-27"></a>
+</span><span id="__span-18-28"><a id="__codelineno-18-28" name="__codelineno-18-28" href="#__codelineno-18-28"></a>       (compared using ==)
+</span><span id="__span-18-29"><a id="__codelineno-18-29" name="__codelineno-18-29" href="#__codelineno-18-29"></a>     # ./spec/message_api/send_and_receive_spec.rb:15:in `block (2 levels) in &lt;top (required)&gt;&#39;
+</span><span id="__span-18-30"><a id="__codelineno-18-30" name="__codelineno-18-30" href="#__codelineno-18-30"></a>
+</span><span id="__span-18-31"><a id="__codelineno-18-31" name="__codelineno-18-31" href="#__codelineno-18-31"></a>Finished in 0.06301 seconds (files took 1.63 seconds to load)
+</span><span id="__span-18-32"><a id="__codelineno-18-32" name="__codelineno-18-32" href="#__codelineno-18-32"></a>3 examples, 2 failures
+</span><span id="__span-18-33"><a id="__codelineno-18-33" name="__codelineno-18-33" href="#__codelineno-18-33"></a>
+</span><span id="__span-18-34"><a id="__codelineno-18-34" name="__codelineno-18-34" href="#__codelineno-18-34"></a>Failed examples:
+</span><span id="__span-18-35"><a id="__codelineno-18-35" name="__codelineno-18-35" href="#__codelineno-18-35"></a>
+</span><span id="__span-18-36"><a id="__codelineno-18-36" name="__codelineno-18-36" href="#__codelineno-18-36"></a>rspec ./spec/message_api/send_and_receive_spec.rb:5 # cross session communication package allows receiving message sent in one session
+</span><span id="__span-18-37"><a id="__codelineno-18-37" name="__codelineno-18-37" href="#__codelineno-18-37"></a>rspec ./spec/message_api/send_and_receive_spec.rb:11 # cross session communication package allows sending and receiving message across different sessions
+</span></code></pre></div>
+<p>The tests results clearly indicate what is happening</p>
+<ul>
+<li>three tests were executed</li>
+<li>two tests failed</li>
+<li>first test failed on comparison of parameter-value pairs and we see a diff of expected/got</li>
+<li>second test failed on comparison of list of returned values and we see that the returned values array contained more than expected</li>
+<li>third test passed, as <strong>it was badly written</strong>. The test was comparing individual elements of return values and a new value returned was simply not tested within the test. This single test is showing one of traps you can come into when unit testing. <strong>One must really understand what is really tested in a test, to make the test reliable and valuable.</strong></li>
+<li>we see the names of failed tests and the lines at which those test failed</li>
+</ul>
+<p>utplsql.test('message_api') I get the following results</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>.
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>&gt;  FFFFFFF   AA     III  L      U     U RRRRR   EEEEEEE
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>&gt;  F        A  A     I   L      U     U R    R  E
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>&gt;  F       A    A    I   L      U     U R     R E
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>&gt;  F      A      A   I   L      U     U R     R E
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>&gt;  FFFF   A      A   I   L      U     U RRRRRR  EEEE
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>&gt;  F      AAAAAAAA   I   L      U     U R   R   E
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>&gt;  F      A      A   I   L      U     U R    R  E
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>&gt;  F      A      A   I   L       U   U  R     R E
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>&gt;  F      A      A  III  LLLLLLL  UUU   R     R EEEEEEE
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>.
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>FAILURE: &quot;.message_api&quot;
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>.
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a>&gt; Individual Test Case Results:
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>&gt;
+</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>FAILURE - .: Unable to run ut_message_api.ut_SETUP: ORA-04063: package body
+</span><span id="__span-19-17"><a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a>&quot;TDD_TEST1.UT_MESSAGE_API&quot; has errors
+</span><span id="__span-19-18"><a id="__codelineno-19-18" name="__codelineno-19-18" href="#__codelineno-19-18"></a>ORA-06508: PL/SQL: could not find program
+</span><span id="__span-19-19"><a id="__codelineno-19-19" name="__codelineno-19-19" href="#__codelineno-19-19"></a>unit being called: &quot;TDD_TEST1.UT_MESSAGE_API&quot;
+</span><span id="__span-19-20"><a id="__codelineno-19-20" name="__codelineno-19-20" href="#__codelineno-19-20"></a>&gt;
+</span><span id="__span-19-21"><a id="__codelineno-19-21" name="__codelineno-19-21" href="#__codelineno-19-21"></a>FAILURE - .: utPLSQL.test failure: User-Defined Exception
+</span><span id="__span-19-22"><a id="__codelineno-19-22" name="__codelineno-19-22" href="#__codelineno-19-22"></a>&gt;
+</span><span id="__span-19-23"><a id="__codelineno-19-23" name="__codelineno-19-23" href="#__codelineno-19-23"></a>&gt;
+</span><span id="__span-19-24"><a id="__codelineno-19-24" name="__codelineno-19-24" href="#__codelineno-19-24"></a>&gt; Errors recorded in utPLSQL Error Log:
+</span><span id="__span-19-25"><a id="__codelineno-19-25" name="__codelineno-19-25" href="#__codelineno-19-25"></a>&gt;
+</span><span id="__span-19-26"><a id="__codelineno-19-26" name="__codelineno-19-26" href="#__codelineno-19-26"></a>&gt; NONE FOUND
+</span><span id="__span-19-27"><a id="__codelineno-19-27" name="__codelineno-19-27" href="#__codelineno-19-27"></a>BEGIN  utConfig.autocompile(false);  utplsql.test(&#39;message_api&#39;);END;
+</span><span id="__span-19-28"><a id="__codelineno-19-28" name="__codelineno-19-28" href="#__codelineno-19-28"></a>*
+</span><span id="__span-19-29"><a id="__codelineno-19-29" name="__codelineno-19-29" href="#__codelineno-19-29"></a>ERROR at line 1:
+</span><span id="__span-19-30"><a id="__codelineno-19-30" name="__codelineno-19-30" href="#__codelineno-19-30"></a>ORA-06510: PL/SQL: unhandled user-defined exception
+</span><span id="__span-19-31"><a id="__codelineno-19-31" name="__codelineno-19-31" href="#__codelineno-19-31"></a>ORA-06512: at &quot;UTP.UTASSERT2&quot;, line 149
+</span><span id="__span-19-32"><a id="__codelineno-19-32" name="__codelineno-19-32" href="#__codelineno-19-32"></a>ORA-06512: at &quot;UTP.UTASSERT&quot;, line 49
+</span><span id="__span-19-33"><a id="__codelineno-19-33" name="__codelineno-19-33" href="#__codelineno-19-33"></a>ORA-06512: at &quot;UTP.UTPLSQL&quot;, line 952
+</span><span id="__span-19-34"><a id="__codelineno-19-34" name="__codelineno-19-34" href="#__codelineno-19-34"></a>ORA-06510: PL/SQL: unhandled user-defined exception
+</span><span id="__span-19-35"><a id="__codelineno-19-35" name="__codelineno-19-35" href="#__codelineno-19-35"></a>ORA-06512: at &quot;UTP.UTASSERT2&quot;, line 149
+</span><span id="__span-19-36"><a id="__codelineno-19-36" name="__codelineno-19-36" href="#__codelineno-19-36"></a>ORA-06512: at &quot;UTP.UTASSERT&quot;, line 49
+</span><span id="__span-19-37"><a id="__codelineno-19-37" name="__codelineno-19-37" href="#__codelineno-19-37"></a>ORA-06512: at &quot;UTP.UTPLSQL&quot;, line 426
+</span><span id="__span-19-38"><a id="__codelineno-19-38" name="__codelineno-19-38" href="#__codelineno-19-38"></a>ORA-04063: package body &quot;TDD_TEST1.UT_MESSAGE_API&quot; has errors
+</span><span id="__span-19-39"><a id="__codelineno-19-39" name="__codelineno-19-39" href="#__codelineno-19-39"></a>ORA-06508: PL/SQL: could not find program unit being called:
+</span><span id="__span-19-40"><a id="__codelineno-19-40" name="__codelineno-19-40" href="#__codelineno-19-40"></a>&quot;TDD_TEST1.UT_MESSAGE_API&quot;
+</span><span id="__span-19-41"><a id="__codelineno-19-41" name="__codelineno-19-41" href="#__codelineno-19-41"></a>ORA-06512: at &quot;UTP.UTPLSQL&quot;, line 1109
+</span><span id="__span-19-42"><a id="__codelineno-19-42" name="__codelineno-19-42" href="#__codelineno-19-42"></a>ORA-06510: PL/SQL: unhandled user-defined exception
+</span><span id="__span-19-43"><a id="__codelineno-19-43" name="__codelineno-19-43" href="#__codelineno-19-43"></a>ORA-06512: at &quot;UTP.UTASSERT2&quot;, line 149
+</span><span id="__span-19-44"><a id="__codelineno-19-44" name="__codelineno-19-44" href="#__codelineno-19-44"></a>ORA-06512: at &quot;UTP.UTASSERT&quot;, line 49
+</span><span id="__span-19-45"><a id="__codelineno-19-45" name="__codelineno-19-45" href="#__codelineno-19-45"></a>ORA-06512: at &quot;UTP.UTPLSQL&quot;, line 426
+</span><span id="__span-19-46"><a id="__codelineno-19-46" name="__codelineno-19-46" href="#__codelineno-19-46"></a>ORA-04063: package body &quot;TDD_TEST1.UT_MESSAGE_API&quot; has errors
+</span><span id="__span-19-47"><a id="__codelineno-19-47" name="__codelineno-19-47" href="#__codelineno-19-47"></a>ORA-06508: PL/SQL: could not find program unit being called:
+</span><span id="__span-19-48"><a id="__codelineno-19-48" name="__codelineno-19-48" href="#__codelineno-19-48"></a>&quot;TDD_TEST1.UT_MESSAGE_API&quot;
+</span><span id="__span-19-49"><a id="__codelineno-19-49" name="__codelineno-19-49" href="#__codelineno-19-49"></a>ORA-06512: at line 1
+</span></code></pre></div>
+<p>The tests results show failure. But what has really happened?</p>
+<ul>
+<li>No tests were executed</li>
+<li>The tests cannot be executed as the test package is invalid</li>
+<li>There is a stacktrace of errors that allows us to trace how tests are invoked by UTPLSQL but has no value in terms of finding out why there is a problem with test execution</li>
+</ul>
+<p>\
+This example is clearly illustrating problems and difficulties that can be encountered when using UTPLSQL. If we would have a package containing 10,20,50 methods, then <strong>UTPLSQL will fail to test all those methods just because one of them has changed it's signature</strong>. This single fact makes UTPLSQL a bad option when making choice of unit testing framework. The problem is not related to the way UTPLSQL was build, but is strictly related to the way Oracle handles package dependencies.
+There is a way to work around this issue. We can have one test package per one tested method. But that would mean that to test 50 methods in one package you would need to create 50 unit test packages. This is a huge overkill and would create a big mess in the tested database schema, as the number of test packages would dominate the schema source code objects.
+Coming up next ... UTPLSQL not failing where it should.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+
+
+  
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 10.3 14 9.5 14.7 8 15.5 8s1.5.7 1.5 1.5m-5 7.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10m-6.5-4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m2 4.5c1.75 0 3.29.72 4.19 1.81l-1.42 1.42C14.32 16.5 13.25 16 12 16s-2.32.5-2.77 1.23l-1.42-1.42C8.71 14.72 10.25 14 12 14"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1" hidden>
+              
+              
+                
+              
+              
+              
+                
+                
+              
+              Thanks for your feedback!
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              
+              
+                
+                
+              
+              Thanks for your feedback! Help us improve this page by using our <a href="https://github.com/utPLSQL/utPLSQL/discussions/new?category=documentation-feedback" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>.
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+        
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../24/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-part-two/" class="md-footer__link md-footer__link--prev" aria-label="Previous: utPLSQL v2 vs. ruby-plsql/ruby-plsql-spec - part two (setup and basic reporting)">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                utPLSQL v2 vs. ruby-plsql/ruby-plsql-spec - part two (setup and basic reporting)
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../../07/11/utplsql-v2-vs-ruby-plsql-running-oracle-unit-tests-on-jenkins-ci/" class="md-footer__link md-footer__link--next" aria-label="Next: utPLSQL v2 vs. ruby-plsql - Running Oracle unit tests on Jenkins CI">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                utPLSQL v2 vs. ruby-plsql - Running Oracle unit tests on Jenkins CI
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+  
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+    
+      
+        
+  
+  
+    
+    
+  
+  <li class="task-list-item">
+    <label class="task-list-control">
+      <input type="checkbox" name="analytics" checked>
+      <span class="task-list-indicator"></span>
+      Google Analytics
+    </label>
+  </li>
+
+      
+    
+    
+      
+    
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "navigation.footer", "navigation.tracking", "navigation.instant", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
