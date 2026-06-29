@@ -68,6 +68,7 @@ theme:
     - navigation.indexes
     - navigation.footer
     - navigation.tracking
+    - navigation.instant
     - search.suggest
     - search.highlight
     - content.code.copy
