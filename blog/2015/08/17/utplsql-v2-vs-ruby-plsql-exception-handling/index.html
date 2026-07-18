@@ -1,0 +1,1812 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Oracle database, PL/SQL development, utPLSQL, testing and contemplative notes">
+      
+      
+        <meta name="author" content="Jacek Gebal">
+      
+      
+        <link rel="canonical" href="https://oraclethoughts.com/blog/2015/08/17/utplsql-v2-vs-ruby-plsql-exception-handling/">
+      
+      
+        <link rel="prev" href="../../11/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps-continued/">
+      
+      
+        <link rel="next" href="../../19/utplsql-v2-vs-ruby-plsql-oracle-unit-testing-frameworks-for-developers-comparison/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>utPLSQL v2 vs. ruby-plsql - exception handling - oraclethoughts</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-1TEVWKPL97"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-1TEVWKPL97",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-1TEVWKPL97",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>if("undefined"!=typeof __md_analytics){var consent=__md_get("__consent");consent&&consent.analytics&&__md_analytics()}</script>
+  
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#scenario" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="oraclethoughts" class="md-header__button md-logo" aria-label="oraclethoughts" data-md-component="logo">
+      
+  <img src="../../../../../assets/images/wordmark-header.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            oraclethoughts
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              utPLSQL v2 vs. ruby-plsql - exception handling
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="light-green"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../../" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="oraclethoughts" class="md-nav__button md-logo" aria-label="oraclethoughts" data-md-component="logo">
+      
+  <img src="../../../../../assets/images/wordmark-header.svg" alt="logo">
+
+    </a>
+    oraclethoughts
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Blog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2020/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2020
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2017/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2017
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2016/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2016
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2015/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2015
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2014/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2014
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/plsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PLSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/sql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/sqlplus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SQL*Plus
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/performance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    performance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/ruby-plsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ruby-plsql
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/utplsql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    utPLSQL
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2015-08-17 00:00:00+00:00" class="md-ellipsis">August 17, 2015</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/plsql/">PLSQL</a>, 
+                              <a href="../../../../category/ruby-plsql/">ruby-plsql</a>, 
+                              <a href="../../../../category/testing/">testing</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              9 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:plsql" class="md-tag">PL/SQL</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:ruby-plsql" class="md-tag">ruby-plsql</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:unit-testing" class="md-tag">unit testing</a>
+      
+    
+      
+      
+      
+      
+        <a href="../../../../tags/#tag:utplsql-v2" class="md-tag">utPLSQL v2</a>
+      
+    
+  </nav>
+
+
+
+<p>I recently use utPLSQL in my daily work as a testing framework and I've noticed that the framework is doing quite bad job on exception handling on the tested code.
+I'll try to demonstrate it with a simple/yet realistic scenario.</p>
+<!-- more -->
+
+<h1 id="scenario">Scenario<a class="headerlink" href="#scenario" title="Permanent link">&para;</a></h1>
+<p>Consider a CUSTOMERS table created and populated with following script</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">customers</span><span class="p">;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="p">(</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="n">customer_id</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="n">customer_no</span><span class="w"> </span><span class="nb">NUMBER</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="n">customer_valid_flag</span><span class="w"> </span><span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">chk_valid_flag</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">customer_valid_flag</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="s1">&#39;1&#39;</span><span class="p">))</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">);</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">ADD</span><span class="w"> </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">customers_pk</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">customer_id</span><span class="p">)</span><span class="w"> </span><span class="k">USING</span><span class="w"> </span><span class="k">INDEX</span><span class="p">;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="p">);</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">234</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">);</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="k">COMMIT</span><span class="p">;</span>
+</span></code></pre></div>
+<p>We have an API package to populate and access the CUSTOMERS table data.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="n">PACKAGE</span><span class="w"> </span><span class="n">some_table_api</span><span class="w"> </span><span class="k">AS</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">get_customer_no</span><span class="p">(</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="n">p_customer_id</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_id</span><span class="o">%</span><span class="k">TYPE</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_no</span><span class="o">%</span><span class="k">TYPE</span><span class="p">;</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">  </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">get_customer_valid_flag</span><span class="p">(</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="n">p_customer_id</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_id</span><span class="o">%</span><span class="k">TYPE</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_valid_flag</span><span class="o">%</span><span class="k">TYPE</span><span class="p">;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">add_customer</span><span class="p">(</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="n">p_customer_id</span><span class="w">         </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_id</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="n">p_customer_no</span><span class="w">         </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_no</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="n">p_customer_valid_flag</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_valid_flag</span><span class="o">%</span><span class="k">TYPE</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span><span class="p">);</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">END</span><span class="w"> </span><span class="n">some_table_api</span><span class="p">;</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="o">/</span>
+</span></code></pre></div>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="n">PACKAGE</span><span class="w"> </span><span class="n">BODY</span><span class="w"> </span><span class="n">some_table_api</span><span class="w"> </span><span class="k">AS</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">get_customer_no</span><span class="p">(</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="n">p_customer_id</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_id</span><span class="o">%</span><span class="k">TYPE</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_no</span><span class="o">%</span><span class="k">TYPE</span><span class="w"> </span><span class="k">IS</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="n">v_result</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_no</span><span class="o">%</span><span class="k">TYPE</span><span class="p">;</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="k">BEGIN</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">      </span><span class="k">SELECT</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">customer_no</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">v_result</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">        </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">c</span><span class="w">  </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_customer_id</span><span class="p">;</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">      </span><span class="k">RETURN</span><span class="w"> </span><span class="n">v_result</span><span class="p">;</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">  </span><span class="k">FUNCTION</span><span class="w"> </span><span class="n">get_customer_valid_flag</span><span class="p">(</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">    </span><span class="n">p_customer_id</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_id</span><span class="o">%</span><span class="k">TYPE</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="k">RETURN</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_valid_flag</span><span class="o">%</span><span class="k">TYPE</span><span class="w"> </span><span class="k">IS</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">    </span><span class="n">v_result</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_valid_flag</span><span class="o">%</span><span class="k">TYPE</span><span class="p">;</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">    </span><span class="k">BEGIN</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">      </span><span class="k">SELECT</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">customer_valid_flag</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">v_result</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">      </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_customer_id</span><span class="p">;</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">      </span><span class="k">RETURN</span><span class="w"> </span><span class="n">v_result</span><span class="p">;</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">    </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">add_customer</span><span class="p">(</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">    </span><span class="n">p_customer_id</span><span class="w">         </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_id</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">    </span><span class="n">p_customer_no</span><span class="w">         </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_no</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">    </span><span class="n">p_customer_valid_flag</span><span class="w"> </span><span class="n">customers</span><span class="p">.</span><span class="n">customer_valid_flag</span><span class="o">%</span><span class="k">TYPE</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">  </span><span class="p">)</span><span class="w"> </span><span class="k">IS</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">  </span><span class="k">BEGIN</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">    </span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">customers</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">      </span><span class="p">(</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span><span class="w"> </span><span class="n">customer_no</span><span class="p">,</span><span class="w"> </span><span class="n">customer_valid_flag</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">    </span><span class="k">VALUES</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">      </span><span class="p">(</span><span class="n">p_customer_id</span><span class="p">,</span><span class="w"> </span><span class="n">p_customer_no</span><span class="p">,</span><span class="w"> </span><span class="n">p_customer_valid_flag</span><span class="p">);</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">  </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="k">END</span><span class="w"> </span><span class="n">some_table_api</span><span class="p">;</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="o">/</span>
+</span></code></pre></div>
+<h1 id="unit-tests">Unit tests<a class="headerlink" href="#unit-tests" title="Permanent link">&para;</a></h1>
+<p>The above API Package is subject to unit testing.
+To keep it short, I'll focus on testing of the add_customer function.
+Let's create a simple test to verify that when I call the procedure add_customer, the customer row is added to the table.
+Using utPLSQL.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="n">PACKAGE</span><span class="w"> </span><span class="n">ut_some_table_api_new</span><span class="w"> </span><span class="k">IS</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_setup</span><span class="p">;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_teardown</span><span class="p">;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_add_customer</span><span class="p">;</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="o">/</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="n">PACKAGE</span><span class="w"> </span><span class="n">BODY</span><span class="w"> </span><span class="n">ut_some_table_api_new</span><span class="w"> </span><span class="k">IS</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_setup</span><span class="w"> </span><span class="k">IS</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">    </span><span class="k">BEGIN</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">      </span><span class="k">NULL</span><span class="p">;</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">    </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_teardown</span><span class="w"> </span><span class="k">IS</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="k">BEGIN</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="w">      </span><span class="k">ROLLBACK</span><span class="p">;</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">    </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">  </span><span class="k">PROCEDURE</span><span class="w"> </span><span class="n">ut_add_customer</span><span class="w"> </span><span class="k">IS</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">      </span><span class="n">v_row_count</span><span class="w">   </span><span class="nb">INTEGER</span><span class="p">;</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">      </span><span class="n">v_customer_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="p">:</span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">    </span><span class="k">BEGIN</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">      </span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">v_row_count</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">       </span><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v_customer_id</span><span class="p">;</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">      </span><span class="n">utAssert</span><span class="p">.</span><span class="n">eq</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;GIVEN customer does not exist&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">v_row_count</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">      </span><span class="n">some_table_api</span><span class="p">.</span><span class="n">add_customer</span><span class="p">(</span><span class="w"> </span><span class="n">v_customer_id</span><span class="p">,</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="w">      </span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">v_row_count</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">customers</span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">      </span><span class="k">WHERE</span><span class="w"> </span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v_customer_id</span><span class="p">;</span>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">      </span><span class="n">utAssert</span><span class="p">.</span><span class="n">eq</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;THEN customer is added&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">v_row_count</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">);</span>
+</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="w">    </span><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>
+</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="k">END</span><span class="p">;</span>
+</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="o">/</span>
+</span></code></pre></div>
+<p>Using ruby-plsql.</p>
+<div class="language-ruby highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">describe</span><span class="w"> </span><span class="s1">&#39;Add a new customer&#39;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="n">it</span><span class="w"> </span><span class="s1">&#39;adds a new customer to the table&#39;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="n">customer_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="c1">#GIVEN</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="n">expect</span><span class="p">(</span><span class="w"> </span><span class="n">plsql</span><span class="o">.</span><span class="n">customers</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="w"> </span><span class="ss">:customer_id</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">customer_id</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="w"> </span><span class="n">eq</span><span class="p">(</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="c1">#WHEN</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="n">plsql</span><span class="o">.</span><span class="n">some_table_api</span><span class="o">.</span><span class="n">add_customer</span><span class="p">(</span><span class="w"> </span><span class="n">customer_id</span><span class="p">,</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Y&#39;</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="c1">#THEN</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="w">    </span><span class="n">expect</span><span class="p">(</span><span class="w"> </span><span class="n">plsql</span><span class="o">.</span><span class="n">customers</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="ss">:customer_id</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">customer_id</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="w"> </span><span class="n">eq</span><span class="p">(</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">)</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">  </span><span class="k">end</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="k">end</span>
+</span></code></pre></div>
+<p>Let us now execute the tests to make sure they validate the procedure.
+First utPLSQL.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>SQL&gt; SET SERVEROUTPUT ON
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>SQL&gt; BEGIN  utConfig.autocompile(false);  utplsql.run(&#39;ut_some_table_api_new&#39;);END;
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  2  /
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>.
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>&gt;    SSSS   U     U   CCC     CCC   EEEEEEE   SSSS     SSSS
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>&gt;   S    S  U     U  C   C   C   C  E        S    S   S    S
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>&gt;  S        U     U C     C C     C E       S        S
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>&gt;   S       U     U C       C       E        S        S
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>&gt;    SSSS   U     U C       C       EEEE      SSSS     SSSS
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>&gt;        S  U     U C       C       E             S        S
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>&gt;         S U     U C     C C     C E              S        S
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>&gt;   S    S   U   U   C   C   C   C  E        S    S   S    S
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>&gt;    SSSS     UUU     CCC     CCC   EEEEEEE   SSSS     SSSS
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>.
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>SUCCESS: &quot;.ut_some_table_api_new&quot;
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>.
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>&gt; Individual Test Case Results:
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>&gt;
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER: EQ &quot;GIVEN customer does not
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>exist&quot; Expected &quot;0&quot; and got &quot;0&quot;
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>&gt;
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER: EQ &quot;THEN customer is added&quot;
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>Expected &quot;1&quot; and got &quot;1&quot;
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>&gt;
+</span></code></pre></div>
+<p>And ruby-plsql</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>C:\Users\Jacek\RubymineProjects\utplsql_vs_plsql_spec&gt;rspec -fd spec\some_table_api\add_customer_spec.rb
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>Add a new customer
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>  adds a new customer to the table
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>Finished in 0.04701 seconds (files took 1.95 seconds to load)
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>1 example, 0 failures
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>C:\Users\Jacek\RubymineProjects\utplsql_vs_plsql_spec&gt;
+</span></code></pre></div>
+<p>All good. both test frameworks do their job.</p>
+<h1 id="catching-exceptions">Catching exceptions<a class="headerlink" href="#catching-exceptions" title="Permanent link">&para;</a></h1>
+<p>Lets have a look on how the unit tests will behave when a change to the CUSTOMERS table structure will be introduced.
+We've just added a unique constraint to the CUSTOMERS table.</p>
+<div class="language-sql highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="k">ADD</span><span class="w"> </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">customers_uk</span><span class="w"> </span><span class="k">UNIQUE</span><span class="w"> </span><span class="p">(</span><span class="n">customer_no</span><span class="p">)</span><span class="w"> </span><span class="k">USING</span><span class="w"> </span><span class="k">INDEX</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Our utPLSQL unit tests start to fail.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>SQL&gt; BEGIN  utConfig.autocompile(false);  utplsql.run(&#39;ut_some_table_api_new&#39;);END;
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>  2  /
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>.
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>&gt;  FFFFFFF   AA     III  L      U     U RRRRR   EEEEEEE
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>&gt;  F        A  A     I   L      U     U R    R  E
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>&gt;  F       A    A    I   L      U     U R     R E
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>&gt;  F      A      A   I   L      U     U R     R E
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>&gt;  FFFF   A      A   I   L      U     U RRRRRR  EEEE
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>&gt;  F      AAAAAAAA   I   L      U     U R   R   E
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>&gt;  F      A      A   I   L      U     U R    R  E
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>&gt;  F      A      A   I   L       U   U  R     R E
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>&gt;  F      A      A  III  LLLLLLL  UUU   R     R EEEEEEE
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>.
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>FAILURE: &quot;.ut_some_table_api_new&quot;
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>.
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>&gt; Individual Test Case Results:
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>&gt;
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER: EQ &quot;GIVEN customer does not
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a>exist&quot; Expected &quot;0&quot; and got &quot;0&quot;
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a>&gt;
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a>FAILURE - ut_some_table_api_new.UT_ADD_CUSTOMER: Unable to run
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a>ut_some_table_api_new.UT_ADD_CUSTOMER: ORA-00001: unique constraint
+</span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a>(TDD_TEST1.CUSTOMERS_UK) violated
+</span><span id="__span-8-24"><a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a>&gt;
+</span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a>&gt;
+</span><span id="__span-8-26"><a id="__codelineno-8-26" name="__codelineno-8-26" href="#__codelineno-8-26"></a>&gt; Errors recorded in utPLSQL Error Log:
+</span><span id="__span-8-27"><a id="__codelineno-8-27" name="__codelineno-8-27" href="#__codelineno-8-27"></a>&gt;
+</span><span id="__span-8-28"><a id="__codelineno-8-28" name="__codelineno-8-28" href="#__codelineno-8-28"></a>&gt; NONE FOUND
+</span><span id="__span-8-29"><a id="__codelineno-8-29" name="__codelineno-8-29" href="#__codelineno-8-29"></a>
+</span><span id="__span-8-30"><a id="__codelineno-8-30" name="__codelineno-8-30" href="#__codelineno-8-30"></a>PL/SQL procedure successfully completed.
+</span><span id="__span-8-31"><a id="__codelineno-8-31" name="__codelineno-8-31" href="#__codelineno-8-31"></a>
+</span><span id="__span-8-32"><a id="__codelineno-8-32" name="__codelineno-8-32" href="#__codelineno-8-32"></a>SQL&gt;
+</span></code></pre></div>
+<p>And our ruby-plsql tests start to fail too</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>C:\Users\Jacek\RubymineProjects\utplsql_vs_plsql_spec&gt;rspec -fd spec\some_table_api\add_customer_spec.rb
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>Add a new customer
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  adds a new customer to the table (FAILED - 1)
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>Failures:
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>  1) Add a new customer adds a new customer to the table
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>     Failure/Error: plsql.some_table_api.add_customer( customer_id, 123, &#39;1&#39; )
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>     OCIError:
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>       ORA-00001: unique constraint (TDD_TEST1.CUSTOMERS_UK) violated
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>       ORA-06512: at &quot;TDD_TEST1.SOME_TABLE_API&quot;, line 31
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>       ORA-06512: at line 2
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>     # stmt.c:250:in oci8lib_191.so
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>     # ./spec/some_table_api/add_customer_spec.rb:8:in `block (2 levels) in &lt;top (required)&gt;&#39;
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>Finished in 0.04401 seconds (files took 1.7 seconds to load)
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>1 example, 1 failure
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>Failed examples:
+</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>
+</span><span id="__span-9-22"><a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>rspec ./spec/some_table_api/add_customer_spec.rb:3 # Add a new customer adds a new customer to the table
+</span><span id="__span-9-23"><a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>
+</span><span id="__span-9-24"><a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>C:\Users\Jacek\RubymineProjects\utplsql_vs_plsql_spec&gt;
+</span></code></pre></div>
+<p>Let's have a closer look at the failures and what kind of information they provide.
+When we get rid of all the noise from utPLSQL report, we see that there is an error message there.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>FAILURE - ut_some_table_api_new.UT_ADD_CUSTOMER: Unable to run
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>ut_some_table_api_new.UT_ADD_CUSTOMER: ORA-00001: unique constraint
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>(TDD_TEST1.CUSTOMERS_UK) violated
+</span></code></pre></div>
+<p>The failure informs about the unit testing package procedure "ut_some_table_api_new.UT_ADD_CUSTOMER" failing.
+It also gives a piece of information on what is wrong "ORA-00001: unique constraint (TDD_TEST1.CUSTOMERS_UK) violated".
+Not bad, but the information is not sufficient to easily nail the piece of code that is failing.
+On the other hand, ruby-plsql gives us the following:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>  1) Add a new customer adds a new customer to the table
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>     Failure/Error: plsql.some_table_api.add_customer( customer_id, 123, &#39;1&#39; )
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>     OCIError:
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>       ORA-00001: unique constraint (TDD_TEST1.CUSTOMERS_UK) violated
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>       ORA-06512: at &quot;TDD_TEST1.SOME_TABLE_API&quot;, line 31
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>       ORA-06512: at line 2
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>     # stmt.c:250:in oci8lib_191.so
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>     # ./spec/some_table_api/add_customer_spec.rb:8:in `block (2 levels) in &lt;top (required)&gt;&#39;
+</span></code></pre></div>
+<p>We have full error stack trace from Oracle, includint the line number of the tested SOME_TABLE_API code, where the exception was raised.
+We also have line number of the ruby-plsql unit test, where it failed.
+This way it's much easier to trace the exception and figure out what happened.
+<strong>utPLSQL falls behind ruby-plsql in this match</strong>, as ruby-plsql gives a full stack trace of the exception that was not captured.</p>
+<h1 id="testing-for-exceptions">Testing for exceptions<a class="headerlink" href="#testing-for-exceptions" title="Permanent link">&para;</a></h1>
+<p>Now, assuming that adding the constraint was deliberate and valid action, it would be good to have our tests fixed and also extend them to cover the scenario of unique constraint violation.
+Let's give it a try with utPLSQL.
+I've changed the existing test to validate that the customer with given ID and No does not exist.
+I've added 2 more tests to check that ADD_CUSTOMERS fails when a customer exits with given ID or number.
+I've also extracted the SELECT statement into a function, as it is used all over the place and I've added a ROLLBACK statement after each test, to make them atomic.
+[sql highlight="55,70"]
+CREATE OR REPLACE PACKAGE ut_some_table_api_new IS
+PROCEDURE ut_setup;
+PROCEDURE ut_teardown;
+PROCEDURE ut_add_customer;
+PROCEDURE ut_add_customer_fail_id;
+PROCEDURE ut_add_customer_fail_no;
+END;
+/
+CREATE OR REPLACE PACKAGE BODY ut_some_table_api_new IS
+PROCEDURE ut_setup IS
+BEGIN
+NULL;
+END;
+PROCEDURE ut_teardown IS
+BEGIN
+ROLLBACK;
+END;
+FUNCTION count_customers( p_customer_id INTEGER, p_customer_no INTEGER ) RETURN INTEGER IS
+v_row_count INTEGER;
+BEGIN
+SELECT COUNT(1) INTO v_row_count FROM customers
+WHERE customer_id = p_customer_id OR customer_no = p_customer_no;
+RETURN v_row_count;
+END;
+PROCEDURE ut_add_customer IS
+v_customer_id INTEGER := -1;
+v_customer_no INTEGER := 1234;
+BEGIN
+utAssert.eq ( 'GIVEN customer does not exist', count_customers( v_customer_id, v_customer_no ), 0 );
+some_table_api.add_customer( v_customer_id, v_customer_no, '1' );
+utAssert.eq ( 'THEN customer is added', count_customers( v_customer_id, v_customer_no ), 1 );
+ROLLBACK;
+END;
+PROCEDURE ut_add_customer_fail_id IS
+v_customer_id INTEGER := -1;
+v_customer_no INTEGER := 1234;
+BEGIN
+utAssert.eq ( 'GIVEN customer does not exist', count_customers( v_customer_id, v_customer_no ), 0 );
+some_table_api.add_customer( v_customer_id, v_customer_no, '1' );
+utAssert.eq ( 'WHEN customer is added', count_customers( v_customer_id, v_customer_no ), 1 );
+utAssert.throws('THEN the add_customer fails on the same CUSTOMER_ID'
+,'some_table_api.add_customer( '||v_customer_id||', '||(v_customer_no+1)||', ''1'' )'
+,'DUP_VAL_ON_INDEX');
+ROLLBACK;
+END;
+PROCEDURE ut_add_customer_fail_no IS
+v_customer_id INTEGER := -1;
+v_customer_no INTEGER := 1234;
+BEGIN
+utAssert.eq ( 'GIVEN customer does not exist', count_customers( v_customer_id, v_customer_no ), 0 );
+some_table_api.add_customer( v_customer_id, v_customer_no, '1' );
+utAssert.eq ( 'WHEN customer is added', count_customers( v_customer_id, v_customer_no ), 1 );
+utAssert.throws('THEN the add_customer fails on the same CUSTOMER_NO'
+,'some_table_api.add_customer( '||(v_customer_id-1)||', '||v_customer_no||', ''1'' )'
+,-1);
+ROLLBACK;
+END;
+END;
+/
+[/sql]
+So what do we get from those tests now?</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>SQL&gt; BEGIN  utConfig.autocompile(false);  utplsql.run(&#39;ut_some_table_api_new&#39;);END;
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  2  /
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>.
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>&gt;    SSSS   U     U   CCC     CCC   EEEEEEE   SSSS     SSSS
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>&gt;   S    S  U     U  C   C   C   C  E        S    S   S    S
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>&gt;  S        U     U C     C C     C E       S        S
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>&gt;   S       U     U C       C       E        S        S
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>&gt;    SSSS   U     U C       C       EEEE      SSSS     SSSS
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>&gt;        S  U     U C       C       E             S        S
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>&gt;         S U     U C     C C     C E              S        S
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>&gt;   S    S   U   U   C   C   C   C  E        S    S   S    S
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>&gt;    SSSS     UUU     CCC     CCC   EEEEEEE   SSSS     SSSS
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>.
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>SUCCESS: &quot;.ut_some_table_api_new&quot;
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>.
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>&gt; Individual Test Case Results:
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>&gt;
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER: EQ &quot;GIVEN customer does not
+</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>exist&quot; Expected &quot;0&quot; and got &quot;0&quot;
+</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>&gt;
+</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER: EQ &quot;THEN customer is added&quot;
+</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>Expected &quot;1&quot; and got &quot;1&quot;
+</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>&gt;
+</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER_FAIL_ID: EQ &quot;GIVEN customer does
+</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a>not exist&quot; Expected &quot;0&quot; and got &quot;0&quot;
+</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a>&gt;
+</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER_FAIL_ID: EQ &quot;WHEN customer is
+</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a>added&quot; Expected &quot;1&quot; and got &quot;1&quot;
+</span><span id="__span-12-29"><a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a>&gt;
+</span><span id="__span-12-30"><a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER_FAIL_ID: RAISES &quot;THEN the
+</span><span id="__span-12-31"><a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a>add_customer fails on the same CUSTOMER_ID&quot; Result: Block
+</span><span id="__span-12-32"><a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a>&quot;some_table_api.add_customer( -1, 1235, &#39;1&#39; )&quot; raises  Exception
+</span><span id="__span-12-33"><a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a>&quot;DUP_VAL_ON_INDEX
+</span><span id="__span-12-34"><a id="__codelineno-12-34" name="__codelineno-12-34" href="#__codelineno-12-34"></a>&gt;
+</span><span id="__span-12-35"><a id="__codelineno-12-35" name="__codelineno-12-35" href="#__codelineno-12-35"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER_FAIL_NO: EQ &quot;GIVEN customer does
+</span><span id="__span-12-36"><a id="__codelineno-12-36" name="__codelineno-12-36" href="#__codelineno-12-36"></a>not exist&quot; Expected &quot;0&quot; and got &quot;0&quot;
+</span><span id="__span-12-37"><a id="__codelineno-12-37" name="__codelineno-12-37" href="#__codelineno-12-37"></a>&gt;
+</span><span id="__span-12-38"><a id="__codelineno-12-38" name="__codelineno-12-38" href="#__codelineno-12-38"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER_FAIL_NO: EQ &quot;WHEN customer is
+</span><span id="__span-12-39"><a id="__codelineno-12-39" name="__codelineno-12-39" href="#__codelineno-12-39"></a>added&quot; Expected &quot;1&quot; and got &quot;1&quot;
+</span><span id="__span-12-40"><a id="__codelineno-12-40" name="__codelineno-12-40" href="#__codelineno-12-40"></a>&gt;
+</span><span id="__span-12-41"><a id="__codelineno-12-41" name="__codelineno-12-41" href="#__codelineno-12-41"></a>SUCCESS - ut_some_table_api_new.UT_ADD_CUSTOMER_FAIL_NO: THROWS &quot;THEN the
+</span><span id="__span-12-42"><a id="__codelineno-12-42" name="__codelineno-12-42" href="#__codelineno-12-42"></a>add_customer fails on the same CUSTOMER_NO&quot; Result: Block
+</span><span id="__span-12-43"><a id="__codelineno-12-43" name="__codelineno-12-43" href="#__codelineno-12-43"></a>&quot;some_table_api.add_customer( -2, 1234, &#39;1&#39; )&quot; raises  Exception &quot;-1
+</span><span id="__span-12-44"><a id="__codelineno-12-44" name="__codelineno-12-44" href="#__codelineno-12-44"></a>&gt;
+</span><span id="__span-12-45"><a id="__codelineno-12-45" name="__codelineno-12-45" href="#__codelineno-12-45"></a>&gt;
+</span><span id="__span-12-46"><a id="__codelineno-12-46" name="__codelineno-12-46" href="#__codelineno-12-46"></a>&gt; Errors recorded in utPLSQL Error Log:
+</span><span id="__span-12-47"><a id="__codelineno-12-47" name="__codelineno-12-47" href="#__codelineno-12-47"></a>&gt;
+</span><span id="__span-12-48"><a id="__codelineno-12-48" name="__codelineno-12-48" href="#__codelineno-12-48"></a>&gt; NONE FOUND
+</span><span id="__span-12-49"><a id="__codelineno-12-49" name="__codelineno-12-49" href="#__codelineno-12-49"></a>
+</span><span id="__span-12-50"><a id="__codelineno-12-50" name="__codelineno-12-50" href="#__codelineno-12-50"></a>PL/SQL procedure successfully completed.
+</span><span id="__span-12-51"><a id="__codelineno-12-51" name="__codelineno-12-51" href="#__codelineno-12-51"></a>
+</span><span id="__span-12-52"><a id="__codelineno-12-52" name="__codelineno-12-52" href="#__codelineno-12-52"></a>SQL&gt;
+</span></code></pre></div>
+<p>Let's give it a try with ruby-plsql
+[ruby highlight="24,34"]
+describe 'Add a new customer' do
+def count_customers(customer_id, customer_no)
+plsql.customers.count( 'WHERE customer_id = :customer_id OR customer_no = :customer_no', customer_id, customer_no )
+end
+it 'adds a new customer to the table' do
+customer_id, customer_no = -1, 1234</p>
+<h1 id="given">GIVEN<a class="headerlink" href="#given" title="Permanent link">&para;</a></h1>
+<p>expect( count_customers( customer_id, customer_no ) ).to eq( 0 )</p>
+<h1 id="when">WHEN<a class="headerlink" href="#when" title="Permanent link">&para;</a></h1>
+<p>plsql.some_table_api.add_customer( customer_id, customer_no, '1' )</p>
+<h1 id="then">THEN<a class="headerlink" href="#then" title="Permanent link">&para;</a></h1>
+<p>expect( count_customers( customer_id, customer_no ) ).to eq( 1 )
+end
+it 'fails to add a new customer on PK' do
+customer_id, customer_no = -1, 1234</p>
+<h1 id="given_1">GIVEN<a class="headerlink" href="#given_1" title="Permanent link">&para;</a></h1>
+<p>expect( count_customers( customer_id, customer_no ) ).to eq( 0 )</p>
+<h1 id="when_1">WHEN<a class="headerlink" href="#when_1" title="Permanent link">&para;</a></h1>
+<p>plsql.some_table_api.add_customer( customer_id, customer_no, '1' )</p>
+<h1 id="then_1">THEN<a class="headerlink" href="#then_1" title="Permanent link">&para;</a></h1>
+<p>expect{ plsql.some_table_api.add_customer( customer_id, customer_no+1, '1' ) }.to raise_exception(/CUSTOMERS_PK/)
+end
+it 'fails to add a new customer on UK' do
+customer_id, customer_no = -1, 1234</p>
+<h1 id="given_2">GIVEN<a class="headerlink" href="#given_2" title="Permanent link">&para;</a></h1>
+<p>expect( count_customers( customer_id, customer_no ) ).to eq( 0 )</p>
+<h1 id="when_2">WHEN<a class="headerlink" href="#when_2" title="Permanent link">&para;</a></h1>
+<p>plsql.some_table_api.add_customer( customer_id, customer_no, '1' )</p>
+<h1 id="then_2">THEN<a class="headerlink" href="#then_2" title="Permanent link">&para;</a></h1>
+<p>expect{ plsql.some_table_api.add_customer( customer_id-1, customer_no, '1' ) }.to raise_exception(/ORA-00001/)
+end
+end
+[/ruby]
+And the results.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>C:\Users\Jacek\RubymineProjects\utplsql_vs_plsql_spec&gt;rspec -fd spec\some_table_api\add_customer_spec.rb
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>Add a new customer
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>  adds a new customer to the table
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>  fails to add a new customer on PK
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>  fails to add a new customer on UK
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>Finished in 0.07101 seconds (files took 1.82 seconds to load)
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>3 examples, 0 failures
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>C:\Users\Jacek\RubymineProjects\utplsql_vs_plsql_spec&gt;
+</span></code></pre></div>
+<p>With utPLSQL it is possible to check for a predefined Oracle exception by name (like DUP_VAL_ON_INDEX) or any exception by specific exception number.
+The trouble is, that to check for an exception you need to pass the tested code as a string literal.
+If your procedure is accessing complex types that can't be easily expressed with literals (object/clob/blob/cursor) you simply cant use it.
+ruby-plsql (well actually RSpec) has an assertion on exception text. Matching can be done using regular expression. So you can validate that the raised exception (stack trace) contains the information you expect.
+When you are testing code for exceptions with ruby-plsql, you actually are injecting a code block into the "expect" routine using the block brackets "{ }".
+In utPLSQL you're also injecting the code to be executed into the "raises" assertion. In PL/SQL however, to dynamically inject code into another code, you pass it as a string. This makes the unit tests less readable and introduces many limitations.</p>
+<h1 id="tricky-one">Tricky one<a class="headerlink" href="#tricky-one" title="Permanent link">&para;</a></h1>
+<p>How can we make an assertion/expectation using UTPLSQL and / or ruby-plsql that the code beeing tested is not raising exception, so that when it's not raising any exceptions it's passing and when it's raising an exception, it fails?
+I'll leave it up to you, but believe me it's not a straight answer for UTPLSQL.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+
+
+  
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 10.3 14 9.5 14.7 8 15.5 8s1.5.7 1.5 1.5m-5 7.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10m-6.5-4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m2 4.5c1.75 0 3.29.72 4.19 1.81l-1.42 1.42C14.32 16.5 13.25 16 12 16s-2.32.5-2.77 1.23l-1.42-1.42C8.71 14.72 10.25 14 12 14"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1" hidden>
+              
+              
+                
+              
+              
+              
+                
+                
+              
+              Thanks for your feedback!
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              
+              
+                
+                
+              
+              Thanks for your feedback! Help us improve this page by using our <a href="https://github.com/utPLSQL/utPLSQL/discussions/new?category=documentation-feedback" target="_blank" rel="noopener noreferrer">GitHub Discussions</a>.
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+        
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../11/utplsql-v2-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps-continued/" class="md-footer__link md-footer__link--prev" aria-label="Previous: utPLSQL v2 vs. ruby-plsql/ruby-plsql-spec – implicit datatype conversion traps ... continued">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                utPLSQL v2 vs. ruby-plsql/ruby-plsql-spec – implicit datatype conversion traps ... continued
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../19/utplsql-v2-vs-ruby-plsql-oracle-unit-testing-frameworks-for-developers-comparison/" class="md-footer__link md-footer__link--next" aria-label="Next: utPLSQL v2 vs. ruby-plsql – Oracle unit testing frameworks for developers comparison">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                utPLSQL v2 vs. ruby-plsql – Oracle unit testing frameworks for developers comparison
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+  
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make our documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+    
+      
+        
+  
+  
+    
+    
+  
+  <li class="task-list-item">
+    <label class="task-list-control">
+      <input type="checkbox" name="analytics" checked>
+      <span class="task-list-indicator"></span>
+      Google Analytics
+    </label>
+  </li>
+
+      
+    
+    
+      
+    
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.indexes", "navigation.footer", "navigation.tracking", "navigation.instant", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
