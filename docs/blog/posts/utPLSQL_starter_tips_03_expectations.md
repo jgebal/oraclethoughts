@@ -67,7 +67,7 @@ By default, utPLSQL treats null values as equal so `ut.expect(to_char(null)).to_
 This behavior can be changed by passing second argument to the `to_equal()` matcher.
 Calling `ut.expect(to_char(null)).to_equal(to_char(null), false)` or more verbosely `ut.expect(to_char(null)).to_equal(to_char(null), a_nulls_are_equal => false)` will cause the expectation to fail when comparing null wit null.
 
-## Commonly used matchers
+## Common matchers
 
 | Matcher                 | Tests that actual...                |
 |-------------------------|-------------------------------------|
