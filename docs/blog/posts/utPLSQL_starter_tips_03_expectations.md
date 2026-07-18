@@ -12,7 +12,7 @@ tags:
   - "unit testing"
 ---
 
-utPLSQL provides a fluent expectations through the `ut.expect()` methods. This post covers the most commonly used matchers and how failure output works.
+utPLSQL provides expectations syntax through the `ut.expect()` methods. This post covers the most commonly used expectation matchers and how failure output works.
 <!-- more -->
 
 # The utPLSQL expectations API
@@ -53,9 +53,8 @@ end;
 When an expectation fails, utPLSQL prints the expected and actual values with their data types:
 
 ```
-Expectation failed: ...
-Expected: 5 (NUMBER)
-Actual  : 3 (NUMBER)
+FAILURE
+  Actual: 3 (number) was expected to equal: 5 (number)
 ```
 
 All expectations in a test are collected before the test is finished. A single test can have multiple expectation failures, all of which are reported as part of test result.
