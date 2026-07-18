@@ -84,5 +84,5 @@ Calling `ut.expect(to_char(null)).to_equal(to_char(null), false)` or more verbos
 | `to_have_count(n)`      | collection or cursorhas n elements  |
 | `to_be_empty()`         | collection or cursor has zero rows  |
 
-Full reference: [utplsql.org expectations guide](https://utplsql.org/utPLSQL/latest/userguide/expectations/).
+For more details see the full [expectations reference guide at utplsql.org](https://utplsql.org/utPLSQL/latest/userguide/expectations).
 
