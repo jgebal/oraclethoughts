@@ -2,7 +2,7 @@
 title: "utPLSQL starter tips - creating test suite"
 date:
   created: 2026-06-10
-slug: utPLSQL_starter_tips_creating_a_test
+slug: utPLSQL_starter_tips_creating_test_suite
 categories:
   - "PLSQL"
   - "utPLSQL"

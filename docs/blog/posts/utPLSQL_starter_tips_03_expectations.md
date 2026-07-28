@@ -2,7 +2,7 @@
 title: "utPLSQL starter tips - The expectations API"
 date:
   created: 2026-07-18
-slug: utPLSQL_starter_tips_annotations_configure_tests
+slug: utPLSQL_starter_tips_expectations
 categories:
   - "PLSQL"
   - "utPLSQL"

@@ -2,7 +2,7 @@
 title: "utPLSQL starter tips - Annotations configure tests"
 date:
   created: 2026-06-27
-slug: utPLSQL_starter_tips_annotations_configure_tests
+slug: utPLSQL_starter_tips_annotations
 categories:
   - "PLSQL"
   - "utPLSQL"
