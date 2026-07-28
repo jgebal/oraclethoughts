@@ -14,7 +14,7 @@ tags:
 
 # Testing query output with cursor comparison
 
-utPLSQL can compare results of two queries in single line call to `ut.expect()`. Within your test, define the SQL queries as `SYS_REFCURSOR` cursor variables,
+utPLSQL can compare results of two queries in single line call to `ut.expect()`. Within your test, define the SQL queries as `SYS_REFCURSOR` variables.
 <!-- more -->
 
 Open one cursor with the expected rows (usually a static fixture data), open a second cursor with the tested SQL query, and pass both to `ut.expect()`.
