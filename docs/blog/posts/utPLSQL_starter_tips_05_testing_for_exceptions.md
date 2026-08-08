@@ -1,8 +1,8 @@
 ---
-title: "Testing exception raising with --%throws"
+title: "Testing for exceptions with --%throws"
 date:
   created: 2026-08-08
-slug: utPLSQL_starter_tips_testing_query_output
+slug: utPLSQL_starter_tips_testing_exceptions
 categories:
   - "PLSQL"
   - "utPLSQL"
@@ -12,7 +12,7 @@ tags:
   - "unit testing"
 ---
 
-# Testing exception raising with --%throws
+# Testing for exceptions with --%throws
 
 utPLSQL provides the `--%throws` annotation for testing that a procedure raises an expected exception. 
 Exception testing in utPLSQL is done through this annotation, not through `ut.expect(...)`.
