@@ -1,5 +1,5 @@
 ---
-title: "Testing for exceptions with --%throws"
+title: "utPLSQL starter tips - Testing for exceptions with --%throws"
 date:
   created: 2026-08-08
 slug: utPLSQL_starter_tips_testing_exceptions
