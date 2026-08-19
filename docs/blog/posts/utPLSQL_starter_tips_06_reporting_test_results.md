@@ -94,6 +94,11 @@ Provides outcomes in a format conforming with JUnit version for TFS / VSTS
 as defined by [specification](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/publish-test-results-v2?view=azure-pipelines)
 The implementation is based on [windyroad junit schema](https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd).
 
+**`ut_tap_reporter`**
+
+A textual pretty-print of unit test results (usually use for console output). Can be machine-readable.
+
+
 
 ## Using reporters with utPLSQL-cli
 
