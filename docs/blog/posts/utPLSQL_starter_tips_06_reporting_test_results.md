@@ -17,15 +17,15 @@ tags:
 # Reporting test results with utPLSQL
 
 utPLSQL comes with several output reporters for different use cases: human-readable text, JUnit XML, TeamCity, TFS for CI pipelines,
-SonarQube-compatible coverage reports and more. 
+SonarQube-compatible coverage reports and more.
 
 <!-- more -->
 
-Reporters control the format of test output. The `ut.run()` command only allows to execute tests with one reporter attached
-while `utplsql-cli`, `utplsql-maven-plugin` and SQLDeveloper/PLSQLDeveoper extensions allow for multiple reporters to be attached to a single run.
+Reporters control the format of test output. The `ut.run()` command only allows executing tests with one reporter attached,
+while `utplsql-cli`, `utplsql-maven-plugin` and SQL Developer/PLSQL Developer extensions allow for multiple reporters to be attached to a single run.
 
-Multiple reporters can be used simultaneously to save results in different format from a single test run. 
-Multi-reporting is most commonly used for simultaneous reporting of realtime test execution progress to console, saving test results into JUnit XML file and generating coverege report data to be used in CI/CD.
+Multiple reporters can be used simultaneously to save results in different formats from a single test run.
+Multi-reporting is most commonly used for simultaneous reporting of realtime test execution progress to console, saving test results into a JUnit XML file and generating coverage report data to be used in CI/CD.
 
 ```plsql
 -- Documentation reporter (default)
@@ -46,11 +46,11 @@ end;
 utPLSQL comes equipped with several reporters
 
 **`ut_documentation_reporter`**
-A textual pretty-print, human-readable nested output mirroring the suite hierarchy. Used for interactive development and log review.
+Creates a textual, pretty-print, human-readable report mirroring the suite hierarchy. Used for console runs, interactive development and log review.
 
 **`ut_realtime_reporter`**
 
-Provides test results in XML format, for clients such as SQL Developer interested in showing progressing details.
+Provides live test execution progress that can be consumed from another session, enabling clients such as SQL Developer to show progress in real time as tests run.
 
 **`ut_teamcity_reporter`**
 
@@ -64,14 +64,14 @@ Provides outcomes in a format conforming with JUnit 4 as defined [here](https://
 **`ut_sonar_test_reporter`**
 
 Generates an XML report providing detailed information on test execution.
-Designed for [SonarQube](https://www.sonarqube.org/) to report test execution.
-XML format returned conforms with the [Sonar specification](https://docs.sonarqube.org/latest/analysis/generic-test/)
+Designed for [SonarQube](https://www.sonarsource.com/products/sonarqube/) to report test execution.
+XML format returned conforms with the [Sonar specification](https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/test-coverage/generic-test-data)
 
 **`ut_coverage_sonar_reporter`**
 
 Generates an XML coverage report providing information on code coverage with line numbers.
-Designed for [SonarQube](https://www.sonarqube.org/) to report coverage.
-XML format returned conforms with the [Sonar specification](https://docs.sonarqube.org/latest/analysis/generic-test/)
+Designed for [SonarQube](https://www.sonarsource.com/products/sonarqube/) to report coverage.
+XML format returned conforms with the [Sonar specification](https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/test-coverage/generic-test-data).
 
 
 **`ut_coverage_html_reporter`**
@@ -83,22 +83,22 @@ Includes source code in the report.
 
 **`ut_coverage_cobertura_reporter`**
 
-Generates Cobertura coverage report on code coverage with line numbers.
-Designed for CI servers to report coverage.
-Cobertura Document Type Definition is located [here](http://cobertura.sourceforge.net/xml/coverage-04.dtd).
+Generates Cobertura report on code coverage with line numbers.
+Compatible with GitHub Actions, Jenkins, Azure Pipelines, GitLab CI, and any tool that reads the popular Cobertura format.
+Cobertura Document Type Definition is located [here](https://github.com/cobertura/cobertura/blob/master/cobertura/src/site/htdocs/xml/coverage-04.dtd).
 
 
 **`ut_tfs_junit_reporter`**
 
-Provides outcomes in a format conforming with JUnit version for TFS / VSTS.
-[as defined by specs](https://docs.microsoft.com/en-us/vsts/build-release/tasks/test/publish-test-results?view=vsts)
-Version is based on [windy road junit](https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd)
+Provides outcomes in a format conforming with JUnit version for TFS / VSTS
+as defined by [specification](https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/publish-test-results-v2?view=azure-pipelines)
+The implementation is based on [windyroad junit schema](https://github.com/windyroad/JUnit-Schema/blob/master/JUnit.xsd).
 
 
 ## Using reporters with utPLSQL-cli
 
 When running tests from the command line, reporters are specified with the `-f` flags.
-Each `-f` can be followed by a `-o` flag indicating the output filename. 
+Each `-f` can be followed by a `-o` flag indicating the output filename.
 
 ```bash
 utplsql run user/pass@//host:1521/SERVICE \
