@@ -30,7 +30,7 @@ Multi-reporting is most commonly used for simultaneous reporting of realtime tes
 ```plsql
 -- Documentation reporter (default)
 begin
-  ut.run(a_reporter => ut_junit_reporter());
+  ut.run();
 end;
 /
 
