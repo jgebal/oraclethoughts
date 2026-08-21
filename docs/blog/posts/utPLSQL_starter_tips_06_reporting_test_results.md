@@ -107,12 +107,72 @@ Each `-f` can be followed by a `-o` flag indicating the output filename.
 
 ```bash
 utplsql run user/pass@//host:1521/SERVICE \
-  -f=ut_junit_reporter \
-  -o=test-results/junit.xml \
+  -f=ut_junit_reporter -o=test-results/junit.xml \
   -f=ut_documentation_reporter
 ```
 
 Multiple `-f` flags produce multiple output formats from a single database test run.
+
+## Complete example
+
+The example assumes that:
+- utPLSQL is installed in database
+- utPLSQL-cli is available in your local machine
+- 
+
+Create a sample function to be tested:
+```sql
+--8<-- "../../assets/reporting_test_results/code/betwnstr.fnc"
+```
+
+Create a test package specification
+```sql
+--8<-- "../../assets/reporting_test_results/code/test_betwnstr.pks"
+```
+
+Create test package body
+```sql
+--8<-- "../../assets/reporting_test_results/code/test_betwnstr.pkb"
+```
+
+Run the test package using utPLSQL-cli
+```bash
+--8<-- "../../assets/reporting_test_results/code/run_tests.sh"
+```
+
+utPLSQL-cli produces several results reports from a single test run.  
+
+```xml title="ut_coverage_cobertura_reporter.xml"
+--8<-- "../../assets/reporting_test_results/ut_coverage_cobertura_reporter.xml"
+```
+
+```html title="ut_coverage_html_reporter.html"
+--8<-- "../../assets/reporting_test_results/ut_coverage_html_reporter.html"
+```
+```xml title="ut_coverage_sonar_reporter.xml"
+--8<-- "../../assets/reporting_test_results/ut_coverage_sonar_reporter.xml"
+```
+```txt title="ut_documentation_reporter.txt"
+--8<-- "../../assets/reporting_test_results/ut_documentation_reporter.txt"
+```
+```xml title="ut_junit_reporter.xml"
+--8<-- "../../assets/reporting_test_results/ut_junit_reporter.xml"
+```
+```xml title="ut_realtime_reporter.xml"
+--8<-- "../../assets/reporting_test_results/ut_realtime_reporter.xml"
+```
+```xml title="ut_sonar_test_reporter.xml"
+--8<-- "../../assets/reporting_test_results/ut_sonar_test_reporter.xml"
+```
+```txt title="ut_tap_reporter.txt"
+--8<-- "../../assets/reporting_test_results/ut_tap_reporter.txt"
+```
+```txt title="ut_teamcity_reporter.txt"
+--8<-- "../../assets/reporting_test_results/ut_teamcity_reporter.txt"
+```
+```xml title="ut_tfs_junit_reporter.xml"
+--8<-- "../../assets/reporting_test_results/ut_tfs_junit_reporter.xml"
+```
 
 ## Further reading
 
