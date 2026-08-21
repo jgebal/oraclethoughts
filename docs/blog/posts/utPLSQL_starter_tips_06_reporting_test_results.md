@@ -153,7 +153,7 @@ The ones that are most human-readable are shown below.
 --8<-- "assets/reporting_test_results/ut_coverage_sonar_reporter.xml"
 ```
 
-The remaining files can be viewed here.
+The remaining files are listed below. They are not so easily readable therefore not presented in the post. 
 
 - [ut_coverage_cobertura_reporter.xml](../../assets/reporting_test_results/ut_coverage_cobertura_reporter.xml)
 
