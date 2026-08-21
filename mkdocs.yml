@@ -96,7 +96,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets:
       check_paths: true
-      restrict_base_path: false
+      base_path:
+        - !relative $docs_dir
   - pymdownx.superfences
   - admonition
   - pymdownx.details

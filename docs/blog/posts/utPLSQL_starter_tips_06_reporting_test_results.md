@@ -102,77 +102,72 @@ A textual pretty-print of unit test results (usually use for console output). Ca
 
 ## Using reporters with utPLSQL-cli
 
-When running tests from the command line, reporters are specified with the `-f` flags.
-Each `-f` can be followed by a `-o` flag indicating the output filename.
+utPLSQL-cli is a command-line client for utPLSQL.
 
+When running tests with utPLSQL-cli, the output format (reporters) are specified with the `-f` flags.
+Each `-f` should be followed by a `-o` flag indicating the output filename.
+If you want a reporter to output to screen, don't use the `-o` flag for that reporter.
+
+
+The below example assumes that:
+- [utPLSQL](https://www.utplsql.org/utPLSQL/latest/userguide/install.html) is installed in database
+- [utPLSQL-cli](https://www.utplsql.org/utPLSQL-cli.html) is available in your local machine
+
+
+Start by crating the function to be tested.
+```sql
+--8<-- "assets/reporting_test_results/code/betwnstr.fnc"
+```
+
+Then create utPLSQL test package specification
+```sql
+--8<-- "assets/reporting_test_results/code/test_betwnstr.pks"
+```
+And test pacakge body
+```sql
+--8<-- "assets/reporting_test_results/code/test_betwnstr.pkb"
+```
+
+Run the test suite using utPLSQL-cli
 ```bash
-utplsql run user/pass@//host:1521/SERVICE \
-  -f=ut_junit_reporter -o=test-results/junit.xml \
-  -f=ut_documentation_reporter
+--8<-- "assets/reporting_test_results/code/run_tests.sh"
 ```
 
-Multiple `-f` flags produce multiple output formats from a single database test run.
+utPLSQL-cli produces multiple reports from this single test run.  
 
-## Complete example
+The ones that are most human-readable are shown below.
 
-The example assumes that:
-- utPLSQL is installed in database
-- utPLSQL-cli is available in your local machine
-- 
-
-Create a sample function to be tested:
-```sql
---8<-- "../../assets/reporting_test_results/code/betwnstr.fnc"
-```
-
-Create a test package specification
-```sql
---8<-- "../../assets/reporting_test_results/code/test_betwnstr.pks"
-```
-
-Create test package body
-```sql
---8<-- "../../assets/reporting_test_results/code/test_betwnstr.pkb"
-```
-
-Run the test package using utPLSQL-cli
-```bash
---8<-- "../../assets/reporting_test_results/code/run_tests.sh"
-```
-
-utPLSQL-cli produces several results reports from a single test run.  
-
-```xml title="ut_coverage_cobertura_reporter.xml"
---8<-- "../../assets/reporting_test_results/ut_coverage_cobertura_reporter.xml"
-```
-
-```html title="ut_coverage_html_reporter.html"
---8<-- "../../assets/reporting_test_results/ut_coverage_html_reporter.html"
-```
-```xml title="ut_coverage_sonar_reporter.xml"
---8<-- "../../assets/reporting_test_results/ut_coverage_sonar_reporter.xml"
-```
 ```txt title="ut_documentation_reporter.txt"
---8<-- "../../assets/reporting_test_results/ut_documentation_reporter.txt"
+--8<-- "assets/reporting_test_results/ut_documentation_reporter.txt"
 ```
-```xml title="ut_junit_reporter.xml"
---8<-- "../../assets/reporting_test_results/ut_junit_reporter.xml"
-```
-```xml title="ut_realtime_reporter.xml"
---8<-- "../../assets/reporting_test_results/ut_realtime_reporter.xml"
-```
-```xml title="ut_sonar_test_reporter.xml"
---8<-- "../../assets/reporting_test_results/ut_sonar_test_reporter.xml"
-```
+
 ```txt title="ut_tap_reporter.txt"
---8<-- "../../assets/reporting_test_results/ut_tap_reporter.txt"
+--8<-- "assets/reporting_test_results/ut_tap_reporter.txt"
 ```
-```txt title="ut_teamcity_reporter.txt"
---8<-- "../../assets/reporting_test_results/ut_teamcity_reporter.txt"
+
+```xml title="ut_sonar_test_reporter.xml"
+--8<-- "assets/reporting_test_results/ut_sonar_test_reporter.xml"
 ```
-```xml title="ut_tfs_junit_reporter.xml"
---8<-- "../../assets/reporting_test_results/ut_tfs_junit_reporter.xml"
+
+```xml title="ut_coverage_sonar_reporter.xml"
+--8<-- "assets/reporting_test_results/ut_coverage_sonar_reporter.xml"
 ```
+
+The remaining files can be viewed here.
+
+- [ut_coverage_cobertura_reporter.xml](../../assets/reporting_test_results/ut_coverage_cobertura_reporter.xml)
+
+- [ut_coverage_html_reporter.html](../../assets/reporting_test_results/ut_coverage_html_reporter.html)
+
+- [ut_junit_reporter.xml](../../assets/reporting_test_results/ut_junit_reporter.xml)
+
+- [ut_tfs_junit_reporter.xml](../../assets/reporting_test_results/ut_tfs_junit_reporter.xml)
+
+- [ut_realtime_reporter.xml](../../assets/reporting_test_results/ut_realtime_reporter.xml) Note. This file is not a valid XML file as it contains a set of XML outputs that are provided one by one as the tst execution progresses.
+
+- [ut_teamcity_reporter.txt](assets/reporting_test_results/ut_teamcity_reporter.txt)
+
+
 
 ## Further reading
 
