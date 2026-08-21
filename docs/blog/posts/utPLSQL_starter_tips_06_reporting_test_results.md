@@ -163,10 +163,14 @@ The remaining files can be viewed here.
 
 - [ut_tfs_junit_reporter.xml](../../assets/reporting_test_results/ut_tfs_junit_reporter.xml)
 
-- [ut_realtime_reporter.xml](../../assets/reporting_test_results/ut_realtime_reporter.xml) Note. This file is not a valid XML file as it contains a set of XML outputs that are provided one by one as the tst execution progresses.
-
 - [ut_teamcity_reporter.txt](assets/reporting_test_results/ut_teamcity_reporter.txt)
 
+- [ut_realtime_reporter.xml](../../assets/reporting_test_results/ut_realtime_reporter.xml) 
+
+
+!!! Note
+
+    The `ut_realtime_reporter.xml` file is not a valid XML file. This is by design. The file actually contains a stream of XML outputs that are provided in realtime one by one as the tst execution progresses.
 
 
 ## Further reading
