@@ -11,13 +11,22 @@ tags:
 
 # Incorporation of utPLSQL
 
+In August I wrote that utPLSQL needs a clear vision for its future, and that the project
+cannot keep going on after-hours goodwill alone. This is the first concrete step in that
+direction. In August 2026 I incorporated **utPLSQL Development Labs Ltd** in Cyprus, where I
+now live, and utPLSQL is moving under its custody.
+
+Before I explain what that means, let me explain how a unit testing framework for PL/SQL
+ended up needing a company at all.
+
+<!-- more -->
+
 ## The history behind utPLSQL 
 
 utPLSQL started long before I became involved with it. The project has been part of the Oracle and PL/SQL community since the late 1990s, and over the years it has gone through several generations, maintainers, rewrites, changes in technology and changes in the way people build software.
 There was no product roadmap, management team, budget or organization paying people to keep it moving. There was simply a useful idea, a community around it, and a handful of engineers who cared enough to spend their own time making it happen.
 
 Since 2016, I have been one of the primary people driving the vision of v3 and looking after the project, and I have effectively been its only core leader since mid-2017.
-<!-- more -->
 
 Over the years, countless hours have gone into design and architecture, discussions, writing code, fixing bugs, reviewing pull requests, improving documentation, answering questions, maintaining integrations and keeping the project compatible with a changing ecosystem. There were many authors and contributors who collectively made the utPLSQL v3 framework possible.
 
@@ -55,7 +64,7 @@ The company is providing legal infrastructure around the project. The entity can
 
 This allows the project to establish formal relationships with users, sponsors and supporters through a legal entity without putting that burden and responsibility onto an individual. It also provides a way to gather funding and generate income that can support further project growth and maintenance. 
 
-It does not mean that contributors become employees, or that every contribution becomes paid work — contributing to the project remains open to everyone. It means that where there is a need and where funding is available, developers can be paid to spend dedicated time on the project.
+It does not mean that contributors become employees, or that every contribution becomes paid work - contributing to the project remains open to everyone. It means that where there is a need and where funding is available, developers can be paid to spend dedicated time on the project.
 
 Companies depend on Oracle Database and the ecosystem around it; teams use utPLSQL as part of their development and delivery processes; organizations benefit from the tooling without any direct mechanism through which they can contribute back.   
 I would like to make it possible for companies to give back to utPLSQL.
