@@ -81,3 +81,4 @@ All of those people are part of the project's history. The company is not meant 
 
 There is plenty I would like to see improved in the future: the framework core, documentation, tooling, better integrations and support for LLMs and MCPs, training and coaching programs and spreading the message about the significance of systematic testing and test automation in the Oracle ecosystem. The incorporation of utPLSQL Development Labs Ltd is a step towards making this possible.
 
+Jacek [@utPLSQL](https://github.com/utPLSQL)
