@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-run">
+  <items>
+    <suite id="org">
+      <name>org</name>
+      <items>
+        <suite id="org.utplsql">
+          <name>utplsql</name>
+          <items>
+            <suite id="org.utplsql.demo">
+              <name>demo</name>
+              <items>
+                <suite id="org.utplsql.demo.test_betwnstr">
+                  <name>test_betwnstr</name>
+                  <description>Between string function</description>
+                  <items>
+                    <suite id="org.utplsql.demo.test_betwnstr.nested_context_#1">
+                      <name>nested_context_#1</name>
+                      <description>happy path</description>
+                      <items>
+                        <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.normal_case">
+                          <executableType>test</executableType>
+                          <ownerName>UT3_TESTER</ownerName>
+                          <objectName>test_betwnstr</objectName>
+                          <procedureName>normal_case</procedureName>
+                          <disabled>false</disabled>
+                          <name>normal_case</name>
+                          <description>Returns substring from start position to end position</description>
+                          <testNumber>1</testNumber>
+                        </test>
+                        <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.zero_start_position">
+                          <executableType>test</executableType>
+                          <ownerName>UT3_TESTER</ownerName>
+                          <objectName>test_betwnstr</objectName>
+                          <procedureName>zero_start_position</procedureName>
+                          <disabled>false</disabled>
+                          <name>zero_start_position</name>
+                          <description>Returns substring when start position is zero</description>
+                          <testNumber>2</testNumber>
+                        </test>
+                        <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.big_end_position">
+                          <executableType>test</executableType>
+                          <ownerName>UT3_TESTER</ownerName>
+                          <objectName>test_betwnstr</objectName>
+                          <procedureName>big_end_position</procedureName>
+                          <disabled>false</disabled>
+                          <name>big_end_position</name>
+                          <description>Returns string until end if end position is greater than string length</description>
+                          <testNumber>3</testNumber>
+                        </test>
+                        <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.null_string">
+                          <executableType>test</executableType>
+                          <ownerName>UT3_TESTER</ownerName>
+                          <objectName>test_betwnstr</objectName>
+                          <procedureName>null_string</procedureName>
+                          <disabled>false</disabled>
+                          <name>null_string</name>
+                          <description>Returns null for null input string value</description>
+                          <testNumber>4</testNumber>
+                        </test>
+                      </items>
+                    </suite>
+                    <suite id="org.utplsql.demo.test_betwnstr.nested_context_#2">
+                      <name>nested_context_#2</name>
+                      <description>unhappy path</description>
+                      <items>
+                        <test id="org.utplsql.demo.test_betwnstr.nested_context_#2.bad_params">
+                          <executableType>test</executableType>
+                          <ownerName>UT3_TESTER</ownerName>
+                          <objectName>test_betwnstr</objectName>
+                          <procedureName>bad_params</procedureName>
+                          <disabled>false</disabled>
+                          <name>bad_params</name>
+                          <description>A demo of test raising runtime exception</description>
+                          <testNumber>5</testNumber>
+                        </test>
+                        <test id="org.utplsql.demo.test_betwnstr.nested_context_#2.bad_test">
+                          <executableType>test</executableType>
+                          <ownerName>UT3_TESTER</ownerName>
+                          <objectName>test_betwnstr</objectName>
+                          <procedureName>bad_test</procedureName>
+                          <disabled>false</disabled>
+                          <name>bad_test</name>
+                          <description>A demo of failing test</description>
+                          <testNumber>6</testNumber>
+                        </test>
+                        <test id="org.utplsql.demo.test_betwnstr.nested_context_#2.disabled_test">
+                          <executableType>test</executableType>
+                          <ownerName>UT3_TESTER</ownerName>
+                          <objectName>test_betwnstr</objectName>
+                          <procedureName>disabled_test</procedureName>
+                          <disabled>true</disabled>
+                          <name>disabled_test</name>
+                          <description>Demo of a disabled test</description>
+                          <testNumber>7</testNumber>
+                        </test>
+                      </items>
+                    </suite>
+                  </items>
+                </suite>
+              </items>
+            </suite>
+          </items>
+        </suite>
+      </items>
+    </suite>
+  </items>
+  <totalNumberOfTests>7</totalNumberOfTests>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-suite">
+  <suite id="org">
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-suite">
+  <suite id="org.utplsql">
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-suite">
+  <suite id="org.utplsql.demo">
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-suite">
+  <suite id="org.utplsql.demo.test_betwnstr">
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-suite">
+  <suite id="org.utplsql.demo.test_betwnstr.nested_context_#1">
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.normal_case">
+    <testNumber>1</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.normal_case">
+    <testNumber>1</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+    <startTime>2026-08-21T09:33:38.335020</startTime>
+    <endTime>2026-08-21T09:33:38.363377</endTime>
+    <executionTime>.028357</executionTime>
+    <counter>
+      <disabled>0</disabled>
+      <success>1</success>
+      <failure>0</failure>
+      <error>0</error>
+      <warning>0</warning>
+    </counter>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.zero_start_position">
+    <testNumber>2</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.zero_start_position">
+    <testNumber>2</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+    <startTime>2026-08-21T09:33:38.369851</startTime>
+    <endTime>2026-08-21T09:33:38.376969</endTime>
+    <executionTime>.007118</executionTime>
+    <counter>
+      <disabled>0</disabled>
+      <success>1</success>
+      <failure>0</failure>
+      <error>0</error>
+      <warning>0</warning>
+    </counter>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.big_end_position">
+    <testNumber>3</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.big_end_position">
+    <testNumber>3</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+    <startTime>2026-08-21T09:33:38.379828</startTime>
+    <endTime>2026-08-21T09:33:38.385190</endTime>
+    <executionTime>.005362</executionTime>
+    <counter>
+      <disabled>0</disabled>
+      <success>1</success>
+      <failure>0</failure>
+      <error>0</error>
+      <warning>0</warning>
+    </counter>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.null_string">
+    <testNumber>4</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#1.null_string">
+    <testNumber>4</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+    <startTime>2026-08-21T09:33:38.388459</startTime>
+    <endTime>2026-08-21T09:33:38.395658</endTime>
+    <executionTime>.007199</executionTime>
+    <counter>
+      <disabled>0</disabled>
+      <success>1</success>
+      <failure>0</failure>
+      <error>0</error>
+      <warning>0</warning>
+    </counter>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-suite">
+  <suite id="org.utplsql.demo.test_betwnstr.nested_context_#1">
+    <startTime>2026-08-21T09:33:38.332573</startTime>
+    <endTime>2026-08-21T09:33:38.398725</endTime>
+    <executionTime>.066152</executionTime>
+    <counter>
+      <disabled>0</disabled>
+      <success>4</success>
+      <failure>0</failure>
+      <error>0</error>
+      <warning>0</warning>
+    </counter>
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-suite">
+  <suite id="org.utplsql.demo.test_betwnstr.nested_context_#2">
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#2.bad_params">
+    <testNumber>5</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#2.bad_params">
+    <testNumber>5</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+    <startTime>2026-08-21T09:33:38.402984</startTime>
+    <endTime>2026-08-21T09:33:38.408424</endTime>
+    <executionTime>.00544</executionTime>
+    <counter>
+      <disabled>0</disabled>
+      <success>0</success>
+      <failure>0</failure>
+      <error>1</error>
+      <warning>0</warning>
+    </counter>
+    <errorStack><![CDATA[ORA-06502: PL/SQL: value or conversion error: character to number conversion error
+ORA-06512: at "UT3_TESTER.TEST_BETWNSTR", line 25
+ORA-06512: at "UT3_TESTER.TEST_BETWNSTR", line 25
+ORA-06512: at line 7]]></errorStack>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#2.bad_test">
+    <testNumber>6</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#2.bad_test">
+    <testNumber>6</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+    <startTime>2026-08-21T09:33:38.412985</startTime>
+    <endTime>2026-08-21T09:33:38.423732</endTime>
+    <executionTime>.010747</executionTime>
+    <counter>
+      <disabled>0</disabled>
+      <success>0</success>
+      <failure>1</failure>
+      <error>0</error>
+      <warning>0</warning>
+    </counter>
+    <failedExpectations>
+      <expectation>
+        <message><![CDATA[Actual: '1234567' (varchar2) was expected to equal: '1' (varchar2)]]></message>
+        <caller><![CDATA[at "UT3_TESTER.TEST_BETWNSTR.BAD_TEST", line 31 ut.expect( betwnstr( '1234567', 0, 500 ) ).to_( equal('1') );]]></caller>
+      </expectation>
+    </failedExpectations>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="pre-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#2.disabled_test">
+    <testNumber>7</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-test">
+  <test id="org.utplsql.demo.test_betwnstr.nested_context_#2.disabled_test">
+    <testNumber>7</testNumber>
+    <totalNumberOfTests>7</totalNumberOfTests>
+    <startTime>2026-08-21T09:33:38.430641</startTime>
+    <endTime>2026-08-21T09:33:38.430641</endTime>
+    <executionTime>0</executionTime>
+    <counter>
+      <disabled>1</disabled>
+      <success>0</success>
+      <failure>0</failure>
+      <error>0</error>
+      <warning>0</warning>
+    </counter>
+  </test>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-suite">
+  <suite id="org.utplsql.demo.test_betwnstr.nested_context_#2">
+    <startTime>2026-08-21T09:33:38.400999</startTime>
+    <endTime>2026-08-21T09:33:38.434306</endTime>
+    <executionTime>.033307</executionTime>
+    <counter>
+      <disabled>1</disabled>
+      <success>0</success>
+      <failure>1</failure>
+      <error>1</error>
+      <warning>0</warning>
+    </counter>
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-suite">
+  <suite id="org.utplsql.demo.test_betwnstr">
+    <startTime>2026-08-21T09:33:38.328851</startTime>
+    <endTime>2026-08-21T09:33:38.437334</endTime>
+    <executionTime>.108483</executionTime>
+    <counter>
+      <disabled>1</disabled>
+      <success>4</success>
+      <failure>1</failure>
+      <error>1</error>
+      <warning>0</warning>
+    </counter>
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-suite">
+  <suite id="org.utplsql.demo">
+    <startTime>2026-08-21T09:33:38.328374</startTime>
+    <endTime>2026-08-21T09:33:38.439985</endTime>
+    <executionTime>.111611</executionTime>
+    <counter>
+      <disabled>1</disabled>
+      <success>4</success>
+      <failure>1</failure>
+      <error>1</error>
+      <warning>0</warning>
+    </counter>
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-suite">
+  <suite id="org.utplsql">
+    <startTime>2026-08-21T09:33:38.326138</startTime>
+    <endTime>2026-08-21T09:33:38.442539</endTime>
+    <executionTime>.116401</executionTime>
+    <counter>
+      <disabled>1</disabled>
+      <success>4</success>
+      <failure>1</failure>
+      <error>1</error>
+      <warning>0</warning>
+    </counter>
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-suite">
+  <suite id="org">
+    <startTime>2026-08-21T09:33:38.323844</startTime>
+    <endTime>2026-08-21T09:33:38.444957</endTime>
+    <executionTime>.121113</executionTime>
+    <counter>
+      <disabled>1</disabled>
+      <success>4</success>
+      <failure>1</failure>
+      <error>1</error>
+      <warning>0</warning>
+    </counter>
+  </suite>
+</event>
+
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<event type="post-run">
+  <run>
+    <startTime>2026-08-21T09:33:38.317612</startTime>
+    <endTime>2026-08-21T09:33:38.447641</endTime>
+    <executionTime>.130029</executionTime>
+    <counter>
+      <disabled>1</disabled>
+      <success>4</success>
+      <failure>1</failure>
+      <error>1</error>
+      <warning>0</warning>
+    </counter>
+  </run>
+</event>
+
