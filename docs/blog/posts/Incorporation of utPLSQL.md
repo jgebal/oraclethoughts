@@ -11,7 +11,7 @@ tags:
 
 # Incorporation of utPLSQL
 
-In August, I wrote that utPLSQL needs a clear vision for its future, and that the project
+In August, I wrote on [utPLSQL site](https://www.utplsql.org/announcements/next-chapter-for-utplsql.html), that utPLSQL needs a clear vision for its future, and that the project
 cannot keep going on after-hours goodwill alone. This is the first concrete step in that
 direction. In August 2026 I incorporated **utPLSQL Development Labs Ltd** in Cyprus, where I
 now live, and utPLSQL is moving under its custody.
