@@ -84,6 +84,9 @@ plugins:
   - blog:
       blog_toc: true
   - tags
+  - redirects:
+      redirect_maps:
+        index.md: blog/index.md
 
 markdown_extensions:
   - attr_list
@@ -106,7 +109,6 @@ markdown_extensions:
       permalink: true
 
 nav:
-  - Home: index.md
   - Blog:
       - blog/index.md
   - About: about.md

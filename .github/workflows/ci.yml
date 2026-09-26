@@ -27,4 +27,5 @@ jobs:
       - run: |
           pip install mkdocs-material
           pip install mkdocs-include-markdown-plugin
+          pip install mkdocs-redirects
       - run: mkdocs gh-deploy --force
