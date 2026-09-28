@@ -44,7 +44,7 @@ A few years ago, around 2023 I had a conversation with Philipp Salvisberg, where
 
 Back then I believed that I would be able to continue supporting utPLSQL after hours, while keeping a full-time job and still having reasonable time left to keep myself having a healthy and fulfilled life. Back then I didn’t believe that utPLSQL would need or benefit from sponsorship.
 
-Fast forward to March 2026\. I was approached independently by two Oracle ACEs, Philipp Salvisberg and Monika Lewandowska with questions about maintainability and long-term viability of utPLSQL. By that point, although I remained responsible for the project, active development and contributions had largely stopped. 
+Fast-forward to March 2026. I was approached independently by two Oracle ACEs, Philipp Salvisberg and Monika Lewandowska with questions about maintainability and long-term viability of utPLSQL. By that point, although I remained responsible for the project, active development and contributions had largely stopped. 
 
 I was very much occupied with my day-to-day development work and personal life at the time. Those two conversations, however, made me revisit and rethink my previous position about project maintenance. 
 
