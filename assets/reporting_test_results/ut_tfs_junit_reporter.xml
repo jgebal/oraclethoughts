@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<testsuites>
+<testsuite tests="7" id="1" package="org.utplsql.demo.test_betwnstr"  errors="1" failures="1" name="Between string function" time=".108483"  timestamp="2026-08-21T01:33:39"  hostname="DESKTOP-6A33KLE" >
+<properties/>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#1"  name="Returns substring from start position to end position" time=".028357">
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#1"  name="Returns substring when start position is zero" time=".007118">
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#1"  name="Returns string until end if end position is greater than string length" time=".005362">
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#1"  name="Returns null for null input string value" time=".007199">
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#2"  name="A demo of test raising runtime exception" time=".00544">
+<error type="error" message="Error while executing bad_params">
+<![CDATA[
+ORA-06502: PL/SQL: value or conversion error: character to number conversion error
+ORA-06512: at "UT3_TESTER.TEST_BETWNSTR", line 25
+ORA-06512: at "UT3_TESTER.TEST_BETWNSTR", line 25
+ORA-06512: at line 7
+]]>
+</error>
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#2"  name="A demo of failing test" time=".010747">
+<failure type="failure" message="Test bad_test failed">
+<![CDATA[
+Actual: '1234567' (varchar2) was expected to equal: '1' (varchar2)
+at "UT3_TESTER.TEST_BETWNSTR.BAD_TEST", line 31 ut.expect( betwnstr( '1234567', 0, 500 ) ).to_( equal('1') );
+]]>
+</failure>
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#2"  name="Demo of a disabled test" time="0">
+<skipped/>
+</testcase>
+<system-out/>
+<system-err/>
+</testsuite>
+</testsuites>

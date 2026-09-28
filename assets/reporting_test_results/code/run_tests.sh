@@ -1,0 +1,11 @@
+utplsql run user/pass@//host:port/service_name   -p test_betwnstr            \
+   -f ut_documentation_reporter      -o ut_documentation_reporter.txt        \
+   -f ut_realtime_reporter           -o ut_realtime_reporter.xml             \
+   -f ut_teamcity_reporter           -o ut_teamcity_reporter.txt             \
+   -f ut_junit_reporter              -o ut_junit_reporter.xml                \
+   -f ut_sonar_test_reporter         -o ut_sonar_test_reporter.xml           \
+   -f ut_coverage_sonar_reporter     -o ut_coverage_sonar_reporter.xml       \
+   -f ut_coverage_html_reporter      -o ut_coverage_html_reporter.html       \
+   -f ut_coverage_cobertura_reporter -o ut_coverage_cobertura_reporter.xml   \
+   -f ut_tfs_junit_reporter          -o ut_tfs_junit_reporter.xml            \
+   -f ut_tap_reporter                -o ut_tap_reporter.txt
