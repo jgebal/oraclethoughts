@@ -11,7 +11,7 @@ tags:
   - "SQL"
 ---
 
-[![mergesign](../../images/mergesign-300x200.jpg)](../../images/mergesign.jpg)
+[![mergesign](../../../images/mergesign-300x200.jpg)](../../../images/mergesign.jpg)
 Oracle database does not support ability to obtain number of rows inserted/updated/deleted by a merge operation.
 The only value you can obtain is the total number of rows affected by merge operation.
 
@@ -87,7 +87,7 @@ END;
 ```
 
 In the above example the package function is called from within the MERGE statement one call for each UPDATE, DELETE and INSERT operation is done
-For performance reasons it's better to have your merge statements make as little [SQL - PL/SQL context switching as possible](../posts/plsql-performance-freak-series-function-calls-from-sql-overhead.md). You may call the merge operation wit a counter used only on the part that is likely to process less rows.
+For performance reasons it's better to have your merge statements make as little [SQL - PL/SQL context switching as possible](../2014/plsql-performance-freak-series-function-calls-from-sql-overhead.md). You may call the merge operation wit a counter used only on the part that is likely to process less rows.
 If your code is suppose to mainly update existing rows and sometimes insert new rows it might be better to use calls only to
 
 ```

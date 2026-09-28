@@ -14,7 +14,7 @@ tags:
   - "unit testing"
 ---
 
-[![UTPLSQL_vs_RSpec](../../images/UTPLSQL_vs_RSpec.png)](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps.md)
+[![UTPLSQL_vs_RSpec](../../../images/UTPLSQL_vs_RSpec.png)](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps.md)
 Last two months I was blogging quite a lot about UTPLSQL vs ruby-plsql.
 There are lots of aspects that I did not manage to cover so far. I've had a ambitious plan to go through all of the details and dig into the darkest corners to show all the differences. Time is however one thing I'm really short on recently, so instead of going into all the details as planned I've decided to give a high level overview of main differences between UTPLSQL and ruby-plsql.
 This will be a summary of the series for now, as I feel like moving into other topics. I might get back to it later if I find good reasons for doing so.
@@ -44,4 +44,4 @@ http://www.youtube.com/watch?v=LpaLgF1uLB8
 Ruby as a language surprised me with it's syntax and flexibility that I often made me happy as a sandboy.
 It was a big challenge to categorize and articulate the exact reasons why I prefer ruby-plsql over UTPLSQL.
 It was even a bigger challenge to put it into a comparison that would be dense and more focused on facts than gut-feeling and "it just feels nicer".
-[![utplsql-vs-ruby-plsql-feature-comparison.600](../../images/jgebal_utplsql-vs-ruby-plsql-feature-comparison.600.jpg)](../../images/jgebal_utplsql-vs-ruby-plsql-feature-comparison1.pdf)
+[![utplsql-vs-ruby-plsql-feature-comparison.600](../../../images/jgebal_utplsql-vs-ruby-plsql-feature-comparison.600.jpg)](../../../images/jgebal_utplsql-vs-ruby-plsql-feature-comparison1.pdf)

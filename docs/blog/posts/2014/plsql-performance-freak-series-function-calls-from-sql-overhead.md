@@ -11,7 +11,7 @@ tags:
   - "Performance"
 ---
 
-In my [previous post](../posts/plsql-performance-freak-series-functionprocedure-parameters-overhead.md "PL/SQL performance freak series – function/procedure parameters overhead") I've shown and measured the performance loss on passing the parameters to and from procedure/function call inside PL/SQL code.
+In my [previous post](../2014/plsql-performance-freak-series-functionprocedure-parameters-overhead.md "PL/SQL performance freak series – function/procedure parameters overhead") I've shown and measured the performance loss on passing the parameters to and from procedure/function call inside PL/SQL code.
 In this article I'm about to reveal another bottleneck that is often forgotten and not so easy to overcome.
 
 <!-- more -->

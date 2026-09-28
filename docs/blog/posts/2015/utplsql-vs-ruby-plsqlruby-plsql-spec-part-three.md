@@ -13,9 +13,9 @@ tags:
   - "unit testing"
 ---
 
-![UTPLSQL_vs_RSpec](../../images/UTPLSQL_vs_RSpec-300x56.png)
+![UTPLSQL_vs_RSpec](../../../images/UTPLSQL_vs_RSpec-300x56.png)
 
-I have finished my [previous post](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-two.md) with comparison of basic reporting capabilities build into UTPLSQL and ruby-plsql frameworks for Oracle unit testing.
+I have finished my [previous post](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-two.md) with comparison of basic reporting capabilities build into UTPLSQL and ruby-plsql frameworks for Oracle unit testing.
 
 <!-- more -->
 
@@ -88,9 +88,9 @@ Finished in 0.07851 seconds (files took 2.03 seconds to load)
 3 examples, 0 failures
 ```
 
-Using `rspec -fj -o rspec_test_results.json` we can generate output of tests into [rspec\_test\_results.json](../../images/rspec_test_results.json) file.
-Using `rspec -fh -o rspec_test_results.html` we can generate output of tests into [rspec\_test\_results.html](../../images/rspec_test_results.html) file.
-By installing library RspecJunitFormatter `gem install rspec_junit_formatter` we can have output generated into [rspec\_test\_results.xml](../../images/rspec_test_results.xml) XML format that is accepted by many Continuous Integration platforms like Jenkins.
+Using `rspec -fj -o rspec_test_results.json` we can generate output of tests into [rspec\_test\_results.json](../../../images/rspec_test_results.json) file.
+Using `rspec -fh -o rspec_test_results.html` we can generate output of tests into [rspec\_test\_results.html](../../../images/rspec_test_results.html) file.
+By installing library RspecJunitFormatter `gem install rspec_junit_formatter` we can have output generated into [rspec\_test\_results.xml](../../../images/rspec_test_results.xml) XML format that is accepted by many Continuous Integration platforms like Jenkins.
 All that needs to be done to have the XML JUnit-like output is to issue `rspec -f RspecJunitFormatter -o rspec_test_results.xml`.
 I have described only the basic options of the formatting, there are many more formatters out there to be used, there are many different options of controlling how RSpec is executing tests like ordering, filtering, stop on first failure, dry-run and more.
 
@@ -644,7 +644,7 @@ If you compare the two reports, you'll clearly notice the huge difference in rea
  **One of the biggest problems with UTPLSQL is the fact that it can't run when dependencies are broken.**
 This makes developers move away from using this tool. As the number of tests grow and database packages grow, one small change to package signature (change of specification) will invalidate all tests against this package and the tests will simply not execute.
 When a change is done to PLSQL package, tests would first need to be fixed before they can be executed. This simple fact makes the existence of the tests a headache for a developer and decreases their value down to almost zero. The tests are unable to give a fast feedback.
-Consider the package `message_api` code I've used in the [first article](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-one.md) of this series.
+Consider the package `message_api` code I've used in the [first article](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-one.md) of this series.
 The package consists of two methods
 
 ```sql

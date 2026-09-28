@@ -15,9 +15,9 @@ tags:
   - "unit testing"
 ---
 
-![utPLSQL_vs_RSpec](../../images/UTPLSQL_vs_RSpec-300x56.png)
+![utPLSQL_vs_RSpec](../../../images/UTPLSQL_vs_RSpec-300x56.png)
 
-In my [previous posts](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-one.md) I have described some differences between utPLSQL and ruby-plsql. This time I want to focus on automating the test execution with each of those frameworks using [Jenkins Continuous Integration](https://jenkins-ci.org/).
+In my [previous posts](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-one.md) I have described some differences between utPLSQL and ruby-plsql. This time I want to focus on automating the test execution with each of those frameworks using [Jenkins Continuous Integration](https://jenkins-ci.org/).
 
 <!-- more -->
 
@@ -57,7 +57,7 @@ I will not cover steps needed to download, install and configure Jenkins on your
 
 # ruby-plsql on Jenkins
 
-I've already mentioned in my [previous post](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-three.md) that we can have JUnit reports generated from RSpec with two simple lines:
+I've already mentioned in my [previous post](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-three.md) that we can have JUnit reports generated from RSpec with two simple lines:
 A onetime installation of the reported library (gem)
 
 ```
@@ -71,13 +71,13 @@ rspec -f RspecJunitFormatter -o rspec_test_results.xml
 ```
 
 The machine that will be running Jenkins with ruby-plsql unit tests needs to have Ruby+Oracle client or Java+JRuby+JDBC driver installed and configured.
-If you have already went through the installation of Ruby locally, that should not cause you trouble. I've described basic steps needed in [one of my previous posts](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-two.md)
+If you have already went through the installation of Ruby locally, that should not cause you trouble. I've described basic steps needed in [one of my previous posts](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-two.md)
 Jenkins configuration steps:
 
 - Install GIT plugin for Jenkins - to allow Jenkins pulling your tests from version control
-[![Jenkins - GIT plugin install](../../images/1.InstallJenkinsGITplugin.png)](../../images/1.InstallJenkinsGITplugin.png)- Install HTML Publisher plugin for Jenkins - so that Jenkins is able to display HTML Code Coverage reportd from your tests
-[![2.InstallJenkinsHTMLPublishPlugin](../../images/2.InstallJenkinsHTMLPublishPlugin.png)](../../images/2.InstallJenkinsHTMLPublishPlugin.png)- Create a new job of type Freestyle and give it a meaningful name
-[![CreateFreestyleJenkinsJob](../../images/CreateFreestyleJenkinsJob-1024x741.png)](../../images/CreateFreestyleJenkinsJob.png)- Configure the job to do the following
+[![Jenkins - GIT plugin install](../../../images/1.InstallJenkinsGITplugin.png)](../../../images/1.InstallJenkinsGITplugin.png)- Install HTML Publisher plugin for Jenkins - so that Jenkins is able to display HTML Code Coverage reportd from your tests
+[![2.InstallJenkinsHTMLPublishPlugin](../../../images/2.InstallJenkinsHTMLPublishPlugin.png)](../../../images/2.InstallJenkinsHTMLPublishPlugin.png)- Create a new job of type Freestyle and give it a meaningful name
+[![CreateFreestyleJenkinsJob](../../../images/CreateFreestyleJenkinsJob-1024x741.png)](../../../images/CreateFreestyleJenkinsJob.png)- Configure the job to do the following
 
 - Check version control system every 15 minutes, if any changes were commited, run tests
 - Once a day around 10 PM run tests regardless of changed in version control system
@@ -86,7 +86,7 @@ Jenkins configuration steps:
 - Publish unit test results
 - Publish three sets of code coverage results if they were generated
 
-[![Jenkins-job-config](../../images/Jenkins-job-config-395x1024.png)](../../images/Jenkins-job-config.png)
+[![Jenkins-job-config](../../../images/Jenkins-job-config-395x1024.png)](../../../images/Jenkins-job-config.png)
 Here is the config.xml file created for the demo job by Jenkins.
 [xml collapse="1"]
 <?xml version='1.0' encoding='UTF-8'?>
@@ -191,18 +191,18 @@ rspec -f RspecJunitFormatter -o rspec\_test\_results.xml --failure-exit-code 0
 Once the Jenkins setup is in place we can benefit from all the goodies we have in our configuration. Jenkins will publish for us.
 
 - history of builds (job executions), test results trend graph
-[![Jenkins-job-main-page](../../images/Jenkins-job-main-page-1024x727.png)](../../images/Jenkins-job-main-page.png)
+[![Jenkins-job-main-page](../../../images/Jenkins-job-main-page-1024x727.png)](../../../images/Jenkins-job-main-page.png)
 - timeline of builds with job durations
-[![Jenkins-job-timeline](../../images/Jenkins-job-timeline-1024x905.png)](../../images/Jenkins-job-timeline.png)
+[![Jenkins-job-timeline](../../../images/Jenkins-job-timeline-1024x905.png)](../../../images/Jenkins-job-timeline.png)
 - test results reports for every build
-[![Jenkins-test-results](../../images/Jenkins-test-results-1024x685.png)](../../images/Jenkins-test-results.png)
+[![Jenkins-test-results](../../../images/Jenkins-test-results-1024x685.png)](../../../images/Jenkins-test-results.png)
 - ability to navigate to detailed test results
-[![Jenkins-test-results-detailed](../../images/Jenkins-test-results-detailed-416x1024.png)](../../images/Jenkins-test-results-detailed.png)
+[![Jenkins-test-results-detailed](../../../images/Jenkins-test-results-detailed-416x1024.png)](../../../images/Jenkins-test-results-detailed.png)
 - details of failed tests
-[![Jenkins-failed-tests](../../images/Jenkins-failed-tests-1024x685.png)](../../images/Jenkins-failed-tests.png)
+[![Jenkins-failed-tests](../../../images/Jenkins-failed-tests-1024x685.png)](../../../images/Jenkins-failed-tests.png)
 - code coverage reports for every build
-[![Jenkins-code-coverage](../../images/Jenkins-code-coverage-1024x685.png)](../../images/Jenkins-code-coverage.png)
-[![Jenkins-code-coverage-detail](../../images/Jenkins-code-coverage-detail-1024x685.png)](../../images/Jenkins-code-coverage-detail.png)
+[![Jenkins-code-coverage](../../../images/Jenkins-code-coverage-1024x685.png)](../../../images/Jenkins-code-coverage.png)
+[![Jenkins-code-coverage-detail](../../../images/Jenkins-code-coverage-detail-1024x685.png)](../../../images/Jenkins-code-coverage-detail.png)
 
 - and more
 
@@ -292,7 +292,7 @@ Create and configure a new Jenkins job of type Maven, to do similar things as th
 - Publish unit test results
 - Publish three sets of code coverage results if they were generated
 
-[![Jenkins-job-config-utplsql](../../images/Jenkins-job-config-utplsql-488x1024.png)](../../images/Jenkins-job-config-utplsql.png)
+[![Jenkins-job-config-utplsql](../../../images/Jenkins-job-config-utplsql-488x1024.png)](../../../images/Jenkins-job-config-utplsql.png)
 Here is the Jenkins job config.xml for the above job.
 [xml collapse="1"]
 <?xml version='1.0' encoding='UTF-8'?>
@@ -389,15 +389,15 @@ END;
 After having all of the above steps executed, the job can be executed, and we can see the test results.
 
 - history of builds (job executions), test results trend graph
-[![Jenkins-job-main-page(utplsql)](../../images/Jenkins-job-main-pageutplsql-1024x727.png)](../../images/Jenkins-job-main-pageutplsql.png)
+[![Jenkins-job-main-page(utplsql)](../../../images/Jenkins-job-main-pageutplsql-1024x727.png)](../../../images/Jenkins-job-main-pageutplsql.png)
 - timeline of builds with job durations
-[![Jenkins-job-timeline(utplsql)](../../images/Jenkins-job-timelineutplsql-1024x905.png)](../../images/Jenkins-job-timelineutplsql.png)
+[![Jenkins-job-timeline(utplsql)](../../../images/Jenkins-job-timelineutplsql-1024x905.png)](../../../images/Jenkins-job-timelineutplsql.png)
 - test results reports for every build
-[![Jenkins-test-results(utplsql)](../../images/Jenkins-test-resultsutplsql-1024x727.png)](../../images/Jenkins-test-resultsutplsql.png)
+[![Jenkins-test-results(utplsql)](../../../images/Jenkins-test-resultsutplsql-1024x727.png)](../../../images/Jenkins-test-resultsutplsql.png)
 - ability to navigate to detailed test results
-[![Jenkins-test-results-detailed(utplsql)](../../images/Jenkins-test-results-detailedutplsql-416x1024.png)](../../images/Jenkins-test-results-detailedutplsql.png)
+[![Jenkins-test-results-detailed(utplsql)](../../../images/Jenkins-test-results-detailedutplsql-416x1024.png)](../../../images/Jenkins-test-results-detailedutplsql.png)
 - details of failed tests
-[![Jenkins-failed-tests(utplsql)](../../images/Jenkins-failed-testsutplsql-1024x685.png)](../../images/Jenkins-failed-testsutplsql.png)
+[![Jenkins-failed-tests(utplsql)](../../../images/Jenkins-failed-testsutplsql-1024x685.png)](../../../images/Jenkins-failed-testsutplsql.png)
 
 - and more
 

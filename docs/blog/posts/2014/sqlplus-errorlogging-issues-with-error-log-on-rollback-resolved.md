@@ -13,7 +13,7 @@ tags:
   - "exception handling"
 ---
 
-Today I came up with idea to overcome the issue: [SQLPlus ERRORLOGGING does not keep error log on rollback](../posts/sqlplus-errorlogging-does-not-keep-error-log-on-rollback.md "SQLPlus ERRORLOGGING does not keep error log on rollback").
+Today I came up with idea to overcome the issue: [SQLPlus ERRORLOGGING does not keep error log on rollback](../2014/sqlplus-errorlogging-does-not-keep-error-log-on-rollback.md "SQLPlus ERRORLOGGING does not keep error log on rollback").
 The resolution is to use autonomous transactions to log the errors reported by SQL Plus.
 What we need to do is to somehow catch the error that is about to be logged and wrap it in an autonomous transaction.
 

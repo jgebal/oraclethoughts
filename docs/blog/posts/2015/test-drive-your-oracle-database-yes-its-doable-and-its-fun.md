@@ -11,7 +11,7 @@ tags:
   - "unit testing"
 ---
 
-![06_Red_Green_Refactor](../../images/06_Red_Green_Refactor-300x178.jpg)
+![06_Red_Green_Refactor](../../../images/06_Red_Green_Refactor-300x178.jpg)
 **Foreword**
 Over a month ago I've made a big decision and a shift in my life. I've decided to move to Ireland and start a new career there. Since I moved, I have significant amount of free time, as I no longer waste 3 hours each day on commuting. Also, since my wife still leaves in Poland (for now), I'm all on my own when I finish my work.
 Well, maybe that's not 100% true, since now we have Internet with Skype/Hangouts/appear.in and others.
@@ -270,7 +270,7 @@ It took me about 4 hours to complete the exercise, mainly because I've done this
 The kata was published on the [Roman Numeral Katas github project](https://github.com/froderik/roman_numeral_katas) (thank you Fred) and joined several implementations done in different languages for the kata.
 Now, when I finished the kata, I wonder if it would not have been better, to just put all of the code to the trash and start over, when I realized that the implementation approach was pretty ugly. Learning to let go and throw the code away is another exercise that in my opinion each developer should do.
 Thomas Edison said:
-![thomas-edison-quote-jpg](../../images/thomas-edison-quote-jpg-300x150.jpg)
+![thomas-edison-quote-jpg](../../../images/thomas-edison-quote-jpg-300x150.jpg)
 Following this, if you fail to admit what you're doing doesn't work, you will not progress.
 **Foot notes** on how to setup your local environment for unit testing with ruby-plsql-spec
 The easiest way seems to follow the instructions provided with ruby-plsql (https://github.com/rsim/ruby-plsql)
@@ -292,4 +292,4 @@ But once you have your env up and running:
 
 and you're good to go :)
 ***Good luck and have as much fun as I did.***
-If you like this post, you might also enjoy my other posts on [ruby-plsql, UTPLSQL](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-one.md) and [Continuous Integration](../posts/utplsql-vs-ruby-plsql-running-oracle-unit-tests-on-jenkins-ci.md).
+If you like this post, you might also enjoy my other posts on [ruby-plsql, UTPLSQL](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-one.md) and [Continuous Integration](../2015/utplsql-vs-ruby-plsql-running-oracle-unit-tests-on-jenkins-ci.md).

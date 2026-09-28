@@ -16,7 +16,7 @@ The thing I was wondering about is, if I log errors and my DML statement fails, 
 I've checked documentation and asked some experts on Twitter but seems there was no feature to support that.
 
 <!-- more -->
-![](../../images/log_errors_tweet-1.png)
+![](../../../images/log_errors_tweet-1.png)
 Example:
 
 ```sql

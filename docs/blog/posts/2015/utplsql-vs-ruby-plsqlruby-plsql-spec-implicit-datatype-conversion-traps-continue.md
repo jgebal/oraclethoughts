@@ -14,8 +14,8 @@ tags:
   - "unit testing"
 ---
 
-[![UTPLSQL_vs_RSpec](../../images/UTPLSQL_vs_RSpec.png)](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps.md)
-I've finished my [previous post](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps.md) a bit too soon and was not precise on the ruby-plsql unite test results analysis.
+[![UTPLSQL_vs_RSpec](../../../images/UTPLSQL_vs_RSpec.png)](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps.md)
+I've finished my [previous post](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps.md) a bit too soon and was not precise on the ruby-plsql unite test results analysis.
 I've decided to dig a bit deeper to validate that ruby-plsql (RSpec) actually support datatype mismatch exceptions where utPLSQL unit testing fails due to oracle implicit datatype conversion.
 
 <!-- more -->

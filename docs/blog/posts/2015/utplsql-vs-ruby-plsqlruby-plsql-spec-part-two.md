@@ -14,9 +14,9 @@ tags:
   - "unit testing"
 ---
 
-![UTPLSQL_vs_RSpec](../../images/UTPLSQL_vs_RSpec-300x56.png)
+![UTPLSQL_vs_RSpec](../../../images/UTPLSQL_vs_RSpec-300x56.png)
 
-In my [previous post](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-one.md) I have described the conceptual differences between UTPLSQL and ruby-plsql frameworks for unit testing of Oracle database code.
+In my [previous post](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-one.md) I have described the conceptual differences between UTPLSQL and ruby-plsql frameworks for unit testing of Oracle database code.
 I have used a message\_api package and unit tests for that API using both frameworks as an example.
 In this post I will focus on getting the tests to run and the feedback that we can we get from the tests using both frameworks.
 
@@ -284,9 +284,9 @@ Finished in 0.07601 seconds (files took 1.38 seconds to load)
 Coverage report in coverage/index.html
 ```
 
-With one simple command we have all our tests executed and code coverage report generated into [`coverage/index.html`](../../images/index.html) file.
-You may download the [coverage report](../../images/coverage.zip) and see it on your local machine.
+With one simple command we have all our tests executed and code coverage report generated into [`coverage/index.html`](../../../images/index.html) file.
+You may download the [coverage report](../../../images/coverage.zip) and see it on your local machine.
 Coming up next
 [- more reporting options
 - reporting failing tests
-- are the tests failing/passing when the should](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-three.md)
+- are the tests failing/passing when the should](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-three.md)

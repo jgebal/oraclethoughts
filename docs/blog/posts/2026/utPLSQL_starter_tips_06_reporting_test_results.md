@@ -155,17 +155,17 @@ The ones that are most human-readable are shown below.
 
 The remaining files are listed below. They are not so easily readable therefore not presented in the post. 
 
-- [ut_coverage_cobertura_reporter.xml](../../assets/reporting_test_results/ut_coverage_cobertura_reporter.xml)
+- [ut_coverage_cobertura_reporter.xml](../../../assets/reporting_test_results/ut_coverage_cobertura_reporter.xml)
 
-- [ut_coverage_html_reporter.html](../../assets/reporting_test_results/ut_coverage_html_reporter.html)
+- [ut_coverage_html_reporter.html](../../../assets/reporting_test_results/ut_coverage_html_reporter.html)
 
-- [ut_junit_reporter.xml](../../assets/reporting_test_results/ut_junit_reporter.xml)
+- [ut_junit_reporter.xml](../../../assets/reporting_test_results/ut_junit_reporter.xml)
 
-- [ut_tfs_junit_reporter.xml](../../assets/reporting_test_results/ut_tfs_junit_reporter.xml)
+- [ut_tfs_junit_reporter.xml](../../../assets/reporting_test_results/ut_tfs_junit_reporter.xml)
 
-- [ut_teamcity_reporter.txt](assets/reporting_test_results/ut_teamcity_reporter.txt)
+- [ut_teamcity_reporter.txt](../../../assets/reporting_test_results/ut_teamcity_reporter.txt)
 
-- [ut_realtime_reporter.xml](../../assets/reporting_test_results/ut_realtime_reporter.xml) 
+- [ut_realtime_reporter.xml](../../../assets/reporting_test_results/ut_realtime_reporter.xml) 
 
 
 !!! Note

@@ -88,7 +88,7 @@ The whole TDD is a repeated cycle of:
 - once done, take another requirement...
 
 The below image perfectly summarizes the three phases of Test Driven Development.
-[![tdd_cycle_1048150](../../images/tdd_cycle_1048150.png)](https://blogs.sap.com/2016/10/04/abap-coderetreat-what-happened-in-frankfurt-2016/)
+[![tdd_cycle_1048150](../../../images/tdd_cycle_1048150.png)](https://blogs.sap.com/2016/10/04/abap-coderetreat-what-happened-in-frankfurt-2016/)
 Test Driven Development focuses on delivering working software that meet specification using very small iterations.
 It is a well-structured, simple and effective practice that enables iterative delivery.
 You can easily track progress and you get a feeling of accomplishment with every new passing test that you add.

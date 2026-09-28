@@ -10,7 +10,7 @@ tags:
   - "exception handling"
 ---
 
-In my [previous post](../posts/insert-log-errors-and-sqlrowcount.md) I have described solution allowing you to obtain count of error rows that get inserted into error table when using Oracle SQL syntax of `INSERT INTO ... SELECT ... FROM ... LOG ERRORS`.
+In my [previous post](../2020/insert-log-errors-and-sqlrowcount.md) I have described solution allowing you to obtain count of error rows that get inserted into error table when using Oracle SQL syntax of `INSERT INTO ... SELECT ... FROM ... LOG ERRORS`.
 The solution provided had a bug related to resetting counters.
 
 <!-- more -->

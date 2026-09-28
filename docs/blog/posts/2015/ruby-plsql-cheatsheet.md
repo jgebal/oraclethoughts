@@ -12,7 +12,7 @@ tags:
   - "unit testing"
 ---
 
-In my [previous posts](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-one.md) I did some writngs on [UTPLSQL](http://utplsql.sourceforge.net/) and [ruby-plsql](https://github.com/rsim/ruby-plsql).
+In my [previous posts](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-one.md) I did some writngs on [UTPLSQL](http://utplsql.sourceforge.net/) and [ruby-plsql](https://github.com/rsim/ruby-plsql).
 For long time, while developing Oracle code I was using ruby-plsql to do test driven development for SQL and PL/SQL.
 I used to frequently forget how to use some of the functionalities of ruby-plsql, specially after having a longer break and so each time I was referring the [Unit Tests supplied for the ruby-plsql library](https://github.com/rsim/ruby-plsql/tree/master/spec/plsql) as a reference. They are really nicely documenting how things work and how can they be used. It usually took me few minutes to find the thing I needed.
 
@@ -25,7 +25,7 @@ It's not a reference, it's not complete (or official), but hopefully it's a good
 **Update**
 If you prefer a more visual/printable form, you might want to check out the same Cheat Sheet on <http://www.cheatography.com/jgebal/cheat-sheets/ruby-plsql-cheat-sheet/>
 Or just download the PDF version.
-[![jgebal_ruby-plsql-cheat-sheet.pdf](../../images/jgebal_ruby-plsql-cheat-sheet.6001.jpg)](../../images/jgebal_ruby-plsql-cheat-sheet-1.pdf)
+[![jgebal_ruby-plsql-cheat-sheet.pdf](../../../images/jgebal_ruby-plsql-cheat-sheet.6001.jpg)](../../../images/jgebal_ruby-plsql-cheat-sheet-1.pdf)
 [ruby gutter="0" highlight="1,32,54,69,93,112,150"]
 #Session / connection settings
 plsql(:default).connect! {:username => 'hr', :password => 'hr', :database => 'xe'}

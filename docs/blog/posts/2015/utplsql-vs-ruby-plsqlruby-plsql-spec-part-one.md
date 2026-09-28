@@ -14,7 +14,7 @@ tags:
   - "unit testing"
 ---
 
-![UTPLSQL_vs_RSpec](../../images/UTPLSQL_vs_RSpec-300x56.png)
+![UTPLSQL_vs_RSpec](../../../images/UTPLSQL_vs_RSpec-300x56.png)
 
 # Foreword
 
@@ -260,9 +260,9 @@ UTPLSQL is not able to cover the required scenarios of multi-session/multi-user 
 Ruby syntax is flexible enough so that you can start writing tests with syntax that is most fitted for you. It's possible to write very verbose tests. It is also possible to write very compact tests, once you learn how to do it.
 **Coming up next:**
 
-- [Setup and basic reporting](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-two.md)
-- [(Not) reporting failures](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-part-three.md)
-- [Language limitations](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps.md)
+- [Setup and basic reporting](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-two.md)
+- [(Not) reporting failures](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-part-three.md)
+- [Language limitations](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps.md)
 - Modularity
 - Lexical differences
 - Structuring and organizing

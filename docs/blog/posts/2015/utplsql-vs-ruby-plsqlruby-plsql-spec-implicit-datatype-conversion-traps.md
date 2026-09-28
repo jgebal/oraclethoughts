@@ -14,7 +14,7 @@ tags:
   - "unit testing"
 ---
 
-[![UTPLSQL_vs_RSpec](../../images/UTPLSQL_vs_RSpec.png)](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps.md)
+[![UTPLSQL_vs_RSpec](../../../images/UTPLSQL_vs_RSpec.png)](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps.md)
 This post is a continuation of the utPLSQL vs. ruby-plsql series, you might want to have a look at my previous post for introduction and some basics.
 
 <!-- more -->
@@ -371,4 +371,4 @@ Oracle SQL and PL/SQL, due to the build-in implicit datatype conversion treats i
 
 ## Update
 
-I've decided to write a continuation of this post, you may read it [here](../posts/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps-continue.md).
+I've decided to write a continuation of this post, you may read it [here](../2015/utplsql-vs-ruby-plsqlruby-plsql-spec-implicit-datatype-conversion-traps-continue.md).

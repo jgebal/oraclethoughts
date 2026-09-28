@@ -66,7 +66,7 @@ Here is a list with some of qualities utPLSQL version 3:
 - follows best patterns of Java for annotations
 - test suites are built on the fly
 - no persistence needed - just install utPLSQL, compile code and tests and you're good to go
-- all configuration is optional and defined when invoking tests[how-i-started-to-create-unit-tests-for-oracle-plsql-code.md](how-i-started-to-create-unit-tests-for-oracle-plsql-code.md)
+- all configuration is optional and defined when invoking tests[how-i-started-to-create-unit-tests-for-oracle-plsql-code.md](../2014/how-i-started-to-create-unit-tests-for-oracle-plsql-code.md)
 
 #### Useful links
 
