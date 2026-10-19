@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<coverage version="1">
+<file path="function ut3_tester.betwnstr">
+<lineToCover lineNumber="2" covered="true"/>
+<lineToCover lineNumber="4" covered="true"/>
+<lineToCover lineNumber="5" covered="true"/>
+<lineToCover lineNumber="7" covered="true"/>
+</file>
+</coverage>

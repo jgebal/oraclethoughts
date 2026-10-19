@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="WINDOWS-1252"?>
+<testsuites tests="7" disabled="1" errors="1" failures="1" name="" time=".130029" >
+<testsuite tests="7" id="1" package="org"  disabled="1" errors="1" failures="1" name="org" time=".121113" >
+<testsuite tests="7" id="2" package="org.utplsql"  disabled="1" errors="1" failures="1" name="utplsql" time=".116401" >
+<testsuite tests="7" id="3" package="org.utplsql.demo"  disabled="1" errors="1" failures="1" name="demo" time=".111611" >
+<testsuite tests="7" id="4" package="org.utplsql.demo.test_betwnstr"  disabled="1" errors="1" failures="1" name="Between string function" time=".108483" >
+<testsuite tests="4" id="5" package="org.utplsql.demo.test_betwnstr.nested_context_#1"  disabled="0" errors="0" failures="0" name="happy path" time=".066152" >
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#1" assertions="1" name="Returns substring from start position to end position" time=".028357" >
+<system-out/>
+<system-err/>
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#1" assertions="1" name="Returns substring when start position is zero" time=".007118" >
+<system-out/>
+<system-err/>
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#1" assertions="1" name="Returns string until end if end position is greater than string length" time=".005362" >
+<system-out/>
+<system-err/>
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#1" assertions="1" name="Returns null for null input string value" time=".007199" >
+<system-out/>
+<system-err/>
+</testcase>
+<system-out/>
+<system-err/>
+</testsuite>
+<testsuite tests="3" id="6" package="org.utplsql.demo.test_betwnstr.nested_context_#2"  disabled="1" errors="1" failures="1" name="unhappy path" time=".033307" >
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#2" assertions="0" name="A demo of test raising runtime exception" time=".00544"  status="Error">
+<error>
+<![CDATA[
+ORA-06502: PL/SQL: value or conversion error: character to number conversion error
+ORA-06512: at "UT3_TESTER.TEST_BETWNSTR", line 25
+ORA-06512: at "UT3_TESTER.TEST_BETWNSTR", line 25
+ORA-06512: at line 7
+]]>
+</error>
+<system-out/>
+<system-err/>
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#2" assertions="1" name="A demo of failing test" time=".010747"  status="Failure">
+<failure>
+<![CDATA[
+Actual: '1234567' (varchar2) was expected to equal: '1' (varchar2)
+at "UT3_TESTER.TEST_BETWNSTR.BAD_TEST", line 31 ut.expect( betwnstr( '1234567', 0, 500 ) ).to_( equal('1') );
+]]>
+</failure>
+<system-out/>
+<system-err/>
+</testcase>
+<testcase classname="org.utplsql.demo.test_betwnstr.nested_context_#2" assertions="0" name="Demo of a disabled test" time="0"  status="Disabled">
+<skipped/>
+<system-out/>
+<system-err/>
+</testcase>
+<system-out/>
+<system-err/>
+</testsuite>
+<system-out/>
+<system-err/>
+</testsuite>
+</testsuite>
+</testsuite>
+</testsuite>
+</testsuites>

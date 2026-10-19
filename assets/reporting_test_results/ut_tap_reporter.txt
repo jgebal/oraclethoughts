@@ -1,0 +1,36 @@
+TAP version 14
+1..1
+ 
+# Subtest: org
+    1..1
+    # Subtest: utplsql
+        1..1
+        # Subtest: demo
+            1..1
+            # Subtest: Between string function
+                1..2
+                # Subtest: happy path
+                    1..4
+                    ok - Returns substring from start position to end position
+                    ok - Returns substring when start position is zero
+                    ok - Returns string until end if end position is greater than string length
+                    ok - Returns null for null input string value
+                # Subtest: unhappy path
+                    1..3
+                    not ok - A demo of test raising runtime exception
+                      ---
+                      message: |
+                        ORA-06502: PL/SQL: value or conversion error: character to number conversion error
+                        ORA-06512: at "UT3_TESTER.TEST_BETWNSTR", line 25
+                        ORA-06512: at "UT3_TESTER.TEST_BETWNSTR", line 25
+                        ORA-06512: at line 7
+                      severity: error
+                      ...
+                    not ok - A demo of failing test
+                      ---
+                      message: 'Actual: '1234567' (varchar2) was expected to equal: '1' (varchar2)'
+                      severity: fail
+                      ...
+                    ok - Demo of a disabled test # SKIP
+not ok - org
+ 
