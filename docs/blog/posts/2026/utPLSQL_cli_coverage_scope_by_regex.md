@@ -80,7 +80,8 @@ The rules:
 - Expressions are not anchored. `-include-object-expr=ord` matches `ORDERS`, `RECORD_PKG` and `BORDER`. Use `^` and `$` to anchor the expression at the beginning or end.
 - When an *include* expression is given, `--coverage-schemes` and `-include` are ignored.
   If both include expressions are given, an object has to match both.
-- All *exclude* options are always applied. They can be combined with each other and with the `-exclude` list.
+- Include and exclude expressions can be combined. Both exclude expressions (schema and object) are applied.
+  When any exclude expression is given, the `-exclude` list is ignored.
 
 !!! note
     Characters like `^`, `$`, `|` and `(` mean something to your shell, so quote the expressions.
