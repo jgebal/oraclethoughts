@@ -17,14 +17,13 @@ tags:
 
 # Defining code coverage scope with regular expressions in utPLSQL-cli
 
-A coverage report is only as useful as the information it provides.
+A coverage report is only useful when the information it provides is meaningful.
 
 Useful information would be: "How much of *MY application code* is covered by tests?"
 
-A generic question, such as "How much of everything that happens to live in these schemas?", is usually not very useful.
-
 Until now, obtaining precise coverage for your project with `utplsql-cli` was only possible by mapping project
 files into database objects or by providing a complete list of objects to include or exclude when gathering coverage.
+
 Since version 3.2.2, `utplsql-cli` lets you describe the scope of the coverage report with regular expressions,
 so the included/excluded scope follows your naming conventions instead of an object list.
 
