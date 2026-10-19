@@ -1,3 +1,33 @@
+[data-md-color-scheme="default"] {
+    --md-primary-fg-color: #00796b;          /* header: 5.3:1 with white text */
+    --md-typeset-a-color: #00574b;           /* links: 8.5:1 */
+    --md-accent-fg-color: #009688;           /* hover: bright teal, 3.7:1 (was 1.8:1) */
+    --md-default-fg-color--light: hsla(0, 0%, 0%, .64);   /* muted text 6.7:1 */
+}
+
+[data-md-color-scheme="slate"] {
+    --md-hue: 215;
+    --md-default-fg-color: hsla(var(--md-hue), 15%, 90%, .90);        /* body ~10:1 */
+    --md-default-fg-color--light: hsla(var(--md-hue), 15%, 90%, .68); /* muted 6.5:1 */
+    --md-code-hl-keyword-color: hsl(219, 80%, 72%);
+}
+
+/* Material sets the dark link/accent per primary colour with higher specificity */
+[data-md-color-scheme="slate"][data-md-color-primary] {
+    --md-typeset-a-color: #80cbc4;           /* links: 8.5:1 */
+    --md-accent-fg-color: #26a69a;           /* hover: clearly darker than the link, 5.3:1 */
+}
+
+/* Roomier long-form reading */
+.md-typeset {
+    line-height: 1.7;
+}
+
+.md-typeset p,
+.md-typeset li {
+    max-width: 46rem;
+}
+
 /* Make the wordmark SVG logo render larger in the header.
    Material default is height:24px inside a 48px bar.
    These values scale it to ~130% filling the bar comfortably. */
@@ -15,11 +45,11 @@
 .md-header__topic:first-child { display: none; }
 
 .md-typeset__table {
-    line-height: 1;
+    line-height: 1.4;
 }
 
 .md-typeset__table table:not([class]) {
-    font-size: 0.60rem;
+    font-size: 0.7rem;
     border-right: none;
 }
 
